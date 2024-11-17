@@ -8,24 +8,22 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
-# Add source files
 set(SOURCES
     src/main.cpp
-    src/quake.cpp
-    src/dataset.cpp
-    src/model.cpp
-    src/window.cpp
-    src/stats.cpp
+    src/mainwindow.cpp
+    src/navigationbar.cpp
+    src/basepage.cpp
+    src/dashboardpage.cpp
+    src/examplepage.cpp
 )
 
-qt_add_executable(quaketool ${SOURCES})
+qt_add_executable(water ${SOURCES})
 
-# Add include directories if headers are in src/
-target_include_directories(quaketool PRIVATE src)
+target_include_directories(water PRIVATE src)
 
-target_link_libraries(quaketool PRIVATE Qt6::Widgets)
+target_link_libraries(water PRIVATE Qt6::Widgets)
 
-set_target_properties(quaketool PROPERTIES
+set_target_properties(water PROPERTIES
     WIN32_EXECUTABLE ON
     MACOSX_BUNDLE OFF
 )
