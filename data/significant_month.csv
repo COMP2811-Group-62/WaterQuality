@@ -1,0 +1,9 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2024-10-16T07:46:32.889Z,38.3086,38.8261,10,6,mww,118,43,0.383,1.02,us,us6000nyzk,2024-10-18T11:29:29.531Z,"18 km W of Doğanyol, Turkey",earthquake,3.78,1.815,0.042,55,reviewed,us,us
+2024-10-12T17:43:44.471Z,10.487,-86.1712,16,6.2,mww,225,32,0.912,0.91,us,us6000nyau,2024-10-15T09:35:15.520Z,"41 km WNW of Tamarindo, Costa Rica",earthquake,5.46,1.708,0.03,110,reviewed,us,us
+2024-10-06T10:51:08.410Z,34.0236667,-117.5923333,5.17,3.99,mw,183,12,0.01565,0.25,ci,ci40752807,2024-10-18T06:38:50.885Z,"5 km SE of Ontario, CA",earthquake,0.12,0.3,,6,reviewed,ci,ci
+2024-10-04T09:08:58.422Z,49.0567,-123.3635,61.533,3.7,mb,198,43,0.145,0.41,us,us6000nwgu,2024-10-17T17:27:51.325Z,"20 km SW of Richmond, Canada",earthquake,2.35,3.938,0.226,5,reviewed,us,us
+2024-10-01T20:05:34.667Z,-19.2017,-172.9565,10,6.6,mww,113,23,2.865,0.81,us,us7000nhjw,2024-10-09T14:54:21.136Z,"124 km ESE of Neiafu, Tonga",earthquake,9.15,1.737,0.035,77,reviewed,us,us
+2024-09-29T09:47:33.220Z,36.911833333333,-121.65333333333,6.94,4.15,mw,106,47,0.02022,0.16,nc,nc75068161,2024-10-15T07:03:23.193Z,"3 km  of Aromas, CA",earthquake,0.15,0.29,,29,reviewed,nc,nc
+2024-09-26T19:19:28.811Z,-17.1899,66.5466,10,6.3,mww,101,29,3.949,0.83,us,us7000ngmr,2024-09-27T19:21:59.721Z,"Mauritius - Reunion region",earthquake,8.04,1.82,0.052,36,reviewed,us,us
+2024-09-26T11:05:20.170Z,48.580666666667,-123.24783333333,52.15,3.96,ml,75,62,0.08658,0.13,uw,uw62050041,2024-10-17T22:07:33.161Z,"12 km E of Saanichton, Canada",earthquake,0.2,0.3,0.18857222011063,168,reviewed,uw,uw

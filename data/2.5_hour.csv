@@ -1,0 +1,2 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2024-10-18T11:45:24.483Z,60.0732,-141.0845,9.7,3,ml,,,,0.58,ak,ak024df3qsyo,2024-10-18T11:47:38.470Z,"96 km NW of Yakutat, Alaska",earthquake,,0.2,,,automatic,ak,ak

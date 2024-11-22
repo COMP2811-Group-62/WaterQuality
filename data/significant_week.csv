@@ -1,0 +1,3 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2024-10-16T07:46:32.889Z,38.3086,38.8261,10,6,mww,118,43,0.383,1.02,us,us6000nyzk,2024-10-18T11:29:29.531Z,"18 km W of Doğanyol, Turkey",earthquake,3.78,1.815,0.042,55,reviewed,us,us
+2024-10-12T17:43:44.471Z,10.487,-86.1712,16,6.2,mww,225,32,0.912,0.91,us,us6000nyau,2024-10-15T09:35:15.520Z,"41 km WNW of Tamarindo, Costa Rica",earthquake,5.46,1.708,0.03,110,reviewed,us,us
