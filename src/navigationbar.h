@@ -1,3 +1,4 @@
+// navigationbar.h
 #include <QFrame>
 #include <QList>
 

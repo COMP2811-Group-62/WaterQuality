@@ -1,0 +1,5 @@
+/Users/surewu/Desktop/week1/WaterQuality/buile/CMakeFiles/water.dir
+/Users/surewu/Desktop/week1/WaterQuality/buile/CMakeFiles/edit_cache.dir
+/Users/surewu/Desktop/week1/WaterQuality/buile/CMakeFiles/rebuild_cache.dir
+/Users/surewu/Desktop/week1/WaterQuality/buile/CMakeFiles/water_autogen_timestamp_deps.dir
+/Users/surewu/Desktop/week1/WaterQuality/buile/CMakeFiles/water_autogen.dir

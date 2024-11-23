@@ -1,3 +1,4 @@
+// examplepage.h
 #include "basepage.h"
 
 class QHBoxLayout;

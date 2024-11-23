@@ -15,6 +15,7 @@ set(SOURCES
     src/basepage.cpp
     src/dashboardpage.cpp
     src/examplepage.cpp
+    src/litterpage.cpp    # 添加新文件
 )
 
 qt_add_executable(water ${SOURCES})
