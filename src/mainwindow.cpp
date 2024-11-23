@@ -20,16 +20,14 @@ void MainWindow::setupUI() {
   // Set window properties
   resize(1280, 720);
 
-#ifdef Q_OS_MAC
-  setUnifiedTitleAndToolBarOnMac(true);
-#endif
-
   // Create central widget
   centralWidget = new QWidget(this);
   setCentralWidget(centralWidget);
 
   // Create main layout
   mainLayout = new QHBoxLayout(centralWidget);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+  mainLayout->setSpacing(0);
 
   // Create and setup navigation bar
   setupNavigation();

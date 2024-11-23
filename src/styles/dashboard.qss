@@ -1,0 +1,32 @@
+#dashboardCard {
+    background-color: #102b3f;
+    border: 1px solid #1e4260;
+    border-radius: 8px;
+}
+
+#cardHeader {
+    background-color: #0d2434;
+    border-bottom: 1px solid #1e4260;
+    border-radius: 8px 8px 0 0;
+}
+
+#cardTitle {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#cardSubtitle {
+    color: #88a0b3;
+    font-size: 13px;
+}
+
+#cardContent {
+    padding: 0;
+}
+
+#cardPlaceholder {
+    color: #88a0b3;
+    font-size: 13px;
+    font-style: italic;
+}

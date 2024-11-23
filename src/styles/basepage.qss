@@ -1,0 +1,7 @@
+QWidget#headerContainer {
+  background-color: #1a1a1a;
+}
+
+QWidget#contentArea {
+  border: 1px solid red;
+}
