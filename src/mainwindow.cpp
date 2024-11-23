@@ -1,4 +1,7 @@
+// mainwindow.cpp
+
 #include "mainwindow.h"
+#include "litterpage.h"
 
 #include <QFrame>
 #include <QHBoxLayout>
@@ -11,6 +14,7 @@
 #include "dashboardpage.h"
 #include "examplepage.h"
 #include "navigationbar.h"
+#include "litterpage.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setupUI();
@@ -59,6 +63,9 @@ void MainWindow::setupPages() {
 
   ExamplePage *examplePage = new ExamplePage();
   stackedWidget->addWidget(examplePage);
+
+  LitterPage *litterPage = new LitterPage();
+  stackedWidget->addWidget(litterPage);
 }
 
 void MainWindow::switchPage(int index) {
