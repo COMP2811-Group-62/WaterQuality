@@ -5,6 +5,7 @@ class QVBoxLayout;
 class QPushButton;
 class QLabel;
 class QComboBox;
+class QPaintEvent;
 
 class NavigationBar : public QFrame {
   Q_OBJECT
