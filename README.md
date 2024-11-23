@@ -8,10 +8,10 @@ Set up the build process with
 
 Build the application with
 
-    make quaketool
+    make water
 
 or just `make` by itself.
 
 Run the application with
 
-    ./quaketool
+    ./water
