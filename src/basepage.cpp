@@ -39,11 +39,7 @@ void BasePage::createHeader() {
 
   // Create and style the title label
   titleLabel = new QLabel(pageTitle);
-  titleLabel->setStyleSheet(R"(
-        color: white;
-        font-size: 24px;  
-        font-weight: bold;
-    )");
+  titleLabel->setObjectName("pageTitle");
   headerLayout->addWidget(titleLabel);
 
   // Add title container to main layout

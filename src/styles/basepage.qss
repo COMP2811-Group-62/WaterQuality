@@ -5,3 +5,9 @@ QWidget#headerContainer {
 QWidget#contentArea {
   border: 1px solid red;
 }
+
+QWidget#pageTitle {
+  color: white;
+  font-size: 24px;  
+  font-weight: bold;
+}
