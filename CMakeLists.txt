@@ -17,6 +17,7 @@ set(SOURCES
     src/basepage.cpp
     src/dashboardpage.cpp
     src/examplepage.cpp
+    src/fluorinatedcompounds.cpp
     src/styles.cpp
 )
 
@@ -26,6 +27,7 @@ set(HEADERS
     src/basepage.h
     src/dashboardpage.h
     src/examplepage.h
+    src/fluorinatedcompounds.h
     src/styles.h
 )
 
