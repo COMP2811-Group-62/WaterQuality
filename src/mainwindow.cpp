@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 
 #include "dashboardpage.h"
+#include "datapage.h"
 #include "examplepage.h"
 #include "navigationbar.h"
 
@@ -54,6 +55,9 @@ void MainWindow::setupNavigation() {
 void MainWindow::setupPages() {
   DashboardPage *dbPage = new DashboardPage();
   stackedWidget->addWidget(dbPage);
+
+  DataPage *dataPage = new DataPage();
+  stackedWidget->addWidget(dataPage);
 
   ExamplePage *examplePage = new ExamplePage();
   stackedWidget->addWidget(examplePage);
