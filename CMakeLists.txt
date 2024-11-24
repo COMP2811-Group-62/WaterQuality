@@ -18,6 +18,10 @@ set(SOURCES
     src/dashboardpage.cpp
     src/examplepage.cpp
     src/styles.cpp
+    src/qualitysample.cpp
+    src/dataset.cpp
+    src/model.cpp
+    src/datapage.cpp
 )
 
 set(HEADERS
@@ -27,6 +31,11 @@ set(HEADERS
     src/dashboardpage.h
     src/examplepage.h
     src/styles.h
+    src/qualitysample.h
+    src/dataset.h
+    src/model.h
+    src/datapage.h
+
 )
 
 # Add the executable with resources
