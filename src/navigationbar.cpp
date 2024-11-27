@@ -26,6 +26,7 @@ void NavigationBar::setupUI() {
   navButtons.append(createNavButton("Dashboard", 0, true));  // Default
   navButtons.append(createNavButton("Data Page", 1, false));
   navButtons.append(createNavButton("ExamplePage", 2, false));
+  navButtons.append(createNavButton("Fluorinated Compounds", 3, false));
 
   for (auto button : navButtons) {
     layout->addWidget(button);

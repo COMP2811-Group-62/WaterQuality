@@ -11,6 +11,7 @@
 #include "dashboardpage.h"
 #include "datapage.h"
 #include "examplepage.h"
+#include "fluorinatedcompounds.h"
 #include "navigationbar.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -61,6 +62,9 @@ void MainWindow::setupPages() {
 
   ExamplePage *examplePage = new ExamplePage();
   stackedWidget->addWidget(examplePage);
+
+  FluorinatedCompounds *fluorinatedCompounds = new FluorinatedCompounds();
+  stackedWidget->addWidget(fluorinatedCompounds);
 }
 
 void MainWindow::switchPage(int index) {
