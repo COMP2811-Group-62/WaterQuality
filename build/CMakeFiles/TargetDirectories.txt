@@ -1,0 +1,4 @@
+/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/CMakeFiles/water.dir
+/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/CMakeFiles/edit_cache.dir
+/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/CMakeFiles/rebuild_cache.dir
+/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/CMakeFiles/water_autogen.dir

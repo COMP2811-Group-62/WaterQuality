@@ -1,0 +1,50 @@
+[
+{
+  "directory": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build",
+  "command": "/usr/bin/clang++ -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/include\" -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src\" -isystem /usr/local/opt/qt/lib/QtCore.framework/Headers -iframework /usr/local/opt/qt/lib -isystem /usr/local/opt/qt/share/qt/mkspecs/macx-clang -isystem /usr/local/opt/qt/include -isystem /usr/local/opt/qt/lib/QtWidgets.framework/Headers -isystem /usr/local/opt/qt/lib/QtGui.framework/Headers -isystem /usr/local/opt/qt/lib/QtCharts.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGL.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGLWidgets.framework/Headers -g -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.5 -fPIC -o CMakeFiles/water.dir/water_autogen/mocs_compilation.cpp.o -c \"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/mocs_compilation.cpp\"",
+  "file": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/mocs_compilation.cpp",
+  "output": "CMakeFiles/water.dir/water_autogen/mocs_compilation.cpp.o"
+},
+{
+  "directory": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build",
+  "command": "/usr/bin/clang++ -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/include\" -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src\" -isystem /usr/local/opt/qt/lib/QtCore.framework/Headers -iframework /usr/local/opt/qt/lib -isystem /usr/local/opt/qt/share/qt/mkspecs/macx-clang -isystem /usr/local/opt/qt/include -isystem /usr/local/opt/qt/lib/QtWidgets.framework/Headers -isystem /usr/local/opt/qt/lib/QtGui.framework/Headers -isystem /usr/local/opt/qt/lib/QtCharts.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGL.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGLWidgets.framework/Headers -g -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.5 -fPIC -o CMakeFiles/water.dir/src/main.cpp.o -c \"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/main.cpp\"",
+  "file": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/main.cpp",
+  "output": "CMakeFiles/water.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build",
+  "command": "/usr/bin/clang++ -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/include\" -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src\" -isystem /usr/local/opt/qt/lib/QtCore.framework/Headers -iframework /usr/local/opt/qt/lib -isystem /usr/local/opt/qt/share/qt/mkspecs/macx-clang -isystem /usr/local/opt/qt/include -isystem /usr/local/opt/qt/lib/QtWidgets.framework/Headers -isystem /usr/local/opt/qt/lib/QtGui.framework/Headers -isystem /usr/local/opt/qt/lib/QtCharts.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGL.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGLWidgets.framework/Headers -g -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.5 -fPIC -o CMakeFiles/water.dir/src/mainwindow.cpp.o -c \"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/mainwindow.cpp\"",
+  "file": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/mainwindow.cpp",
+  "output": "CMakeFiles/water.dir/src/mainwindow.cpp.o"
+},
+{
+  "directory": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build",
+  "command": "/usr/bin/clang++ -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/include\" -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src\" -isystem /usr/local/opt/qt/lib/QtCore.framework/Headers -iframework /usr/local/opt/qt/lib -isystem /usr/local/opt/qt/share/qt/mkspecs/macx-clang -isystem /usr/local/opt/qt/include -isystem /usr/local/opt/qt/lib/QtWidgets.framework/Headers -isystem /usr/local/opt/qt/lib/QtGui.framework/Headers -isystem /usr/local/opt/qt/lib/QtCharts.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGL.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGLWidgets.framework/Headers -g -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.5 -fPIC -o CMakeFiles/water.dir/src/navigationbar.cpp.o -c \"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/navigationbar.cpp\"",
+  "file": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/navigationbar.cpp",
+  "output": "CMakeFiles/water.dir/src/navigationbar.cpp.o"
+},
+{
+  "directory": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build",
+  "command": "/usr/bin/clang++ -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/include\" -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src\" -isystem /usr/local/opt/qt/lib/QtCore.framework/Headers -iframework /usr/local/opt/qt/lib -isystem /usr/local/opt/qt/share/qt/mkspecs/macx-clang -isystem /usr/local/opt/qt/include -isystem /usr/local/opt/qt/lib/QtWidgets.framework/Headers -isystem /usr/local/opt/qt/lib/QtGui.framework/Headers -isystem /usr/local/opt/qt/lib/QtCharts.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGL.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGLWidgets.framework/Headers -g -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.5 -fPIC -o CMakeFiles/water.dir/src/basepage.cpp.o -c \"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/basepage.cpp\"",
+  "file": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/basepage.cpp",
+  "output": "CMakeFiles/water.dir/src/basepage.cpp.o"
+},
+{
+  "directory": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build",
+  "command": "/usr/bin/clang++ -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/include\" -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src\" -isystem /usr/local/opt/qt/lib/QtCore.framework/Headers -iframework /usr/local/opt/qt/lib -isystem /usr/local/opt/qt/share/qt/mkspecs/macx-clang -isystem /usr/local/opt/qt/include -isystem /usr/local/opt/qt/lib/QtWidgets.framework/Headers -isystem /usr/local/opt/qt/lib/QtGui.framework/Headers -isystem /usr/local/opt/qt/lib/QtCharts.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGL.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGLWidgets.framework/Headers -g -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.5 -fPIC -o CMakeFiles/water.dir/src/dashboardpage.cpp.o -c \"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/dashboardpage.cpp\"",
+  "file": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/dashboardpage.cpp",
+  "output": "CMakeFiles/water.dir/src/dashboardpage.cpp.o"
+},
+{
+  "directory": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build",
+  "command": "/usr/bin/clang++ -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/include\" -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src\" -isystem /usr/local/opt/qt/lib/QtCore.framework/Headers -iframework /usr/local/opt/qt/lib -isystem /usr/local/opt/qt/share/qt/mkspecs/macx-clang -isystem /usr/local/opt/qt/include -isystem /usr/local/opt/qt/lib/QtWidgets.framework/Headers -isystem /usr/local/opt/qt/lib/QtGui.framework/Headers -isystem /usr/local/opt/qt/lib/QtCharts.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGL.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGLWidgets.framework/Headers -g -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.5 -fPIC -o CMakeFiles/water.dir/src/examplepage.cpp.o -c \"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/examplepage.cpp\"",
+  "file": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/examplepage.cpp",
+  "output": "CMakeFiles/water.dir/src/examplepage.cpp.o"
+},
+{
+  "directory": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build",
+  "command": "/usr/bin/clang++ -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/build/water_autogen/include\" -I\"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src\" -isystem /usr/local/opt/qt/lib/QtCore.framework/Headers -iframework /usr/local/opt/qt/lib -isystem /usr/local/opt/qt/share/qt/mkspecs/macx-clang -isystem /usr/local/opt/qt/include -isystem /usr/local/opt/qt/lib/QtWidgets.framework/Headers -isystem /usr/local/opt/qt/lib/QtGui.framework/Headers -isystem /usr/local/opt/qt/lib/QtCharts.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGL.framework/Headers -isystem /usr/local/opt/qt/lib/QtOpenGLWidgets.framework/Headers -g -std=gnu++17 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.1.sdk -mmacosx-version-min=14.5 -fPIC -o CMakeFiles/water.dir/src/popspage.cpp.o -c \"/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/popspage.cpp\"",
+  "file": "/Users/alexgeorge/Documents/User Interfaces CW/WaterQuality/src/popspage.cpp",
+  "output": "CMakeFiles/water.dir/src/popspage.cpp.o"
+}
+]
