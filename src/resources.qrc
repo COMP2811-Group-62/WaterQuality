@@ -6,6 +6,7 @@
         <file>styles/dashboard.qss</file>
         <file>styles/datapage.qss</file>
         <file>styles/basepage.qss</file>
+        <file>styles/fluorinatedcompounds.qss</file>
         <file>styles/trendsoverview.qss</file>
     </qresource>
 </RCC>
