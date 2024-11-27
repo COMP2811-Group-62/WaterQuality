@@ -19,6 +19,10 @@ set(SOURCES
     src/examplepage.cpp
     src/fluorinatedcompounds.cpp
     src/styles.cpp
+    src/qualitysample.cpp
+    src/dataset.cpp
+    src/model.cpp
+    src/datapage.cpp
 )
 
 set(HEADERS
@@ -29,6 +33,11 @@ set(HEADERS
     src/examplepage.h
     src/fluorinatedcompounds.h
     src/styles.h
+    src/qualitysample.h
+    src/dataset.h
+    src/model.h
+    src/datapage.h
+
 )
 
 # Add the executable with resources
