@@ -32,7 +32,4 @@ class MainWindow : public QMainWindow {
   NavigationBar *navBar;
   QStackedWidget *stackedWidget;
   QComboBox *languageSelector;
-
-  // Helper function to create navigation buttons
-  QPushButton *createNavButton(const QString &text, int index);
 };
