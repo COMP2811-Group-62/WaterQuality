@@ -4,6 +4,8 @@
         <file>styles/main.qss</file>
         <file>styles/navigation.qss</file>
         <file>styles/dashboard.qss</file>
+        <file>styles/datapage.qss</file>
         <file>styles/basepage.qss</file>
+        <file>styles/trendsoverview.qss</file>
     </qresource>
 </RCC>
