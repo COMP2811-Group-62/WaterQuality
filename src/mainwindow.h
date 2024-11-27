@@ -1,4 +1,3 @@
-// mainwindow.h
 #pragma once
 
 #include <QMainWindow>
@@ -12,7 +11,6 @@ class QPushButton;
 class QString;
 
 class NavigationBar;
-class LitterPage;
 
 class MainWindow : public QMainWindow {
   Q_OBJECT

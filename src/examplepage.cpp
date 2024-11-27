@@ -4,7 +4,7 @@
 #include <QLabel>
 
 ExamplePage::ExamplePage(QWidget* parent)
-    : BasePage("Example Page1", parent) {
+    : BasePage("Example Page", parent) {
   setupUI();
 }
 

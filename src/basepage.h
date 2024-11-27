@@ -1,4 +1,3 @@
-// basepage.h
 #pragma once
 
 #include <QString>

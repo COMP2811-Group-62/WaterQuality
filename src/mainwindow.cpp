@@ -1,7 +1,4 @@
-// mainwindow.cpp
-
 #include "mainwindow.h"
-#include "litterpage.h"
 
 #include <QFrame>
 #include <QHBoxLayout>
@@ -12,7 +9,9 @@
 #include <QVBoxLayout>
 
 #include "dashboardpage.h"
+#include "datapage.h"
 #include "examplepage.h"
+#include "fluorinatedcompounds.h"
 #include "navigationbar.h"
 #include "litterpage.h"
 
@@ -24,16 +23,14 @@ void MainWindow::setupUI() {
   // Set window properties
   resize(1280, 720);
 
-#ifdef Q_OS_MAC
-  setUnifiedTitleAndToolBarOnMac(true);
-#endif
-
   // Create central widget
   centralWidget = new QWidget(this);
   setCentralWidget(centralWidget);
 
   // Create main layout
   mainLayout = new QHBoxLayout(centralWidget);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+  mainLayout->setSpacing(0);
 
   // Create and setup navigation bar
   setupNavigation();
@@ -61,8 +58,14 @@ void MainWindow::setupPages() {
   DashboardPage *dbPage = new DashboardPage();
   stackedWidget->addWidget(dbPage);
 
+  DataPage *dataPage = new DataPage();
+  stackedWidget->addWidget(dataPage);
+
   ExamplePage *examplePage = new ExamplePage();
   stackedWidget->addWidget(examplePage);
+
+  FluorinatedCompounds *fluorinatedCompounds = new FluorinatedCompounds();
+  stackedWidget->addWidget(fluorinatedCompounds);
 
   LitterPage *litterPage = new LitterPage();
   stackedWidget->addWidget(litterPage);

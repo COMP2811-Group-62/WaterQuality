@@ -2,9 +2,10 @@
 
 class QHBoxLayout;
 
-class ExamplePage : public BasePage {
+class FluorinatedCompounds : public BasePage {
+
  public:
-  ExamplePage(QWidget* parent = nullptr);
+  FluorinatedCompounds(QWidget* parent = nullptr);
 
  private:
   void setupUI() override;

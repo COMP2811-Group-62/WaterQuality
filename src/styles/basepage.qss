@@ -1,0 +1,13 @@
+QWidget#headerContainer {
+  background-color: #1a1a1a;
+}
+
+QWidget#contentArea {
+  border: 1px solid red;
+}
+
+QWidget#pageTitle {
+  color: white;
+  font-size: 24px;  
+  font-weight: bold;
+}

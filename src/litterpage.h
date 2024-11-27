@@ -1,10 +1,9 @@
-// src/litterpage.h  (确认此文件存在并包含以下内容)
 #pragma once
 
+#include <QComboBox>
+#include <QtCharts>
 #include "basepage.h"
-
-class QHBoxLayout;
-class QComboBox;
+#include "dataset.h"
 
 class LitterPage : public BasePage {
     Q_OBJECT
@@ -12,9 +11,28 @@ class LitterPage : public BasePage {
 public:
     LitterPage(QWidget* parent = nullptr);
 
+private slots:
+    void updateCharts();
+    void onLocationFilterChanged(const QString& location);
+    void onWaterTypeFilterChanged(const QString& type);
+
 private:
     void setupUI() override;
-    QHBoxLayout* pageLayout;
+    void setupCharts();
+    void setupFilters();
+    void loadData();
+
+    WaterQualityDataset dataset;
+    
+    QChartView* locationBarChart;
+    QChartView* waterTypePieChart;
+    QChart* barChart;
+    QChart* pieChart;
+    
     QComboBox* locationFilter;
-    QComboBox* litterTypeFilter;
+    QComboBox* waterTypeFilter;
+    
+    QVBoxLayout* mainLayout;
+    QHBoxLayout* filtersLayout;
+    QHBoxLayout* chartsLayout;
 };
