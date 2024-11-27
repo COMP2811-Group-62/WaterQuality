@@ -13,6 +13,7 @@
 #include "examplepage.h"
 #include "fluorinatedcompounds.h"
 #include "navigationbar.h"
+#include "trendsoverview.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setupUI();
@@ -59,6 +60,9 @@ void MainWindow::setupPages() {
 
   DataPage *dataPage = new DataPage();
   stackedWidget->addWidget(dataPage);
+
+  TrendsOverviewPage *trendsPage = new TrendsOverviewPage();
+  stackedWidget->addWidget(trendsPage);
 
   ExamplePage *examplePage = new ExamplePage();
   stackedWidget->addWidget(examplePage);
