@@ -12,9 +12,10 @@
 #include "datapage.h"
 #include "examplepage.h"
 #include "fluorinatedcompounds.h"
+#include "litterpage.h"
 #include "navigationbar.h"
-#include "trendsoverview.h"
 #include "popspage.h"
+#include "trendsoverview.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setupUI();
@@ -71,10 +72,12 @@ void MainWindow::setupPages() {
   FluorinatedCompounds *fluorinatedCompounds = new FluorinatedCompounds();
   stackedWidget->addWidget(fluorinatedCompounds);
 
-  POPsPage* popsPage = new POPsPage();
+  POPsPage *popsPage = new POPsPage();
   stackedWidget->addWidget(popsPage);
-}
 
+  LitterPage *litterPage = new LitterPage();
+  stackedWidget->addWidget(litterPage);
+}
 
 void MainWindow::switchPage(int index) {
   stackedWidget->setCurrentIndex(index);
