@@ -5,8 +5,17 @@
 #include <QHBoxLayout>
 #include <QTableView>
 
+<<<<<<< HEAD
 DataPage::DataPage(QWidget *parent)
     : BasePage("Data Page", parent) {
+=======
+#include "styles.h"
+
+DataPage::DataPage(QWidget *parent)
+    : BasePage("Data Page", parent) {
+  setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
+                                            ":/styles/datapage.qss"}));
+>>>>>>> dev
   setupUI();
 }
 

@@ -19,15 +19,26 @@ void NavigationBar::setupUI() {
   // Add title
   titleLabel = new QLabel("AquaWatch", this);
   titleLabel->setAlignment(Qt::AlignCenter);
+<<<<<<< HEAD
   titleLabel->setStyleSheet("font-size: 32px; font-family: '-apple-system'; color: #00c2e5; font-weight: bold; padding: 10px;");
+=======
+  titleLabel->setStyleSheet("font-size: 32px; font-family: 'SF Pro'; color: #00c2e5; font-weight: bold; padding: 10px;");
+>>>>>>> dev
   layout->addWidget(titleLabel);
 
   // Add navigation buttons
   navButtons.append(createNavButton("Dashboard", 0, true));  // Default
   navButtons.append(createNavButton("Data Page", 1, false));
+<<<<<<< HEAD
   navButtons.append(createNavButton("ExamplePage", 2, false));
   navButtons.append(createNavButton("Fluorinated Compounds", 3, false));
   navButtons.append(createNavButton("Litter Indicators", 4, false));
+=======
+  navButtons.append(createNavButton("Pollutant Trends", 2, false));
+  navButtons.append(createNavButton("Example Page", 3, false));
+  navButtons.append(createNavButton("Fluorinated Compounds", 4, false));
+  navButtons.append(createNavButton("POPs Page", 5, false));
+>>>>>>> dev
 
   for (auto button : navButtons) {
     layout->addWidget(button);

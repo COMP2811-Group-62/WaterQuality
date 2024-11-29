@@ -25,17 +25,30 @@ void BasePage::setupUI() {
   // Create content area
   contentArea = new QWidget();
   contentArea->setObjectName("contentArea");
+<<<<<<< HEAD
   mainLayout->addWidget(contentArea, 1);  // Add stretch factor of 1
+=======
+
+  mainLayout->addWidget(contentArea, 1);
+>>>>>>> dev
 }
 
 void BasePage::createHeader() {
   QWidget* headerContainer = new QWidget();
   headerContainer->setObjectName("headerContainer");
+<<<<<<< HEAD
   headerContainer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);  // Fix header height
 
   // Create layout for title container
   QHBoxLayout* headerLayout = new QHBoxLayout(headerContainer);
   headerLayout->setContentsMargins(24, 24, 24, 24);  // Add some padding
+=======
+  headerContainer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+  // Create layout for title container
+  QHBoxLayout* headerLayout = new QHBoxLayout(headerContainer);
+  headerLayout->setContentsMargins(24, 24, 24, 24);
+>>>>>>> dev
 
   // Create and style the title label
   titleLabel = new QLabel(pageTitle);

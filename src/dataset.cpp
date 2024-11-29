@@ -4,12 +4,14 @@
 
 using namespace std;
 
-void WaterQualityDataset::loadData(const string& filename) {
+void WaterQualityDataset::loadData(const string &filename)
+{
   csv::CSVReader reader(filename);
 
   data.clear();
 
-  for (const auto& row : reader) {
+  for (const auto &row : reader)
+  {
     QualitySample sample{
         row["@id"].get<>(),
         row["sample.samplingPoint.notation"].get<>(),
@@ -28,8 +30,10 @@ void WaterQualityDataset::loadData(const string& filename) {
   }
 }
 
-void WaterQualityDataset::checkDataExists() const {
-  if (size() == 0) {
+void WaterQualityDataset::checkDataExists() const
+{
+  if (size() == 0)
+  {
     throw std::runtime_error("Dataset is empty!");
   }
 }

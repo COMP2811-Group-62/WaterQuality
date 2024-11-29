@@ -16,14 +16,20 @@ set(SOURCES
     src/navigationbar.cpp
     src/basepage.cpp
     src/dashboardpage.cpp
+    src/datapage.cpp
+    src/trendsoverview.cpp
     src/examplepage.cpp
     src/fluorinatedcompounds.cpp
     src/styles.cpp
     src/qualitysample.cpp
     src/dataset.cpp
     src/model.cpp
+<<<<<<< HEAD
     src/datapage.cpp
     src/litterpage.cpp
+=======
+    src/popspage.cpp
+>>>>>>> dev
 )
 
 set(HEADERS
@@ -31,17 +37,27 @@ set(HEADERS
     src/navigationbar.h
     src/basepage.h
     src/dashboardpage.h
+<<<<<<< HEAD
+=======
+    src/datapage.h
+    src/trendsoverview.h
+>>>>>>> dev
     src/examplepage.h
     src/fluorinatedcompounds.h
     src/styles.h
     src/qualitysample.h
     src/dataset.h
     src/model.h
+<<<<<<< HEAD
     src/datapage.h
     src/litterpage.h
 )
 
 # Add the executable with resources
+=======
+)
+
+>>>>>>> dev
 qt_add_executable(water
     ${SOURCES}
     ${HEADERS}
@@ -50,7 +66,10 @@ qt_add_executable(water
 
 target_include_directories(water PRIVATE src)
 
+<<<<<<< HEAD
 # Add Charts to target_link_libraries
+=======
+>>>>>>> dev
 target_link_libraries(water PRIVATE
     Qt6::Widgets
     Qt6::Charts

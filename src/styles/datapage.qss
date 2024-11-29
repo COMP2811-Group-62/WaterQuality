@@ -1,0 +1,8 @@
+QTableView::item:selected {
+    background-color: #2d5c88;
+    color: white;
+}
+
+QTableView::item:selected:focus {
+    background-color: #2d5c88;
+}
