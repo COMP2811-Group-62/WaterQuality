@@ -14,6 +14,7 @@
 #include "fluorinatedcompounds.h"
 #include "navigationbar.h"
 #include "trendsoverview.h"
+#include "popspage.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setupUI();
@@ -69,7 +70,11 @@ void MainWindow::setupPages() {
 
   FluorinatedCompounds *fluorinatedCompounds = new FluorinatedCompounds();
   stackedWidget->addWidget(fluorinatedCompounds);
+
+  POPsPage* popsPage = new POPsPage();
+  stackedWidget->addWidget(popsPage);
 }
+
 
 void MainWindow::switchPage(int index) {
   stackedWidget->setCurrentIndex(index);

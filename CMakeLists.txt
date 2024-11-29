@@ -24,6 +24,7 @@ set(SOURCES
     src/qualitysample.cpp
     src/dataset.cpp
     src/model.cpp
+    src/popspage.cpp
 )
 
 set(HEADERS
