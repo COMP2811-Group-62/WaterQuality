@@ -56,6 +56,7 @@ private:
     double getDangerThreshold(const QString& pollutant);
     double getCurrentLevel();
     bool eventFilter(QObject* obj, QEvent* event) override;
+    void updateTimeRangeOptions(const QString& selectedPollutant);
     
     // New data processing methods
     double calculateQualityScore(const ProcessedDataPoint& point, const QDateTime& latestDate);
