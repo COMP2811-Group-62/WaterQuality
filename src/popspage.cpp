@@ -2,6 +2,7 @@
 #include "dataset.h"
 #include "qualitysample.h"
 
+#include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QFrame>
@@ -1019,19 +1020,54 @@ bool POPsPage::eventFilter(QObject* obj, QEvent* event) {
 
 void POPsPage::handleExport() {
     QString fileName = QFileDialog::getSaveFileName(this,
-        "Export Data", "", "CSV Files (*.csv);;All Files (*)");
+        tr("Export Data"),
+        QString(),
+        tr("CSV Files (*.csv);;All Files (*)"));
         
     if (fileName.isEmpty()) {
         return;
     }
     
+    if (!fileName.endsWith(".csv", Qt::CaseInsensitive)) {
+        fileName += ".csv";
+    }
+    
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox errorBox;
+        errorBox.setWindowTitle(tr("Export Error"));
+        errorBox.setText(tr("Could not open file for writing."));
+        errorBox.setInformativeText(tr("Please check if you have write permissions for the selected location."));
+        errorBox.setIcon(QMessageBox::Warning);
+        errorBox.setStandardButtons(QMessageBox::Ok);
+        errorBox.setDefaultButton(QMessageBox::Ok);
+        errorBox.setStyleSheet(R"(
+            QMessageBox {
+                background-color: #f8f9fa;
+            }
+            QMessageBox QLabel {
+                color: #343a40;
+                min-width: 300px;
+            }
+            QPushButton {
+                background-color: #037a9b;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px 20px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #025e77;
+            }
+        )");
+        errorBox.exec();
         return;
     }
     
     QTextStream stream(&file);
-    // Write headers matching the original format
+    
+    // Write headers
     stream << "@id,sample.samplingPoint.notation,sample.samplingPoint.label,"
            << "sample.getSamplingPointDateTime,determinand.label,determinand.definition,"
            << "determinand.notation,result,determinand.unit.label,"
@@ -1039,25 +1075,121 @@ void POPsPage::handleExport() {
            << "sample.samplingPoint.easting,sample.samplingPoint.northing\n";
     
     QString selectedPollutant = pollutantSelector->currentText();
+    QString selectedTimeRange = timeRangeSelector->currentText();
     
- 
+    // Calculate date range based on selected month
+    QDateTime startDate, endDate;
+    
+    if (selectedTimeRange == "Full Year 2024") {
+        startDate = QDateTime::fromString("2024-01-01 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        endDate = QDateTime::fromString("2024-12-31 23:59:59", "yyyy-MM-dd HH:mm:ss");
+    } else {
+        // Extract month from selection (e.g., "January 2024" -> 1)
+        QMap<QString, int> monthMap = {
+            {"January 2024", 1},
+            {"February 2024", 2},
+            {"March 2024", 3},
+            {"April 2024", 4},
+            {"May 2024", 5},
+            {"June 2024", 6},
+            {"July 2024", 7},
+            {"August 2024", 8},
+            {"September 2024", 9}
+        };
+        
+        int month = monthMap[selectedTimeRange];
+        int lastDay = QDate(2024, month, 1).daysInMonth();
+        
+        startDate = QDateTime::fromString(
+            QString("2024-%1-01 00:00:00").arg(month, 2, 10, QChar('0')),
+            "yyyy-MM-dd HH:mm:ss"
+        );
+        endDate = QDateTime::fromString(
+            QString("2024-%1-%2 23:59:59").arg(month, 2, 10, QChar('0')).arg(lastDay),
+            "yyyy-MM-dd HH:mm:ss"
+        );
+    }
+
+    // Filter and write data
     for (const auto& sample : dataset->getData()) {
-        if (QString::fromStdString(sample.getDeterminandLabel()) == selectedPollutant) {
+        // Convert sample datetime to QDateTime for comparison
+        QDateTime sampleDate = QDateTime::fromString(
+            QString::fromStdString(sample.getSamplingPointDateTime()),
+            Qt::ISODate
+        );
+        
+        QString pollutantLabel = QString::fromStdString(sample.getDeterminandLabel());
+        
+        // Check if sample matches selected pollutant and time range
+        bool isPollutantMatch = false;
+        if (selectedPollutant == "PCBs") {
+            isPollutantMatch = pollutantLabel.contains("PCB", Qt::CaseInsensitive);
+        } else {
+            isPollutantMatch = (pollutantLabel == selectedPollutant);
+        }
+        
+        if (isPollutantMatch && sampleDate >= startDate && sampleDate <= endDate) {
             stream << QString::fromStdString(sample.getId()) << ","
-                << QString::fromStdString(sample.getSamplingPointNotation()) << ","
-                << QString::fromStdString(sample.getSamplingPointLabel()) << ","
-                << QString::fromStdString(sample.getSamplingPointDateTime()) << ","
-                << QString::fromStdString(sample.getDeterminandLabel()) << ","
-                << QString::fromStdString(sample.getDeterminandDefinition()) << ","
-                << QString::fromStdString(sample.getDeterminandNotation()) << ","
-                << QString::fromStdString(sample.getResult()) << ","
-                << QString::fromStdString(sample.getDeterminandUnitLabel()) << ","
-                << QString::fromStdString(sample.getSampledMaterialType()) << ","
-                << QString::fromStdString(sample.getPurposeLabel()) << ","
-                << QString::fromStdString(sample.getEasting()) << ","
-                << QString::fromStdString(sample.getNorthing()) << "\n";
+                  << QString::fromStdString(sample.getSamplingPointNotation()) << ","
+                  << QString::fromStdString(sample.getSamplingPointLabel()) << ","
+                  << QString::fromStdString(sample.getSamplingPointDateTime()) << ","
+                  << QString::fromStdString(sample.getDeterminandLabel()) << ","
+                  << QString::fromStdString(sample.getDeterminandDefinition()) << ","
+                  << QString::fromStdString(sample.getDeterminandNotation()) << ","
+                  << QString::fromStdString(sample.getResult()) << ","
+                  << QString::fromStdString(sample.getDeterminandUnitLabel()) << ","
+                  << QString::fromStdString(sample.getSampledMaterialType()) << ","
+                  << QString::fromStdString(sample.getPurposeLabel()) << ","
+                  << QString::fromStdString(sample.getEasting()) << ","
+                  << QString::fromStdString(sample.getNorthing()) << "\n";
         }
     }
     
     file.close();
+
+    // Create and configure success message box
+    QMessageBox successBox;
+    successBox.setWindowTitle(tr("Export Complete"));
+    successBox.setText(tr("Data has been successfully exported!"));
+    successBox.setInformativeText(tr("File saved as:\n%1").arg(fileName));
+    successBox.setIcon(QMessageBox::Information);
+    successBox.setStandardButtons(QMessageBox::Ok);
+    successBox.setDefaultButton(QMessageBox::Ok);
+    
+    // Style the success message box
+    successBox.setStyleSheet(R"(
+        QMessageBox {
+            background-color: #f8f9fa;
+        }
+        QMessageBox QLabel {
+            color: #343a40;
+            min-width: 300px;
+        }
+        QPushButton {
+            background-color: #037a9b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 20px;
+            font-weight: bold;
+        }
+        QPushButton:hover {
+            background-color: #025e77;
+        }
+        QMessageBox QLabel {
+            font-size: 11pt;
+        }
+        QMessageBox QPushButton {
+            min-width: 100px;
+            margin: 8px;
+        }
+    )");
+
+    // Center align the text
+    QList<QLabel*> labels = successBox.findChildren<QLabel*>();
+    for (QLabel* label : labels) {
+        label->setAlignment(Qt::AlignCenter);
+    }
+
+    successBox.exec();
 }
