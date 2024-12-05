@@ -16,6 +16,7 @@
 #include "navigationbar.h"
 #include "popspage.h"
 #include "trendsoverview.h"
+#include "compliancedashboard.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setupUI();
@@ -77,6 +78,9 @@ void MainWindow::setupPages() {
 
   LitterPage *litterPage = new LitterPage();
   stackedWidget->addWidget(litterPage);
+
+  ComplianceDashboard *complianceDashboard = new ComplianceDashboard();
+  stackedWidget->addWidget(complianceDashboard);
 }
 
 void MainWindow::switchPage(int index) {

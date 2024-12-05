@@ -30,6 +30,7 @@ void NavigationBar::setupUI() {
   navButtons.append(createNavButton("Fluorinated Compounds", 4, false));
   navButtons.append(createNavButton("POPs Page", 5, false));
   navButtons.append(createNavButton("Litter Indicators", 6, false));
+  navButtons.append(createNavButton("Compliance Dashboard", 7, false));
 
   for (auto button : navButtons) {
     layout->addWidget(button);
