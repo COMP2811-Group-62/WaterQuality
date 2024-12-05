@@ -8,5 +8,6 @@
         <file>styles/basepage.qss</file>
         <file>styles/fluorinatedcompounds.qss</file>
         <file>styles/trendsoverview.qss</file>
+        <file>styles/litter.qss</file>
     </qresource>
 </RCC>
