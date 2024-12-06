@@ -63,8 +63,8 @@ void MainWindow::setupPages() {
   DataPage *dataPage = new DataPage();
   stackedWidget->addWidget(dataPage);
 
-  TrendsOverviewPage *trendsPage = new TrendsOverviewPage();
-  stackedWidget->addWidget(trendsPage);
+  TrendsOverviewPage *pollutantsOverview = new TrendsOverviewPage();
+  stackedWidget->addWidget(pollutantsOverview);
 
   ExamplePage *examplePage = new ExamplePage();
   stackedWidget->addWidget(examplePage);

@@ -65,9 +65,9 @@ QVariant SampleModel::headerData(int section, Qt::Orientation orientation, int r
     case 1:
       return QString("Sampling Point Notation");
     case 2:
-      return QString("Sampling Point Label");
+      return QString("Location");
     case 3:
-      return QString("Sample DateTime");
+      return QString("Date & Time");
     case 4:
       return QString("Determinand Label");
     case 5:
