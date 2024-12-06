@@ -11,7 +11,7 @@
 #include "styles.h"
 
 TrendsOverviewPage::TrendsOverviewPage(QWidget* parent)
-    : BasePage("Pollutant Trends", parent) {
+    : BasePage("Pollutants Overview", parent) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/trendsoverview.qss"}));
   setupUI();
