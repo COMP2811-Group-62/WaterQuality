@@ -24,6 +24,8 @@ set(SOURCES
     src/qualitysample.cpp
     src/dataset.cpp
     src/model.cpp
+    src/popspage.cpp
+    src/litterpage.cpp
 )
 
 set(HEADERS
@@ -39,6 +41,8 @@ set(HEADERS
     src/qualitysample.h
     src/dataset.h
     src/model.h
+    src/litterpage.h
+    src/popspage.h
 )
 
 qt_add_executable(water
