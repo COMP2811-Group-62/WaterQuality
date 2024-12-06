@@ -13,6 +13,7 @@ class FluorinatedCompounds : public BasePage {
 
  private:
   void setupUI() override;
+  void configureMap(QVBoxLayout *fullPage);
 
   QChart* chart;
   QTableView* table;

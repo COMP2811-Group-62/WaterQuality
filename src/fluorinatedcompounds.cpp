@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QQmlApplicationEngine>
+#include <QQuickWidget>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTableView>
@@ -17,24 +18,31 @@ FluorinatedCompounds::FluorinatedCompounds(QWidget* parent)
 }
 
 void FluorinatedCompounds::setupUI() {
-  //define map QML engine
-  QQmlApplicationEngine engine;
-  engine.load(QUrl(QStringLiteral("qrc:/fluorinatedcompounds-mapdisplay.qml"))); 
 
+  //set up page layout
   QVBoxLayout* fullPage = new QVBoxLayout();
-  QHBoxLayout* header = new QHBoxLayout();
+  QVBoxLayout* header = new QVBoxLayout();
   model.updateFromFile("../dataset/Y-2024-M.csv");
 
   // define items in header HBox
-  QLabel* exampleLabel = new QLabel("This is an example page for FluorinatedCompounds!");
-  exampleLabel->setObjectName("h1");
-  header->addWidget(exampleLabel);
+  QLabel* titleLabel = new QLabel("Fluorinated compounds, often used in industrial applications, can pose serious health risks when they contaminate water supplies.");
+  QLabel* subLabel = new QLabel("The map below shows all Polutants with the 'PF' Prefix and the sampling point location.");
+
+  titleLabel->setObjectName("h1");
+  subLabel->setObjectName("h1");
+
+  header->addWidget(titleLabel);
+  header->addWidget(subLabel);
+
   fullPage->addLayout(header);
 
+  configureMap(fullPage);
+
+  
   // recreating the table to try to understand data accesss from model
   table = new QTableView();
   table->setModel(&model);
-  fullPage->addWidget(table);
+  //fullPage->addWidget(table);
 
   // mock data for grap - QLineSeries required from model
   QLineSeries* series = new QLineSeries();
@@ -63,4 +71,17 @@ void FluorinatedCompounds::setupUI() {
    
 
   contentArea->setLayout(fullPage);
+}
+
+void FluorinatedCompounds::configureMap(QVBoxLayout *fullPage) {
+
+  //configure QQuickWiget which can display a QML project
+  QQuickWidget *mapView = new QQuickWidget();
+  mapView->setSource(QUrl(QStringLiteral("../src/fluorinatedcompounds-mapdisplay.qml")));
+  mapView->setResizeMode(QQuickWidget::SizeRootObjectToView);
+  mapView->setFocusPolicy(Qt::StrongFocus);
+  mapView->show();
+
+  fullPage->addWidget(mapView);
+
 }
