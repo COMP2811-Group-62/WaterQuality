@@ -1,5 +1,7 @@
 #include "fluorinatedcompounds.h"
 
+#include <QApplication>
+#include <QQmlApplicationEngine>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTableView>
@@ -15,6 +17,10 @@ FluorinatedCompounds::FluorinatedCompounds(QWidget* parent)
 }
 
 void FluorinatedCompounds::setupUI() {
+  //define map QML engine
+  QQmlApplicationEngine engine;
+  engine.load(QUrl(QStringLiteral("qrc:/fluorinatedcompounds-mapdisplay.qml"))); 
+
   QVBoxLayout* fullPage = new QVBoxLayout();
   QHBoxLayout* header = new QHBoxLayout();
   model.updateFromFile("../dataset/Y-2024-M.csv");
@@ -53,6 +59,8 @@ void FluorinatedCompounds::setupUI() {
   QChartView* chartview = new QChartView(chart);
   chartview->setVisible(true);
   fullPage->addWidget(chartview);
+
+   
 
   contentArea->setLayout(fullPage);
 }
