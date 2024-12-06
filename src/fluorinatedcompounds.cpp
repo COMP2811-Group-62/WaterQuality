@@ -44,29 +44,29 @@ void FluorinatedCompounds::setupUI() {
   table->setModel(&model);
   //fullPage->addWidget(table);
 
-  // mock data for grap - QLineSeries required from model
-  QLineSeries* series = new QLineSeries();
-  series->append(1, 1);
-  series->append(2, 9);
-  series->append(3, 6);
-  series->append(4, 4);
-  series->append(5, 6);
-  series->append(6, 8);
-  series->append(7, 3);
-  series->append(8, 2);
+  // // mock data for grap - QLineSeries required from model
+  // QLineSeries* series = new QLineSeries();
+  // series->append(1, 1);
+  // series->append(2, 9);
+  // series->append(3, 6);
+  // series->append(4, 4);
+  // series->append(5, 6);
+  // series->append(6, 8);
+  // series->append(7, 3);
+  // series->append(8, 2);
 
-  // configure chart
-  chart = new QChart();
-  chart->addSeries(series);
-  chart->createDefaultAxes();
-  chart->axes(Qt::Vertical).first()->setRange(0, 10);
-  chart->axes(Qt::Horizontal).first()->setRange(0, 10);
-  chart->setVisible(true);
+  // // configure chart
+  // chart = new QChart();
+  // chart->addSeries(series);
+  // chart->createDefaultAxes();
+  // chart->axes(Qt::Vertical).first()->setRange(0, 10);
+  // chart->axes(Qt::Horizontal).first()->setRange(0, 10);
+  // chart->setVisible(true);
 
-  // configure chartview
-  QChartView* chartview = new QChartView(chart);
-  chartview->setVisible(true);
-  fullPage->addWidget(chartview);
+  // // configure chartview
+  // QChartView* chartview = new QChartView(chart);
+  // chartview->setVisible(true);
+  // fullPage->addWidget(chartview);
 
    
 
