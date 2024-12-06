@@ -1,0 +1,145 @@
+/* Control frame styling */
+QFrame#controlsFrame {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+QComboBox {
+    min-width: 180px;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+QPushButton {
+    padding: 8px 20px;
+    background-color: #037a9b;
+    color: white;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #025e77;
+}
+
+/* Data display styling */
+QFrame#dataDisplay {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background-color: white;
+    min-height: 500px;
+    padding: 20px;
+}
+
+QFrame#graphArea {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background-color: #ffffff;
+    margin: 10px;
+}
+
+QFrame#legendFrame {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+/* Message boxes - Base styles */
+QMessageBox {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+QMessageBox QPushButton {
+    background-color: #037a9b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 20px;
+    font-weight: bold;
+    min-width: 100px;
+    margin: 8px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #025e77;
+}
+
+QMessageBox QLabel {
+    font-size: 11pt;
+}
+
+/* Success message box */
+QMessageBox#successBox {
+    border-color: #28a745;
+}
+
+QMessageBox#successBox QPushButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 20px;
+    font-weight: bold;
+    min-width: 100px;
+    margin: 8px;
+}
+
+QMessageBox#successBox QPushButton:hover {
+    background-color: #218838;
+}
+
+/* Error message box */
+QMessageBox#errorBox {
+    border-color: #dc3545;
+}
+
+QMessageBox#errorBox QPushButton {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 20px;
+    font-weight: bold;
+    min-width: 100px;
+    margin: 8px;
+}
+
+QMessageBox#errorBox QPushButton:hover {
+    background-color: #c82333;
+}
+
+/* Info panel styling */
+QFrame#infoPanel {
+    border: 1px solid #037a9b;
+    border-radius: 8px;
+    margin: 5px;
+    padding: 15px;
+    background-color: #f8f9fa;
+}
+
+QFrame#safetyFrame, QFrame#healthFrame, QFrame#thresholdFrame {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: white;
+}
+
+QFrame#healthFrame:hover {
+    background-color: #f8f9fa;
+}
+
+QLabel#statusLabel {
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 6px;
+    color: white;
+    background-color: #28a745;
+}

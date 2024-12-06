@@ -59,6 +59,8 @@ class POPsPage : public BasePage {
   double getCurrentLevel();
   bool eventFilter(QObject* obj, QEvent* event) override;
   void updateTimeRangeOptions(const QString& selectedPollutant);
+  void showErrorMessage(const QString& message);
+  void showSuccessMessage(const QString& message);
 
   // New data processing methods
   double calculateQualityScore(const ProcessedDataPoint& point, const QDateTime& latestDate);

@@ -23,15 +23,12 @@
 
 #include "dataset.h"
 #include "qualitysample.h"
+#include "styles.h"
 
 POPsPage::POPsPage(QWidget* parent)
-    : BasePage("Persistent Organic Pollutants", parent), model(), chart(nullptr), currentLevelSeries(nullptr), warningThresholdSeries(nullptr), dangerThresholdSeries(nullptr), chartView(nullptr), axisY(nullptr) {
-  // Initialize chart and series before loading data
-  chart = new QChart();
-  currentLevelSeries = new QLineSeries(this);
-  warningThresholdSeries = new QLineSeries(this);
-  dangerThresholdSeries = new QLineSeries(this);
-
+    : BasePage("Persistent Organic Pollutants", parent) {
+  setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
+                                            ":/styles/popspage.qss"}));
   setupUI();
   loadData();
 
@@ -64,15 +61,6 @@ void POPsPage::setupUI() {
   // Create right panel for info
   infoPanel = new QFrame();
   infoPanel->setObjectName("infoPanel");
-  infoPanel->setStyleSheet(R"(
-        QFrame#infoPanel {
-            border: 1px solid #037a9b;
-            border-radius: 8px;
-            margin: 5px;
-            padding: 15px;
-            background-color: #f8f9fa;
-        }
-    )");
 
   // Add shadow effect to info panel
   QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect;
@@ -95,30 +83,6 @@ void POPsPage::setupUI() {
 void POPsPage::setupControls() {
   QFrame* controlsFrame = new QFrame();
   controlsFrame->setObjectName("controlsFrame");
-  controlsFrame->setStyleSheet(R"(
-        QFrame#controlsFrame { 
-            background-color: #ffffff;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        QComboBox {
-            min-width: 180px;
-            padding: 8px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-        }
-        QPushButton {
-            padding: 8px 20px;
-            background-color: #037a9b;
-            color: white;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #025e77;
-        }
-    )");
 
   controlsLayout = new QHBoxLayout(controlsFrame);
   controlsLayout->setSpacing(20);
@@ -163,15 +127,6 @@ void POPsPage::setupControls() {
 void POPsPage::setupDataDisplay() {
   dataDisplayFrame = new QFrame();
   dataDisplayFrame->setObjectName("dataDisplay");
-  dataDisplayFrame->setStyleSheet(R"(
-        QFrame#dataDisplay {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            background-color: white;
-            min-height: 500px;
-            padding: 20px;
-        }
-    )");
 
   QVBoxLayout* displayLayout = new QVBoxLayout(dataDisplayFrame);
 
@@ -221,15 +176,6 @@ void POPsPage::setupDataDisplay() {
   // Create and setup legend frame
   legendFrame = new QFrame();
   legendFrame->setObjectName("legendFrame");
-  legendFrame->setStyleSheet(R"(
-        QFrame#legendFrame {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 10px;
-        }
-    )");
 
   QHBoxLayout* legendLayout = new QHBoxLayout(legendFrame);
   legendLayout->setSpacing(20);
@@ -280,21 +226,6 @@ void POPsPage::setupInfoPanel() {
   // Safety Status Section
   QFrame* safetyFrame = new QFrame();
   safetyFrame->setObjectName("safetyFrame");
-  safetyFrame->setStyleSheet(R"(
-        QFrame#safetyFrame {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: white;
-        }
-        QLabel#statusLabel {
-            font-weight: bold;
-            padding: 10px;
-            border-radius: 6px;
-            color: white;
-            background-color: #28a745;
-        }
-    )");
 
   QVBoxLayout* safetyLayout = new QVBoxLayout(safetyFrame);
   QLabel* safetyTitle = new QLabel("Current Safety Status");
@@ -309,17 +240,6 @@ void POPsPage::setupInfoPanel() {
   // Health Risks Section with hover effect
   QFrame* healthFrame = new QFrame();
   healthFrame->setObjectName("healthFrame");
-  healthFrame->setStyleSheet(R"(
-        QFrame#healthFrame {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: white;
-        }
-        QFrame#healthFrame:hover {
-            background-color: #f8f9fa;
-        }
-    )");
 
   QVBoxLayout* healthLayout = new QVBoxLayout(healthFrame);
   QLabel* healthTitle = new QLabel("Health Risks");
@@ -333,14 +253,6 @@ void POPsPage::setupInfoPanel() {
   // Threshold Information
   QFrame* thresholdFrame = new QFrame();
   thresholdFrame->setObjectName("thresholdFrame");
-  thresholdFrame->setStyleSheet(R"(
-        QFrame#thresholdFrame {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: white;
-        }
-    )");
 
   QVBoxLayout* thresholdLayout = new QVBoxLayout(thresholdFrame);
   QLabel* thresholdTitle = new QLabel("Safety Thresholds");
@@ -381,14 +293,11 @@ void POPsPage::loadData() {
   QDateTime latestDate;
   bool firstValidDate = true;
 
-  // Print number of records for debugging
-  qDebug() << "Total records in dataset:" << model.rowCount(QModelIndex());
-
   for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
     QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
 
     // Add debug print to see what pollutants are being found
-    qDebug() << "Found pollutant:" << pollutant;
+    // qDebug() << "Found pollutant:" << pollutant;
 
     // Include all PCB-related measurements
     bool isPCB = pollutant.contains("PCB", Qt::CaseInsensitive);
@@ -424,7 +333,7 @@ void POPsPage::loadData() {
     }
 
     // Debug print for values being processed
-    qDebug() << "Processing value:" << value << "for pollutant:" << pollutant;
+    // qDebug() << "Processing value:" << value << "for pollutant:" << pollutant;
 
     ProcessedDataPoint point;
     point.dateTime = sampleDate;
@@ -435,10 +344,10 @@ void POPsPage::loadData() {
     point.qualityScore = calculateQualityScore(point, latestDate);
 
     processedData.append(point);
-    qDebug() << "Added point with value:" << point.value;
+    // qDebug() << "Added point with value:" << point.value;
   }
 
-  qDebug() << "Total processed points:" << processedData.size();
+  // qDebug() << "Total processed points:" << processedData.size();
 
   if (pollutantSelector) {
     updateDisplay(pollutantSelector->currentIndex());
@@ -972,6 +881,22 @@ bool POPsPage::eventFilter(QObject* obj, QEvent* event) {
   return BasePage::eventFilter(obj, event);
 }
 
+void POPsPage::showSuccessMessage(const QString& message) {
+  QMessageBox messageBox;
+  messageBox.setObjectName("successBox");
+  messageBox.setIcon(QMessageBox::Information);
+  messageBox.setText(message);
+  messageBox.exec();
+}
+
+void POPsPage::showErrorMessage(const QString& message) {
+  QMessageBox messageBox;
+  messageBox.setObjectName("errorBox");
+  messageBox.setIcon(QMessageBox::Critical);
+  messageBox.setText(message);
+  messageBox.exec();
+}
+
 void POPsPage::handleExport() {
   QString fileName = QFileDialog::getSaveFileName(this, "Export Data", "", "CSV Files (*.csv)");
   if (fileName.isEmpty()) {
@@ -980,28 +905,7 @@ void POPsPage::handleExport() {
 
   QFile file(fileName);
   if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-    QMessageBox errorBox;
-    errorBox.setIcon(QMessageBox::Critical);
-    errorBox.setText("Failed to create export file");
-    errorBox.setStyleSheet(R"(
-        QMessageBox {
-            background-color: white;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-        }
-        QPushButton {
-            background-color: #037a9b;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 6px 20px;
-            font-weight: bold;
-        }
-        QPushButton:hover {
-            background-color: #025e77;
-        }
-    )");
-    errorBox.exec();
+    showErrorMessage("Failed to create export file");
     return;
   }
 
@@ -1063,40 +967,5 @@ void POPsPage::handleExport() {
 
   file.close();
 
-  QMessageBox successBox;
-  successBox.setIcon(QMessageBox::Information);
-  successBox.setText(QString("Successfully exported %1 records").arg(exportCount));
-  successBox.setStyleSheet(R"(
-      QMessageBox {
-          background-color: white;
-          border: 1px solid #dee2e6;
-          border-radius: 4px;
-      }
-      QPushButton {
-          background-color: #037a9b;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          padding: 6px 20px;
-          font-weight: bold;
-      }
-      QPushButton:hover {
-          background-color: #025e77;
-      }
-      QMessageBox QLabel {
-          font-size: 11pt;
-      }
-      QMessageBox QPushButton {
-          min-width: 100px;
-          margin: 8px;
-      }
-  )");
-
-  // Center align the text
-  QList<QLabel*> labels = successBox.findChildren<QLabel*>();
-  for (QLabel* label : labels) {
-    label->setAlignment(Qt::AlignCenter);
-  }
-
-  successBox.exec();
+  showSuccessMessage(QString("Successfully exported %1 records").arg(exportCount));
 }
