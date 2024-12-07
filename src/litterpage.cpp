@@ -96,15 +96,15 @@ void LitterPage::setupCharts()
     chartsLayout = new QHBoxLayout();
 
     // 创建Frame容器
-    QFrame* barChartFrame = new QFrame();
-    QFrame* pieChartFrame = new QFrame();
-    
+    QFrame *barChartFrame = new QFrame();
+    QFrame *pieChartFrame = new QFrame();
+
     // 设置objectName以便应用qss
     barChartFrame->setObjectName("chartFrame");
     pieChartFrame->setObjectName("chartFrame");
 
-    QVBoxLayout* barLayout = new QVBoxLayout(barChartFrame);
-    QVBoxLayout* pieLayout = new QVBoxLayout(pieChartFrame);
+    QVBoxLayout *barLayout = new QVBoxLayout(barChartFrame);
+    QVBoxLayout *pieLayout = new QVBoxLayout(pieChartFrame);
 
     // 创建图表
     barChart = new QChart();
@@ -112,6 +112,8 @@ void LitterPage::setupCharts()
     locationBarChart = new QChartView(barChart);
     locationBarChart->setRenderHint(QPainter::Antialiasing);
     locationBarChart->setDragMode(QGraphicsView::NoDrag);
+
+    locationBarChart->setInteractive(true);
 
     pieChart = new QChart();
     pieChart->setTitle("Distribution by Water Type");
@@ -137,6 +139,10 @@ void LitterPage::updateCharts()
 
     QBarSeries *barSeries = new QBarSeries();
     QPieSeries *pieSeries = new QPieSeries();
+
+    connect(barSeries, &QBarSeries::hovered, 
+            this, &LitterPage::onBarHovered);
+    
 
     std::map<QString, int> locationCounts;
     std::map<QString, int> waterTypeCounts;
@@ -187,4 +193,51 @@ void LitterPage::onLocationFilterChanged(const QString &)
 void LitterPage::onWaterTypeFilterChanged(const QString &)
 {
     updateCharts();
+}
+
+void LitterPage::onBarHovered(bool status, int index, QBarSet *barset)
+{
+    // qDebug() << "Hover event triggered:" << status << index; // 添加这行
+
+    if (!status)
+    {
+        QToolTip::hideText();
+        return;
+    }
+
+    // 从存储的属性中获取类别列表
+    QStringList categories = barChart->property("categories").toStringList();
+    if (index >= 0 && index < categories.size())
+    {
+        QString location = categories.at(index);
+        double value = barset->at(index);
+
+        // 获取该位置的坐标
+        QString coordinates = getLocationCoordinates(location);
+
+        // 创建工具提示文本
+        QString tooltip = QString(
+                              "Location: %1\n"
+                              "Samples: %2\n"
+                              "Coordinates: %3")
+                              .arg(location)
+                              .arg(value)
+                              .arg(coordinates);
+
+        QToolTip::showText(QCursor::pos(), tooltip);
+    }
+}
+
+QString LitterPage::getLocationCoordinates(const QString &location) const
+{
+    for (int i = 0; i < dataset.size(); i++)
+    {
+        if (QString::fromStdString(dataset[i].getSamplingPointLabel()) == location)
+        {
+            QString easting = QString::fromStdString(dataset[i].getEasting());
+            QString northing = QString::fromStdString(dataset[i].getNorthing());
+            return QString("E: %1, N: %2").arg(easting).arg(northing);
+        }
+    }
+    return "N/A";
 }

@@ -16,12 +16,14 @@ private slots:
     void updateCharts();
     void onLocationFilterChanged(const QString &location);
     void onWaterTypeFilterChanged(const QString &type);
+    void onBarHovered(bool status, int index, QBarSet *barset);
 
 private:
     void setupUI() override;
     void setupCharts();
     void setupFilters();
     void loadData();
+    QString getLocationCoordinates(const QString &location) const;  // 辅助函数获取坐标
 
     // 数据
     WaterQualityDataset dataset;
