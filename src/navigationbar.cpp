@@ -25,7 +25,7 @@ void NavigationBar::setupUI() {
   // Add navigation buttons
   navButtons.append(createNavButton("Dashboard", 0, true));  // Default
   navButtons.append(createNavButton("Data Page", 1, false));
-  navButtons.append(createNavButton("Pollutant Trends", 2, false));
+  navButtons.append(createNavButton("Pollutants Overview", 2, false));
   navButtons.append(createNavButton("Example Page", 3, false));
   navButtons.append(createNavButton("Fluorinated Compounds", 4, false));
   navButtons.append(createNavButton("POPs Page", 5, false));
