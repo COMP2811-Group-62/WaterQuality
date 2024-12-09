@@ -18,7 +18,6 @@ set(SOURCES
     src/dashboardpage.cpp
     src/datapage.cpp
     src/trendsoverview.cpp
-    src/examplepage.cpp
     src/fluorinatedcompounds.cpp
     src/styles.cpp
     src/qualitysample.cpp
@@ -35,7 +34,6 @@ set(HEADERS
     src/dashboardpage.h
     src/datapage.h
     src/trendsoverview.h
-    src/examplepage.h
     src/fluorinatedcompounds.h
     src/styles.h
     src/qualitysample.h
