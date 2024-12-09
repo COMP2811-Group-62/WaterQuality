@@ -1,11 +1,26 @@
 #h1 {
     color: #000;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#h2 {
+    color: #000;
     font-size: 12px;
     font-weight: bold;
 }
 
-#cardTitle {
-    color: #000;
-    font-size: 15px;
-    font-weight: bold;
+/* Using the same  QFrame and ComboBox Styling from POPs page to ensure consistancy in UI */
+QFrame#headerFrame {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+QComboBox {
+    min-width: 180px;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
 }

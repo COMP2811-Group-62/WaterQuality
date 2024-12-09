@@ -20,60 +20,70 @@ FluorinatedCompounds::FluorinatedCompounds(QWidget* parent)
 void FluorinatedCompounds::setupUI() {
 
   //set up page layout
-  QVBoxLayout* fullPage = new QVBoxLayout();
-  QVBoxLayout* header = new QVBoxLayout();
+  page = new QVBoxLayout();
+  header = new QVBoxLayout();
   model.updateFromFile("../dataset/Y-2024-M.csv");
+  
+  configureHeader(header);
+  page->addLayout(header);
+  configureMap(page);
 
+  contentArea->setLayout(page);
+}
+
+void FluorinatedCompounds::configureHeader(QVBoxLayout *header) {
+
+  QFrame* headerFrame = new QFrame();
+  headerFrame->setObjectName("headerFrame");
+  headerInner = new QVBoxLayout(headerFrame);
+  mapControls = new QHBoxLayout();
+  headerLables = new QVBoxLayout();
+  mapControls->setSpacing(0);
+  headerInner->setSpacing(20);
+  mapControls->setSpacing(20);
+  
   // define items in header HBox
   QLabel* titleLabel = new QLabel("Fluorinated compounds, often used in industrial applications, can pose serious health risks when they contaminate water supplies.");
   QLabel* subLabel = new QLabel("The map below shows all Polutants with the 'PF' Prefix and the sampling point location.");
 
-  titleLabel->setObjectName("h1");
+  titleLabel->setObjectName("h2");
   subLabel->setObjectName("h1");
 
-  header->addWidget(titleLabel);
-  header->addWidget(subLabel);
+  locationSelector = new QComboBox();
+  locationSelector->addItems({"Some", "Locations", "Will be", "Here"});
 
-  fullPage->addLayout(header);
+  pollutantSelector = new QComboBox();
+  pollutantSelector->addItems({"Some", "PFAS", "Or any compound", "Starting with PF", "Will be", "Here"});
 
-  configureMap(fullPage);
+  timeRangeSelector = new QComboBox();
+  timeRangeSelector->addItems({"Jan", "Feb", "March", "Or dynamic based off selections"});
 
+  QLabel* locationLabel = new QLabel("Location:");
+  locationLabel->setObjectName("h2");
+  QLabel* pollutantLabel = new QLabel("Pollutant:");
+  pollutantLabel->setObjectName("h2");
+  QLabel* timeRangeLabel = new QLabel("Time Range:");
+  timeRangeLabel->setObjectName("h2");
+
+  mapControls->addWidget(locationLabel);
+  mapControls->addWidget(locationSelector);
+  mapControls->addWidget(pollutantLabel);
+  mapControls->addWidget(pollutantSelector);
+  mapControls->addWidget(timeRangeLabel);
+  mapControls->addWidget(timeRangeSelector);
+  mapControls->addStretch();
   
-  // recreating the table to try to understand data accesss from model
-  table = new QTableView();
-  table->setModel(&model);
-  //fullPage->addWidget(table);
+  headerLables->addWidget(subLabel);
+  headerLables->addWidget(titleLabel);
 
-  // // mock data for grap - QLineSeries required from model
-  // QLineSeries* series = new QLineSeries();
-  // series->append(1, 1);
-  // series->append(2, 9);
-  // series->append(3, 6);
-  // series->append(4, 4);
-  // series->append(5, 6);
-  // series->append(6, 8);
-  // series->append(7, 3);
-  // series->append(8, 2);
+  headerInner->addLayout(headerLables);
+  headerInner->addLayout(mapControls);
 
-  // // configure chart
-  // chart = new QChart();
-  // chart->addSeries(series);
-  // chart->createDefaultAxes();
-  // chart->axes(Qt::Vertical).first()->setRange(0, 10);
-  // chart->axes(Qt::Horizontal).first()->setRange(0, 10);
-  // chart->setVisible(true);
+  header->addWidget(headerFrame);
 
-  // // configure chartview
-  // QChartView* chartview = new QChartView(chart);
-  // chartview->setVisible(true);
-  // fullPage->addWidget(chartview);
-
-   
-
-  contentArea->setLayout(fullPage);
 }
 
-void FluorinatedCompounds::configureMap(QVBoxLayout *fullPage) {
+void FluorinatedCompounds::configureMap(QVBoxLayout *page) {
 
   //configure QQuickWiget which can display a QML project
   QQuickWidget *mapView = new QQuickWidget();
@@ -82,6 +92,7 @@ void FluorinatedCompounds::configureMap(QVBoxLayout *fullPage) {
   mapView->setFocusPolicy(Qt::StrongFocus);
   mapView->show();
 
-  fullPage->addWidget(mapView);
+  page->addWidget(mapView);
 
 }
+
