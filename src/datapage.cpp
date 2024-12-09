@@ -21,6 +21,10 @@ void DataPage::setupUI() {
   table->setModel(&model);
   table->resizeColumnsToContents();
 
+  // hide columns
+  table->setColumnHidden(0, true);  // ID
+  table->setColumnHidden(1, true);  // Sampling Point Notation
+
   QFont tableFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
   table->setFont(tableFont);
 
