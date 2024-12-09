@@ -26,6 +26,8 @@ class FluorinatedCompounds : public BasePage {
   QVBoxLayout* columnRight;
 
   QVBoxLayout* headerInner;
+  QVBoxLayout* sidbarInnerHeader;
+  QVBoxLayout* sidbarInnerBody;
   QHBoxLayout* mapControls;
   QVBoxLayout* headerLables;
 

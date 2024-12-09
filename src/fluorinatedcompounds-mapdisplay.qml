@@ -6,6 +6,9 @@ import QtPositioning 6
 Rectangle {
     width: 800
     height: 600
+    border.color: "#1a1a1a"
+    border.width: 2
+    radius: 8.0
 
     Map {
         id: map

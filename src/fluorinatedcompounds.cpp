@@ -27,9 +27,6 @@ void FluorinatedCompounds::setupUI() {
   columnRight = new QVBoxLayout();
   model.updateFromFile("../dataset/Y-2024-M.csv");
 
-
-  columnRight->setObjectName("rCol");
-
   configureHeader(header);
   configureMap(columnLeft);
   configureSidebar(columnRight);
@@ -49,15 +46,15 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout *header) {
   headerInner = new QVBoxLayout(headerFrame);
   mapControls = new QHBoxLayout();
   headerLables = new QVBoxLayout();
-  mapControls->setSpacing(0);
-  headerInner->setSpacing(20);
+
   mapControls->setSpacing(20);
   
-  // define items in header HBox
-  QLabel* titleLabel = new QLabel("The map below shows all Polutants with the 'PF' Prefix and the sampling point location.");
 
+  QLabel* titleLabel = new QLabel("The map below shows all Polutants with the 'PF' Prefix and the sampling point location.");
   titleLabel->setObjectName("h1");
 
+
+  //define combo boxes
   locationSelector = new QComboBox();
   locationSelector->addItems({"Some", "Locations", "Will be", "Here"});
 
@@ -97,8 +94,6 @@ void FluorinatedCompounds::configureMap(QVBoxLayout *column) {
   QQuickWidget *mapView = new QQuickWidget();
   mapView->setSource(QUrl(QStringLiteral("../src/fluorinatedcompounds-mapdisplay.qml")));
   mapView->setResizeMode(QQuickWidget::SizeRootObjectToView);
-  mapView->setFocusPolicy(Qt::StrongFocus);
-  mapView->setObjectName("lCol");
   mapView->show();
 
   column->addWidget(mapView);
@@ -107,11 +102,31 @@ void FluorinatedCompounds::configureMap(QVBoxLayout *column) {
 
 void FluorinatedCompounds::configureSidebar(QVBoxLayout *column) {
 
-  //test
+  QFrame* sidebarFrameHeader = new QFrame();
+  sidebarFrameHeader->setObjectName("sidebarFrameHeader");
+  sidebarFrameHeader->setFixedHeight(100);
+  sidbarInnerHeader = new QVBoxLayout(sidebarFrameHeader);
+
+  QFrame* sidebarFrameBody = new QFrame();
+  sidebarFrameBody->setObjectName("sidebarFrameBody");
+  sidbarInnerBody = new QVBoxLayout(sidebarFrameBody);
+  
+
   QLabel* titleLabel = new QLabel("Fluorinated compounds, often used in industrial applications, can pose serious health risks when they contaminate water supplies.");
   titleLabel->setWordWrap(true);
-  titleLabel->resize(200,200);
-  column->addWidget(titleLabel);
+  titleLabel->setObjectName("h1");
 
+  sidbarInnerHeader->addWidget(titleLabel);
+
+
+  QLabel* bodyTitleLabel = new QLabel("Compliance Infomation:");
+  bodyTitleLabel->setWordWrap(true);
+  bodyTitleLabel->setObjectName("h1dark");
+
+  sidbarInnerBody->addWidget(bodyTitleLabel);
+  sidbarInnerBody->addStretch(1);
+
+  column->addWidget(sidebarFrameHeader);
+  column->addWidget(sidebarFrameBody);
 }
 

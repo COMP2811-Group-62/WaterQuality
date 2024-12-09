@@ -3,6 +3,11 @@
     font-size: 14px;
     font-weight: bold;
 }
+#h1dark {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+}
 
 #h2 {
     color: white;
@@ -27,10 +32,26 @@ QFrame#headerFrame {
     border-radius: 8px;
     padding: 20px
 }
+QFrame#sidebarFrameHeader {
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    padding: 5px
+}
+QFrame#sidebarFrameBody{
+    border: 2px solid #1a1a1a;
+    border-radius: 8px;
+    padding: 5px
+}
 
 QComboBox {
     min-width: 180px;
     padding: 8px;
     border: 1px solid #ced4da;
     border-radius: 4px;
+}
+
+QQuickWidget {
+    border: 2px solid #1a1a1a;
+    border-radius: 8px;
+    padding: 20px
 }
