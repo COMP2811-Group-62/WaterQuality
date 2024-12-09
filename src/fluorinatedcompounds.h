@@ -14,12 +14,16 @@ class FluorinatedCompounds : public BasePage {
  private:
   void setupUI() override;
   void configureHeader(QVBoxLayout *header);
-  void configureMap(QVBoxLayout *page);
+  void configureMap(QVBoxLayout *column);
+  void configureSidebar(QVBoxLayout *column);
 
   SampleModel model;
 
   QVBoxLayout* header;
+  QHBoxLayout* body;
   QVBoxLayout* page;
+  QVBoxLayout* columnLeft;
+  QVBoxLayout* columnRight;
 
   QVBoxLayout* headerInner;
   QHBoxLayout* mapControls;
