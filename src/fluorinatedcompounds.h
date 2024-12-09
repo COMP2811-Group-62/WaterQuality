@@ -13,9 +13,26 @@ class FluorinatedCompounds : public BasePage {
 
  private:
   void setupUI() override;
+  void configureHeader(QVBoxLayout *header);
+  void configureMap(QVBoxLayout *column);
+  void configureSidebar(QVBoxLayout *column);
 
-  QChart* chart;
-  QTableView* table;
   SampleModel model;
-  QHBoxLayout* pageLayout;
+
+  QVBoxLayout* header;
+  QHBoxLayout* body;
+  QVBoxLayout* page;
+  QVBoxLayout* columnLeft;
+  QVBoxLayout* columnRight;
+
+  QVBoxLayout* headerInner;
+  QVBoxLayout* sidbarInnerHeader;
+  QVBoxLayout* sidbarInnerBody;
+  QHBoxLayout* mapControls;
+  QVBoxLayout* headerLables;
+
+  QComboBox* locationSelector;
+  QComboBox* pollutantSelector;
+  QComboBox* timeRangeSelector;
+
 };
