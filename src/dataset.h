@@ -11,8 +11,8 @@ class WaterQualityDataset {
   void loadData(const std::string&);
   int size() const { return data.size(); }
   QualitySample operator[](int index) const { return data.at(index); }
+  void checkDataExists() const;
 
  private:
   std::vector<QualitySample> data;
-  void checkDataExists() const;
 };

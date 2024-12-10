@@ -8,5 +8,8 @@
         <file>styles/basepage.qss</file>
         <file>styles/fluorinatedcompounds.qss</file>
         <file>styles/trendsoverview.qss</file>
+        <file>styles/litter.qss</file>
+        <file>styles/popspage.qss</file>
+        <file>fluorinatedcompounds-mapdisplay.qml</file>
     </qresource>
 </RCC>
