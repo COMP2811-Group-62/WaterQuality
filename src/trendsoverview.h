@@ -31,13 +31,13 @@ class TrendsOverviewPage : public BasePage {
   // UI Setup Methods
   void setupUI() override;
   void setupControlsSection(QVBoxLayout* parentLayout);
-  void setupSearchControls(QHBoxLayout* layout);
-  void setupStatsSection(QVBoxLayout* parentLayout);
+  void setupSearchControls(QVBoxLayout* layout);
+  void setupStatsSection(QVBoxLayout* leftLayout, QVBoxLayout* rightLayout);
   void setupChartSection(QVBoxLayout* parentLayout);
   void setupThresholdIndicators(QHBoxLayout* layout);
 
   // UI Helper Methods
-  void addInfoCard(QHBoxLayout* layout, const QString& title, const QString& value);
+  void addInfoCard(QVBoxLayout* layout, const QString& title, const QString& value);
   QFrame* createThresholdIndicator(const QString& label, const QString& range, const QString& objectName);
 
   // Chart Methods
@@ -76,7 +76,4 @@ class TrendsOverviewPage : public BasePage {
   static constexpr double SAFE_THRESHOLD = 5.0;
   static constexpr double WARNING_THRESHOLD = 7.0;
   static constexpr double AXIS_PADDING_FACTOR = 0.1;
-  static const int MIN_CHART_HEIGHT = 400;
-  static const int MAX_CONTROL_WIDTH = 300;
-  static const int MAX_VISIBLE_ITEMS = 10;
 };

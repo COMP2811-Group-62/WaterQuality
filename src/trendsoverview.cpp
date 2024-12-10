@@ -26,13 +26,51 @@ void TrendsOverviewPage::setupUI() {
   contentFrame = new QFrame();
   contentFrame->setObjectName("contentFrame");
   QVBoxLayout* contentLayout = new QVBoxLayout(contentFrame);
-  contentLayout->setSpacing(20);
-  setupControlsSection(contentLayout);
-  setupStatsSection(contentLayout);
+
+  // Create horizontal layout for controls and stats
+  QHBoxLayout* topSectionLayout = new QHBoxLayout();
+
+  // Left side - Controls
+  QFrame* controlsFrame = new QFrame();
+  controlsFrame->setObjectName("controlsFrame");
+  QVBoxLayout* controlsLayout = new QVBoxLayout(controlsFrame);
+
+  QVBoxLayout* searchLayout = new QVBoxLayout();
+  setupSearchControls(searchLayout);
+  controlsLayout->addLayout(searchLayout);
+
+  QHBoxLayout* thresholdLayout = new QHBoxLayout();
+  setupThresholdIndicators(thresholdLayout);
+  // controlsLayout->addStretch();
+  controlsLayout->addLayout(thresholdLayout);
+
+  topSectionLayout->addWidget(controlsFrame);
+
+  // Right side - Info Cards
+  QFrame* statsFrame = new QFrame();
+  QHBoxLayout* horizontalStatsContainer = new QHBoxLayout(statsFrame);
+  QVBoxLayout* leftStatsLayout = new QVBoxLayout();
+  QVBoxLayout* rightStatsLayout = new QVBoxLayout();
+  setupStatsSection(leftStatsLayout, rightStatsLayout);
+  horizontalStatsContainer->addLayout(leftStatsLayout);
+  horizontalStatsContainer->addLayout(rightStatsLayout);
+  topSectionLayout->addWidget(statsFrame);
+
+  // Add the top section to the main layout
+  contentLayout->addLayout(topSectionLayout);
+
+  // Add chart section
   setupChartSection(contentLayout);
 
   pageLayout->addWidget(contentFrame);
   contentArea->setLayout(pageLayout);
+}
+
+void TrendsOverviewPage::setupStatsSection(QVBoxLayout* leftLayout, QVBoxLayout* rightLayout) {
+  addInfoCard(leftLayout, "Average", "0.0 µg/L");
+  addInfoCard(leftLayout, "Last Reading", "0.0 µg/L");
+  addInfoCard(rightLayout, "Minimum", "0.0 µg/L");
+  addInfoCard(rightLayout, "Maximum", "0.0 µg/L");
 }
 
 void TrendsOverviewPage::setupControlsSection(QVBoxLayout* parentLayout) {
@@ -40,7 +78,7 @@ void TrendsOverviewPage::setupControlsSection(QVBoxLayout* parentLayout) {
   controlsFrame->setObjectName("controlsFrame");
   QVBoxLayout* controlsLayout = new QVBoxLayout(controlsFrame);
 
-  QHBoxLayout* searchLayout = new QHBoxLayout();
+  QVBoxLayout* searchLayout = new QVBoxLayout();
   setupSearchControls(searchLayout);
   controlsLayout->addLayout(searchLayout);
 
@@ -51,37 +89,23 @@ void TrendsOverviewPage::setupControlsSection(QVBoxLayout* parentLayout) {
   parentLayout->addWidget(controlsFrame);
 }
 
-void TrendsOverviewPage::setupSearchControls(QHBoxLayout* layout) {
+void TrendsOverviewPage::setupSearchControls(QVBoxLayout* layout) {
   QLabel* pollutantLabel = new QLabel("Search Pollutant:");
   pollutantSearch = new QLineEdit();
   pollutantSearch->setPlaceholderText("Type to search pollutants...");
-  pollutantSearch->setMaximumWidth(MAX_CONTROL_WIDTH);
 
   QLabel* locationLabel = new QLabel("Select Location:");
   locationSelector = new QComboBox();
+  locationSelector->setObjectName("locationDropdown");
   locationSelector->setEnabled(false);
-  locationSelector->setMaximumWidth(MAX_CONTROL_WIDTH);
-  locationSelector->setMaxVisibleItems(MAX_VISIBLE_ITEMS);
 
   layout->addWidget(pollutantLabel);
   layout->addWidget(pollutantSearch);
   layout->addWidget(locationLabel);
   layout->addWidget(locationSelector);
-  layout->addStretch();
 
   connect(locationSelector, &QComboBox::currentTextChanged,
           this, &TrendsOverviewPage::onLocationChanged);
-}
-
-void TrendsOverviewPage::setupStatsSection(QVBoxLayout* parentLayout) {
-  QHBoxLayout* statsLayout = new QHBoxLayout();
-
-  addInfoCard(statsLayout, "Average", "0.0 µg/L");
-  addInfoCard(statsLayout, "Maximum", "0.0 µg/L");
-  addInfoCard(statsLayout, "Minimum", "0.0 µg/L");
-  addInfoCard(statsLayout, "Last Reading", "0.0 µg/L");
-
-  parentLayout->addLayout(statsLayout);
 }
 
 void TrendsOverviewPage::setupChartSection(QVBoxLayout* parentLayout) {
@@ -95,7 +119,7 @@ void TrendsOverviewPage::setupChartSection(QVBoxLayout* parentLayout) {
 
   chartView = new QChartView(chart);
   chartView->setRenderHint(QPainter::Antialiasing);
-  chartView->setMinimumHeight(MIN_CHART_HEIGHT);
+  chartView->setMinimumHeight(500);
 
   chartLayout->addWidget(chartView);
   parentLayout->addWidget(chartFrame);
@@ -103,7 +127,7 @@ void TrendsOverviewPage::setupChartSection(QVBoxLayout* parentLayout) {
   setupChart();
 }
 
-void TrendsOverviewPage::addInfoCard(QHBoxLayout* layout, const QString& title,
+void TrendsOverviewPage::addInfoCard(QVBoxLayout* layout, const QString& title,
                                      const QString& value) {
   QFrame* card = new QFrame();
   card->setProperty("class", "infoCard");
@@ -353,6 +377,23 @@ void TrendsOverviewPage::populatePollutants() {
   pollutantCompleter = new QCompleter(pollutants, this);
   pollutantCompleter->setCaseSensitivity(Qt::CaseInsensitive);
   pollutantCompleter->setFilterMode(Qt::MatchContains);
+  pollutantCompleter->setMaxVisibleItems(10);
+
+  // Setup popup for completer to style it
+  QAbstractItemView* popup = pollutantCompleter->popup();
+  popup->setObjectName("searchPopup");
+  // These styles cannot be externally loaded
+  popup->setStyleSheet(R"(
+        QAbstractItemView#searchPopup {
+            border-radius: 4px;
+            selection-background-color: rgba(64, 186, 213, 0.15);
+            selection-color: white;
+        }
+        QAbstractItemView#searchPopup::item {
+            padding: 4px 8px;
+        }
+    )");
+
   pollutantSearch->setCompleter(pollutantCompleter);
 
   connect(pollutantCompleter,

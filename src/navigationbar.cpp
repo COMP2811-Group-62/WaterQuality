@@ -39,9 +39,7 @@ void NavigationBar::setupUI() {
 
   // Add language selector
   languageSelector = new QComboBox(this);
-  languageSelector->addItems({"English", "Français", "Español"});
-  connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged),
-          this, &NavigationBar::languageChanged);
+  languageSelector->addItems({"English", "Français", "Español"}); connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &NavigationBar::languageChanged);
   layout->addWidget(languageSelector);
 }
 
