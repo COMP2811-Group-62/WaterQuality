@@ -10,6 +10,13 @@ QFrame#controlsFrame {
     border: 1px solid #dee2e6;
 }
 
+/* Chart styling */
+QFrame#chartFrame {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
 /* Info card styling */
 QFrame.infoCard {
     background-color: white;
