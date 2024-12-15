@@ -9,5 +9,6 @@
         <file>styles/fluorinatedcompounds.qss</file>
         <file>styles/trendsoverview.qss</file>
         <file>styles/popspage.qss</file>
+        <file>styles/compliancedashboard.qss</file>
     </qresource>
 </RCC>
