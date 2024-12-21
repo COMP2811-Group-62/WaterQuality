@@ -1,9 +1,12 @@
 #pragma once
 
 #include <QComboBox>
+#include <QLineEdit>
+#include <QCompleter>
 #include <QtCharts>
 #include "basepage.h"
 #include "dataset.h"
+#include "model.h"
 
 class LitterPage : public BasePage
 {
@@ -14,8 +17,9 @@ public:
 
 private slots:
     void updateCharts();
-    void onLocationFilterChanged(const QString &location);
     void onWaterTypeFilterChanged(const QString &type);
+    void onLocationSelected(const QString &location);
+    void onLocationSearchChanged(const QString &text);
     void onBarHovered(bool status, int index, QBarSet *barset);
 
 private:
@@ -23,24 +27,31 @@ private:
     void setupCharts();
     void setupFilters();
     void loadData();
-    QString getLocationCoordinates(const QString &location) const;  // 辅助函数获取坐标
+    void updateLocationCompleter();
+    void setupInfoPanel();
 
-    // 数据
-    WaterQualityDataset dataset;
+    QString getLocationCoordinates(const QString &location) const;
 
-    // 控制区域组件
+    SampleModel model;
+    QStringList allLocations;
+
     QFrame *controlsFrame;
     QHBoxLayout *controlsLayout;
-    QComboBox *locationFilter;
     QComboBox *waterTypeFilter;
+    QLineEdit *locationSearch;
+    QCompleter *locationCompleter;
 
-    // 图表组件
     QChartView *locationBarChart;
-    QChartView *waterTypePieChart;
     QChart *barChart;
-    QChart *pieChart;
 
-    // 布局
     QVBoxLayout *mainLayout;
+    QFrame *infoPanel;
     QHBoxLayout *chartsLayout;
+
+    std::map<QString, std::pair<double, double>> locationLevels;
+
+    QLineSeries *warningThresholdLine;     // 警告阈值线
+    QLineSeries *dangerThresholdLine;      // 危险阈值线
+    const double WARNING_THRESHOLD = 15.0; // 警告阈值
+    const double DANGER_THRESHOLD = 25.0;  // 危险阈值
 };
