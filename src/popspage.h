@@ -102,6 +102,16 @@ class POPsPage : public BasePage {
   QLabel* thresholdLabel;
   QLabel* trendLabel;
 
+  QComboBox* locationSelector;
+  QSet<QString> availableLocations;
+
+  void setupLocationSelector();
+  void updateLocationSelector(const QString& selectedPollutant);
+  void filterDataByLocation(const QString& location);
+  void loadAvailableLocations();
+
+  
+
   // Constants for known POPs
   const QSet<QString> knownPOPs{
       "Endrin", "DDT", "PCBs", "Dioxins", "Dichlorvos",
