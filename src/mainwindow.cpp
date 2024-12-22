@@ -10,7 +10,6 @@
 
 #include "dashboardpage.h"
 #include "datapage.h"
-#include "examplepage.h"
 #include "fluorinatedcompounds.h"
 #include "litterpage.h"
 #include "navigationbar.h"
@@ -66,9 +65,6 @@ void MainWindow::setupPages() {
 
   TrendsOverviewPage *pollutantsOverview = new TrendsOverviewPage();
   stackedWidget->addWidget(pollutantsOverview);
-
-  ExamplePage *examplePage = new ExamplePage();
-  stackedWidget->addWidget(examplePage);
 
   FluorinatedCompounds *fluorinatedCompounds = new FluorinatedCompounds();
   stackedWidget->addWidget(fluorinatedCompounds);

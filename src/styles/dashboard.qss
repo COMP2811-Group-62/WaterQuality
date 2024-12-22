@@ -1,32 +1,35 @@
 #dashboardCard {
-    background-color: #102b3f;
-    border: 1px solid #1e4260;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
 }
 
 #cardHeader {
-    background-color: #0d2434;
-    border-bottom: 1px solid #1e4260;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
     border-radius: 8px 8px 0 0;
+    padding: 8px;
 }
 
 #cardTitle {
-    color: #ffffff;
-    font-size: 15px;
+    color: #333333;
+    font-size: 16px;
     font-weight: bold;
 }
 
 #cardSubtitle {
-    color: #88a0b3;
-    font-size: 13px;
+    color: #666666;
+    font-size: 14px;
 }
 
 #cardContent {
-    padding: 0;
+    padding: 8px;
 }
 
 #cardPlaceholder {
-    color: #88a0b3;
-    font-size: 13px;
+    color: #999999;
+    font-size: 14px;
     font-style: italic;
 }

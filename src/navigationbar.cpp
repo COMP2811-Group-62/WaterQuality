@@ -26,11 +26,10 @@ void NavigationBar::setupUI() {
   navButtons.append(createNavButton("Dashboard", 0, true));  // Default
   navButtons.append(createNavButton("Data Page", 1, false));
   navButtons.append(createNavButton("Pollutants Overview", 2, false));
-  navButtons.append(createNavButton("Example Page", 3, false));
-  navButtons.append(createNavButton("Fluorinated Compounds", 4, false));
-  navButtons.append(createNavButton("POPs Page", 5, false));
-  navButtons.append(createNavButton("Litter Indicators", 6, false));
-  navButtons.append(createNavButton("Compliance Dashboard", 7, false));
+  navButtons.append(createNavButton("Fluorinated Compounds", 3, false));
+  navButtons.append(createNavButton("POPs Page", 4, false));
+  navButtons.append(createNavButton("Litter Indicators", 5, false));
+  navButtons.append(createNavButton("Compliance Dashboard", 6, false));
 
   for (auto button : navButtons) {
     layout->addWidget(button);
@@ -40,9 +39,7 @@ void NavigationBar::setupUI() {
 
   // Add language selector
   languageSelector = new QComboBox(this);
-  languageSelector->addItems({"English", "Français", "Español"});
-  connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged),
-          this, &NavigationBar::languageChanged);
+  languageSelector->addItems({"English", "Français", "Español"}); connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &NavigationBar::languageChanged);
   layout->addWidget(languageSelector);
 }
 
