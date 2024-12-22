@@ -8,6 +8,7 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
+#include "compliancedashboard.h"
 #include "dashboardpage.h"
 #include "datapage.h"
 #include "fluorinatedcompounds.h"
@@ -15,7 +16,6 @@
 #include "navigationbar.h"
 #include "popspage.h"
 #include "trendsoverview.h"
-#include "compliancedashboard.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setupUI();

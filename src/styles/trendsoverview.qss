@@ -1,4 +1,4 @@
-/* Main layout styling */
+Main layout styling
 QFrame#contentFrame {
     border-radius: 6px;
 }
@@ -39,11 +39,6 @@ QLabel.infoValue {
 QLabel {
     font-size: 14px;
     font-weight: bold;
-}
-
-/* Chart frame */
-QFrame#chartFrame {
-    background-color: white;
 }
 
 /* Tooltips */
@@ -101,4 +96,10 @@ QComboBox#locationDropdown {
 QComboBox#locationDropdown::drop-down {
     border: none;
     color: white;
+}
+
+QComboBox::down-arrow {
+    color: white;
+    width: 8px;
+    height: 8px;
 }

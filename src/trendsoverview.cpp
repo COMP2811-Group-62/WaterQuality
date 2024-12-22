@@ -98,6 +98,7 @@ void TrendsOverviewPage::setupSearchControls(QVBoxLayout* layout) {
   QLabel* locationLabel = new QLabel("Select Location:");
   locationSelector = new QComboBox();
   locationSelector->setObjectName("locationDropdown");
+  locationSelector->setStyleSheet("");  // Clear any existing styles
   locationSelector->setEnabled(false);
 
   layout->addWidget(pollutantLabel);
@@ -438,7 +439,6 @@ void TrendsOverviewPage::populatePollutants() {
   pollutantCompleter = new QCompleter(pollutants, this);
   pollutantCompleter->setCaseSensitivity(Qt::CaseInsensitive);
   pollutantCompleter->setFilterMode(Qt::MatchContains);
-  pollutantCompleter->setMaxVisibleItems(10);
 
   // Setup popup for completer to style it
   QAbstractItemView* popup = pollutantCompleter->popup();

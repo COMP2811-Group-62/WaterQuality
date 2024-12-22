@@ -1,61 +1,33 @@
-/* 控制框架样式 */
 QFrame#controlsFrame {
-    background-color: #ffffff;
+    background-color: white;
+    border-radius: 6px;
     border: 1px solid #dee2e6;
-    border-radius: 12px;  /* 增加圆角 */
-    padding: 15px;
-    margin: 5px 0;  /* 添加上下外边距 */
 }
 
-/* 标签样式 - 调整间距 */
-#filterLabel {
-    color: #000;
+QLabel {
     font-size: 14px;
     font-weight: bold;
-    margin-right: 8px;  /* 增加右侧间距 */
 }
 
-/* 下拉框基本样式 */
-QComboBox {
-    min-width: 180px;
-    padding: 8px;
-    background-color: #1a1a1a;
-    color: white;
-    border: none;
+QLineEdit { 
+    padding: 8px 12px;
     border-radius: 6px;
 }
 
-
-
-/* 下拉框展开后的样式 - 增加圆角 */
-QComboBox QAbstractItemView {
-    background-color: #2d2d2d;
-    border: none;
-    border-radius: 6px;  /* 增加圆角 */
-    padding: 5px;
+QComboBox#pollutantDropdown {
+    border-radius: 6px;
     color: white;
-    selection-background-color: #0078d4;
-    selection-color: white;
-    outline: none;
+    padding: 8px 12px;
 }
 
-
-
-/* 图表样式 */
-QChart {
-    background-color: white;
+QComboBox#pollutantDropdown::drop-down {
+    border: none;
+    color: white;
 }
 
-/* 图表框架样式 */
+/* Chart styling */
 QFrame#chartFrame {
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
     background-color: white;
-    padding: 20px;
-}
-
-/* 图表标题样式 */
-QLabel#chartTitle {
-    font-size: 16px;
-    font-weight: bold;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
 }
