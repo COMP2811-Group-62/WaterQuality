@@ -1,13 +1,17 @@
 QWidget#headerContainer {
-  background-color: #1a1a1a;
+    background-color: #1a1a1a;
+    padding: 16px;
 }
 
 QWidget#contentArea {
-  border: 1px solid red;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 16px;
 }
 
 QWidget#pageTitle {
-  color: white;
-  font-size: 24px;  
-  font-weight: bold;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
 }
