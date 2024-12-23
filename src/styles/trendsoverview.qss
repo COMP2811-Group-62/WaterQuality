@@ -77,29 +77,8 @@ QLabel.thresholdLabel {
     font-weight: normal;
 }
 
-QLineEdit { 
+QLineEdit {
+    border: 1px solid #dee2e6;
     padding: 8px 12px;
     border-radius: 6px;
-}
-
-QComboBox#locationDropdown {
-    border-radius: 6px;
-    color: white;
-    padding: 8px 12px;
-}
-
-/* QComboBox#locationDropdown:hover {
-    background-color: rgba(64, 186, 213, 0.1);
-    border: 1px solid rgba(64, 186, 213, 0.3);
-} */
-
-QComboBox#locationDropdown::drop-down {
-    border: none;
-    color: white;
-}
-
-QComboBox::down-arrow {
-    color: white;
-    width: 8px;
-    height: 8px;
 }

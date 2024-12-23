@@ -447,8 +447,6 @@ void TrendsOverviewPage::populatePollutants() {
   popup->setStyleSheet(R"(
         QAbstractItemView#searchPopup {
             border-radius: 4px;
-            selection-background-color: rgba(64, 186, 213, 0.15);
-            selection-color: white;
         }
         QAbstractItemView#searchPopup::item {
             padding: 4px 8px;
