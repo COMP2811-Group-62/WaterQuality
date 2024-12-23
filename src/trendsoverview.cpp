@@ -19,8 +19,7 @@ TrendsOverviewPage::TrendsOverviewPage(QWidget* parent)
 }
 
 void TrendsOverviewPage::setupUI() {
-  model.updateFromFile("../dataset/Y-2024-M.csv");
-  buildLocationCache();  // Build the cache after loading the data
+  buildLocationCache();
 
   pageLayout = new QVBoxLayout();
 
@@ -65,6 +64,14 @@ void TrendsOverviewPage::setupUI() {
 
   pageLayout->addWidget(contentFrame);
   contentArea->setLayout(pageLayout);
+}
+
+void TrendsOverviewPage::loadDataset(const QString& filename) {
+  model.updateFromFile(filename);
+  buildLocationCache();  // Rebuild location cache
+  populatePollutants();  // Repopulate pollutant list
+  updateChart();         // Update chart with new data
+  updateStats();         // Update statistics
 }
 
 void TrendsOverviewPage::setupStatsSection(QVBoxLayout* leftLayout, QVBoxLayout* rightLayout) {

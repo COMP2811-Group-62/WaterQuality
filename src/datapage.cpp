@@ -7,7 +7,7 @@
 
 #include "styles.h"
 
-DataPage::DataPage(QWidget *parent)
+DataPage::DataPage(QWidget* parent)
     : BasePage("Data Page", parent) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/datapage.qss"}));
@@ -15,8 +15,6 @@ DataPage::DataPage(QWidget *parent)
 }
 
 void DataPage::setupUI() {
-  model.updateFromFile("../dataset/Y-2024-M.csv");
-
   table = new QTableView();
   table->setModel(&model);
   table->resizeColumnsToContents();
@@ -32,4 +30,12 @@ void DataPage::setupUI() {
   pageLayout->setContentsMargins(0, 0, 0, 0);
 
   pageLayout->addWidget(table);
+}
+
+void DataPage::loadDataset(const QString& filename) {
+  model.updateFromFile(filename);
+  if (table) {
+    table->reset();
+    table->resizeColumnsToContents();
+  }
 }

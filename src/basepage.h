@@ -13,6 +13,7 @@ class BasePage : public QWidget {
  public:
   explicit BasePage(const QString& title, QWidget* parent = nullptr);
   virtual ~BasePage() = default;
+  virtual void loadDataset(const QString& filename) = 0;
 
  protected:
   // Content area where derived classes should add their widgets

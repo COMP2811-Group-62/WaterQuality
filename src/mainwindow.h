@@ -21,11 +21,15 @@ class MainWindow : public QMainWindow {
  private slots:
   void switchPage(int index);
   void updateLanguage(int index);
+  void openFile();
+  void loadDataset(const QString &filename);
 
  private:
   void setupUI();
   void setupNavigation();
   void setupPages();
+  void setupMenu();
+  void distributeDataset(const QString &filename);
 
   QWidget *centralWidget;
   QHBoxLayout *mainLayout;

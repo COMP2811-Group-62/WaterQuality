@@ -21,3 +21,16 @@
     font-size: 13px;
     color: #6c757d;
 }
+
+#linksButton {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin-top: 8px;
+}
+
+#linksButton:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}

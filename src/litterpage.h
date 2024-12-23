@@ -14,6 +14,7 @@ class LitterPage : public BasePage {
 
  public:
   LitterPage(QWidget *parent = nullptr);
+  void loadDataset(const QString &filename) override;
 
  private slots:
   void updateCharts();

@@ -42,6 +42,7 @@ class POPsPage : public BasePage {
   Q_OBJECT
  public:
   explicit POPsPage(QWidget* parent = nullptr);
+  void loadDataset(const QString& filename) override;
 
  private:
   void setupUI() override;

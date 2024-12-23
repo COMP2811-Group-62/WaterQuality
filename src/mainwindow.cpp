@@ -1,8 +1,13 @@
 #include "mainwindow.h"
 
+#include <QAction>
+#include <QFileDialog>
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QStyle>
@@ -17,8 +22,11 @@
 #include "popspage.h"
 #include "trendsoverview.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   setupUI();
+
+  // Loads default dataset on startup, you can comment this out to test unloaded state.
+  loadDataset("../dataset/Y-2024-M.csv");
 }
 
 void MainWindow::setupUI() {
@@ -43,6 +51,9 @@ void MainWindow::setupUI() {
 
   // Create all pages
   setupPages();
+
+  // Setup menu bar
+  setupMenu();
 }
 
 void MainWindow::setupNavigation() {
@@ -57,30 +68,93 @@ void MainWindow::setupNavigation() {
 }
 
 void MainWindow::setupPages() {
-  DashboardPage *dbPage = new DashboardPage();
+  DashboardPage* dbPage = new DashboardPage();
   stackedWidget->addWidget(dbPage);
 
-  DataPage *dataPage = new DataPage();
+  connect(dbPage, &DashboardPage::pageChangeRequested,
+          navBar, &NavigationBar::setCurrentPage);
+
+  DataPage* dataPage = new DataPage();
   stackedWidget->addWidget(dataPage);
 
-  TrendsOverviewPage *pollutantsOverview = new TrendsOverviewPage();
+  TrendsOverviewPage* pollutantsOverview = new TrendsOverviewPage();
   stackedWidget->addWidget(pollutantsOverview);
 
-  FluorinatedCompounds *fluorinatedCompounds = new FluorinatedCompounds();
+  FluorinatedCompounds* fluorinatedCompounds = new FluorinatedCompounds();
   stackedWidget->addWidget(fluorinatedCompounds);
 
-  POPsPage *popsPage = new POPsPage();
+  POPsPage* popsPage = new POPsPage();
   stackedWidget->addWidget(popsPage);
 
-  LitterPage *litterPage = new LitterPage();
+  LitterPage* litterPage = new LitterPage();
   stackedWidget->addWidget(litterPage);
 
-  ComplianceDashboard *complianceDashboard = new ComplianceDashboard();
+  ComplianceDashboard* complianceDashboard = new ComplianceDashboard();
   stackedWidget->addWidget(complianceDashboard);
 }
 
 void MainWindow::switchPage(int index) {
   stackedWidget->setCurrentIndex(index);
+}
+
+void MainWindow::setupMenu() {
+  QMenuBar* menuBar = new QMenuBar(this);
+  setMenuBar(menuBar);
+
+  QMenu* fileMenu = new QMenu("&File", menuBar);
+  menuBar->addMenu(fileMenu);
+
+  QAction* openAction = new QAction("&Open Dataset...", this);
+  openAction->setShortcut(QKeySequence::Open);
+  fileMenu->addAction(openAction);
+
+  connect(openAction, &QAction::triggered, this, &MainWindow::openFile);
+}
+
+void MainWindow::openFile() {
+  QString filename = QFileDialog::getOpenFileName(this,
+                                                  "Load Dataset", "", "CSV Files (*.csv);;All Files (*)");
+
+  if (!filename.isEmpty()) {
+    loadDataset(filename);
+  }
+}
+
+void MainWindow::loadDataset(const QString& filename) {
+  try {
+    // Verify file exists and is readable
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      QMessageBox::critical(this, "Error", "Cannot open file: " + filename);
+      return;
+    }
+    file.close();
+
+    distributeDataset(filename);
+    QMessageBox::information(this, "Success", "Dataset loaded successfully");
+
+  } catch (const std::exception& e) {
+    QMessageBox::critical(this, "Error",
+                          QString("Error loading dataset: %1").arg(e.what()));
+  }
+}
+
+void MainWindow::distributeDataset(const QString& filename) {
+  // Update each page with the new dataset
+  for (int i = 0; i < stackedWidget->count(); i++) {
+    if (auto page = qobject_cast<BasePage*>(stackedWidget->widget(i))) {
+      try {
+        page->loadDataset(filename);
+      } catch (const std::exception& e) {
+        qWarning() << "Error updating page" << i << ":" << e.what();
+      }
+    }
+  }
+
+  // Update the current page's display
+  if (auto currentPage = qobject_cast<BasePage*>(stackedWidget->currentWidget())) {
+    currentPage->update();
+  }
 }
 
 void MainWindow::updateLanguage(int index) {

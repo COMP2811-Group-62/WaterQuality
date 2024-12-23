@@ -23,8 +23,6 @@ ComplianceDashboard::ComplianceDashboard(QWidget* parent)
 }
 
 void ComplianceDashboard::setupUI() {
-  model.updateFromFile("../dataset/Y-2024-M.csv");
-
   // Main Layout
   pageLayout = new QVBoxLayout();
 
@@ -40,6 +38,12 @@ void ComplianceDashboard::setupUI() {
   setUpScrollableCards();
 
   contentArea->setLayout(pageLayout);
+}
+
+void ComplianceDashboard::loadDataset(const QString& filename) {
+  model.updateFromFile(filename);
+  populateFilters();  // Repopulate filters with new data
+  updateCards();      // Refresh compliance cards
 }
 
 void ComplianceDashboard::setUpFilters(QHBoxLayout* layout) {

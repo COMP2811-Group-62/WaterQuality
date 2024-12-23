@@ -39,7 +39,8 @@ void NavigationBar::setupUI() {
 
   // Add language selector
   languageSelector = new QComboBox(this);
-  languageSelector->addItems({"English", "Français", "Español"}); connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &NavigationBar::languageChanged);
+  languageSelector->addItems({"English", "Français", "Español"});
+  connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &NavigationBar::languageChanged);
   layout->addWidget(languageSelector);
 }
 
@@ -54,4 +55,17 @@ QPushButton *NavigationBar::createNavButton(const QString &text, int index, bool
     emit pageChanged(index);
   });
   return button;
+}
+
+void NavigationBar::setCurrentPage(int index) {
+  // Uncheck all buttons
+  for (auto button : navButtons) {
+    button->setChecked(false);
+  }
+
+  // Check the button corresponding to the index
+  if (index >= 0 && index < navButtons.size()) {
+    navButtons[index]->setChecked(true);
+    emit pageChanged(index);
+  }
 }

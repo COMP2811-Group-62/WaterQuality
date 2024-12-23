@@ -6,23 +6,12 @@ QFrame#controlsFrame {
 
 QLabel {
     font-size: 14px;
-    font-weight: bold;
 }
 
-QLineEdit { 
+QLineEdit {
+    border: 1px solid #dee2e6;
     padding: 8px 12px;
     border-radius: 6px;
-}
-
-QComboBox#pollutantDropdown {
-    border-radius: 6px;
-    color: white;
-    padding: 8px 12px;
-}
-
-QComboBox#pollutantDropdown::drop-down {
-    border: none;
-    color: white;
 }
 
 /* Chart styling */

@@ -21,6 +21,7 @@ class ComplianceDashboard : public BasePage {
 
  public:
   explicit ComplianceDashboard(QWidget* parent = nullptr);
+  void loadDataset(const QString& filename) override;
 
  private slots:
   void onLocationFiltered(const QString& location);

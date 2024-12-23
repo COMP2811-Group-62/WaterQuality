@@ -14,8 +14,7 @@ DashboardPage::DashboardPage(QWidget* parent)
 }
 
 void DashboardPage::setupUI() {
-  model.updateFromFile("../dataset/Y-2024-M.csv");
-  loadData();
+  processData();
 
   // Create main layout
   QVBoxLayout* mainLayout = new QVBoxLayout(contentArea);
@@ -32,7 +31,24 @@ void DashboardPage::setupUI() {
   mainLayout->addLayout(cardsLayout);
 }
 
-void DashboardPage::loadData() {
+void DashboardPage::loadDataset(const QString& filename) {
+  model.updateFromFile(filename);
+  processData();  // Recalculate metrics
+  // Update each card's content
+  cardsLayout->removeWidget(createPollutantsCard());
+  cardsLayout->removeWidget(createPOPsCard());
+  cardsLayout->removeWidget(createLitterCard());
+  cardsLayout->removeWidget(createFluorinatedCard());
+  cardsLayout->removeWidget(createComplianceCard());
+  // Re-add cards with new data
+  cardsLayout->addWidget(createPollutantsCard(), 0, 0);
+  cardsLayout->addWidget(createPOPsCard(), 0, 1);
+  cardsLayout->addWidget(createLitterCard(), 1, 0);
+  cardsLayout->addWidget(createFluorinatedCard(), 1, 1);
+  cardsLayout->addWidget(createComplianceCard(), 2, 0, 1, 2);
+}
+
+void DashboardPage::processData() {
   if (!model.hasData()) {
     qWarning() << "No data loaded in model";
     return;
@@ -162,7 +178,7 @@ QString DashboardPage::calculateTrend(const QVector<double>& values) {
 }
 
 void DashboardPage::navigateToPage(int pageIndex) {
-  emit dynamic_cast<QStackedWidget*>(parent())->setCurrentIndex(pageIndex);
+  emit pageChangeRequested(pageIndex);
 }
 
 QString DashboardPage::getComplianceStatus(double value, double warningThreshold, double dangerThreshold) {
@@ -234,6 +250,7 @@ QFrame* DashboardPage::createPollutantsCard() {
 
   // Navigate button
   QPushButton* navButton = new QPushButton("View Detailed Analysis");
+  navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked,
           [this]() { navigateToPage(2); });  // Index 2 is Pollutants Overview
 
@@ -289,6 +306,7 @@ QFrame* DashboardPage::createPOPsCard() {
           .arg(getStatusColor(popsMetrics.averageLevel, POPS_WARNING, POPS_DANGER).name()));
 
   QPushButton* navButton = new QPushButton("View POPs Analysis");
+  navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(4); });
 
   contentLayout->addWidget(metricsLabel);
@@ -343,6 +361,7 @@ QFrame* DashboardPage::createLitterCard() {
           .arg(getStatusColor(litterMetrics.averageLevel, LITTER_WARNING, LITTER_DANGER).name()));
 
   QPushButton* navButton = new QPushButton("View Litter Analysis");
+  navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(5); });
 
   contentLayout->addWidget(metricsLabel);
@@ -397,6 +416,7 @@ QFrame* DashboardPage::createFluorinatedCard() {
           .arg(getStatusColor(pfasMetrics.averageLevel, PFAS_WARNING, PFAS_DANGER).name()));
 
   QPushButton* navButton = new QPushButton("View Fluorinated Analysis");
+  navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(3); });
 
   contentLayout->addWidget(metricsLabel);
@@ -448,6 +468,7 @@ QFrame* DashboardPage::createComplianceCard() {
   QLabel* metricsLabel = new QLabel(metricsText);
 
   QPushButton* navButton = new QPushButton("View Full Compliance Report");
+  navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(6); });
 
   contentLayout->addWidget(metricsLabel);

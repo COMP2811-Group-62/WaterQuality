@@ -14,9 +14,13 @@ class DashboardPage : public BasePage {
 
  public:
   DashboardPage(QWidget* parent = nullptr);
+  void loadDataset(const QString& filename) override;
 
  private slots:
   void navigateToPage(int pageIndex);
+
+ signals:
+  void pageChangeRequested(int index);
 
  private:
   struct PollutantMetrics {
@@ -49,7 +53,7 @@ class DashboardPage : public BasePage {
   QFrame* createFluorinatedCard();
   QFrame* createComplianceCard();
 
-  void loadData();
+  void processData();
   QString getComplianceStatus(double value, double warningThreshold, double dangerThreshold);
   QColor getStatusColor(double value, double warningThreshold, double dangerThreshold);
   QString calculateTrend(const QVector<double>& values);

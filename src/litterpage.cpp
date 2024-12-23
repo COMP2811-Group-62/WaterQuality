@@ -8,7 +8,6 @@
 
 LitterPage::LitterPage(QWidget *parent)
     : BasePage("Litter Indicators", parent) {
-  model.updateFromFile("../dataset/Y-2024-M.csv");
   setupUI();
   updateLocationCompleter();
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
@@ -37,6 +36,12 @@ void LitterPage::setupUI() {
   mainLayout->addLayout(horizontalLayout);
 }
 
+void LitterPage::loadDataset(const QString &filename) {
+  model.updateFromFile(filename);
+  updateLocationCompleter();  // Update location list
+  updateCharts();             // Refresh charts with new data
+}
+
 void LitterPage::setupFilters() {
   controlsFrame = new QFrame();
   controlsFrame->setObjectName("controlsFrame");
@@ -55,7 +60,7 @@ void LitterPage::setupFilters() {
   QLabel *locationLabel = new QLabel("Location Search:");
   locationLabel->setObjectName("filterLabel");
   locationSearch = new QLineEdit();
-  locationSearch->setPlaceholderText("Enter location name to search...");
+  locationSearch->setPlaceholderText("Type location name to search...");
 
   // Create location auto-completer
   locationCompleter = new QCompleter(this);

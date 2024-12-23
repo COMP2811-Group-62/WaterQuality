@@ -62,7 +62,6 @@ void POPsPage::setupUI() {
   infoPanel = new QFrame();
   infoPanel->setObjectName("infoPanel");
 
-  // Add shadow effect to info panel
   QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect;
   shadow->setBlurRadius(15);
   shadow->setColor(QColor(0, 0, 0, 50));
@@ -78,6 +77,13 @@ void POPsPage::setupUI() {
 
   mainLayout->addWidget(dataPanel, 2);
   mainLayout->addWidget(infoPanel, 1);
+}
+
+void POPsPage::loadDataset(const QString& filename) {
+  model.updateFromFile(filename);
+  loadData();  // Process new data
+  updateDisplay(pollutantSelector->currentIndex());
+  updateTimeRange(timeRangeSelector->currentIndex());
 }
 
 void POPsPage::setupControls() {
@@ -283,7 +289,6 @@ void POPsPage::setupInfoPanel() {
 }
 
 void POPsPage::loadData() {
-  model.updateFromFile("../dataset/Y-2024-M.csv");
   if (!model.hasData()) {
     qWarning() << "Dataset not initialized";
     return;

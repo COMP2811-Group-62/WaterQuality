@@ -40,6 +40,7 @@ class TrendsOverviewPage : public BasePage {
 
  public:
   explicit TrendsOverviewPage(QWidget* parent = nullptr);
+  void loadDataset(const QString& filename) override;
 
  private slots:
   void onPollutantSelected(const QString& pollutant);
