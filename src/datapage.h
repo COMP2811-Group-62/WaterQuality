@@ -7,13 +7,16 @@ class QTableView;
 class QHBoxLayout;
 
 class DataPage : public BasePage {
+  Q_OBJECT
+
  public:
-  DataPage(QWidget* parent = nullptr);
+  DataPage(SampleModel* model, QWidget* parent = nullptr);
+  void refreshView() override;
 
  private:
   void setupUI() override;
 
-  SampleModel model;
+  SampleModel* model;
   QTableView* table;
   QHBoxLayout* pageLayout;
 };

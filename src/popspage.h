@@ -41,7 +41,8 @@ struct ProcessedDataPoint {
 class POPsPage : public BasePage {
   Q_OBJECT
  public:
-  explicit POPsPage(QWidget* parent = nullptr);
+  POPsPage(SampleModel* model, QWidget* parent = nullptr);
+  void refreshView() override;
 
  private:
   void setupUI() override;
@@ -68,7 +69,7 @@ class POPsPage : public BasePage {
   void updateChartAxes(const QDateTime& startDate, const QDateTime& endDate, double maxValue);
 
   // Data handling
-  SampleModel model;
+  SampleModel* model;
   QVector<ProcessedDataPoint> processedData;
 
   // Layout containers

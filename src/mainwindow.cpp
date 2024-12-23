@@ -1,13 +1,19 @@
 #include "mainwindow.h"
 
+#include <QAction>
+#include <QFileDialog>
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QStyle>
 #include <QVBoxLayout>
 
+#include "compliancedashboard.h"
 #include "dashboardpage.h"
 #include "datapage.h"
 #include "fluorinatedcompounds.h"
@@ -15,15 +21,17 @@
 #include "navigationbar.h"
 #include "popspage.h"
 #include "trendsoverview.h"
-#include "compliancedashboard.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   setupUI();
+
+  // Loads default dataset on startup, you can comment this out to test unloaded state.
+  loadDataset("../dataset/Y-2024-M.csv");
 }
 
 void MainWindow::setupUI() {
   // Set window properties
-  resize(1280, 720);
+  resize(800, 800);
 
   // Create central widget
   centralWidget = new QWidget(this);
@@ -43,6 +51,9 @@ void MainWindow::setupUI() {
 
   // Create all pages
   setupPages();
+
+  // Setup menu bar
+  setupMenu();
 }
 
 void MainWindow::setupNavigation() {
@@ -57,30 +68,96 @@ void MainWindow::setupNavigation() {
 }
 
 void MainWindow::setupPages() {
-  DashboardPage *dbPage = new DashboardPage();
+  DashboardPage* dbPage = new DashboardPage(&sharedModel);
   stackedWidget->addWidget(dbPage);
 
-  DataPage *dataPage = new DataPage();
+  connect(dbPage, &DashboardPage::pageChangeRequested,
+          navBar, &NavigationBar::setCurrentPage);
+
+  DataPage* dataPage = new DataPage(&sharedModel);
   stackedWidget->addWidget(dataPage);
 
-  TrendsOverviewPage *pollutantsOverview = new TrendsOverviewPage();
+  TrendsOverviewPage* pollutantsOverview = new TrendsOverviewPage(&sharedModel);
   stackedWidget->addWidget(pollutantsOverview);
 
-  FluorinatedCompounds *fluorinatedCompounds = new FluorinatedCompounds();
+  FluorinatedCompounds* fluorinatedCompounds = new FluorinatedCompounds(&sharedModel);
   stackedWidget->addWidget(fluorinatedCompounds);
 
-  POPsPage *popsPage = new POPsPage();
+  POPsPage* popsPage = new POPsPage(&sharedModel);
   stackedWidget->addWidget(popsPage);
 
-  LitterPage *litterPage = new LitterPage();
+  LitterPage* litterPage = new LitterPage(&sharedModel);
   stackedWidget->addWidget(litterPage);
 
-  ComplianceDashboard *complianceDashboard = new ComplianceDashboard();
+  ComplianceDashboard* complianceDashboard = new ComplianceDashboard(&sharedModel);
   stackedWidget->addWidget(complianceDashboard);
 }
 
 void MainWindow::switchPage(int index) {
   stackedWidget->setCurrentIndex(index);
+}
+
+void MainWindow::setupMenu() {
+  QMenuBar* menuBar = new QMenuBar(this);
+  setMenuBar(menuBar);
+
+  QMenu* fileMenu = new QMenu("&File", menuBar);
+  menuBar->addMenu(fileMenu);
+
+  QAction* openAction = new QAction("&Open Dataset...", this);
+  openAction->setShortcut(QKeySequence::Open);
+  fileMenu->addAction(openAction);
+
+  connect(openAction, &QAction::triggered, this, &MainWindow::openFile);
+}
+
+void MainWindow::openFile() {
+  QString filename = QFileDialog::getOpenFileName(this,
+                                                  "Load Dataset", "", "CSV Files (*.csv);;All Files (*)");
+
+  if (!filename.isEmpty()) {
+    loadDataset(filename);
+  }
+}
+
+void MainWindow::loadDataset(const QString& filename) {
+  try {
+    // Verify file exists and is readable
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+      QMessageBox::critical(this, "Error", "Cannot open file: " + filename);
+      return;
+    }
+    file.close();
+
+    distributeDataset(filename);
+    QMessageBox::information(this, "Success", "Dataset loaded successfully");
+
+  } catch (const std::exception& e) {
+    QMessageBox::critical(this, "Error",
+                          QString("Error loading dataset: %1").arg(e.what()));
+  }
+}
+
+void MainWindow::distributeDataset(const QString& filename) {
+  try {
+    sharedModel.updateFromFile(filename);
+  } catch (const std::exception& e) {
+    QMessageBox::critical(this, "Error", QString("Error loading dataset: %1").arg(e.what()));
+    return;
+  }
+
+  // Notify all pages to refresh their views if necessary
+  for (int i = 0; i < stackedWidget->count(); i++) {
+    if (auto page = qobject_cast<BasePage*>(stackedWidget->widget(i))) {
+      page->refreshView();
+    }
+  }
+
+  // Update the current page's display
+  if (auto currentPage = qobject_cast<BasePage*>(stackedWidget->currentWidget())) {
+    currentPage->update();
+  }
 }
 
 void MainWindow::updateLanguage(int index) {

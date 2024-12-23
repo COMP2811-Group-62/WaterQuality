@@ -39,7 +39,8 @@ class TrendsOverviewPage : public BasePage {
   Q_OBJECT
 
  public:
-  explicit TrendsOverviewPage(QWidget* parent = nullptr);
+  TrendsOverviewPage(SampleModel* model, QWidget* parent = nullptr);
+  void refreshView() override;
 
  private slots:
   void onPollutantSelected(const QString& pollutant);
@@ -90,7 +91,7 @@ class TrendsOverviewPage : public BasePage {
   QFrame* contentFrame{nullptr};
 
   // Data Members
-  SampleModel model;
+  SampleModel* model;
   QString currentPollutant;
   QString currentLocation;
   QString currentUnit;

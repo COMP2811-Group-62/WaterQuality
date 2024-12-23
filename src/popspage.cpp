@@ -25,8 +25,8 @@
 #include "qualitysample.h"
 #include "styles.h"
 
-POPsPage::POPsPage(QWidget* parent)
-    : BasePage("Persistent Organic Pollutants", parent) {
+POPsPage::POPsPage(SampleModel* model, QWidget* parent)
+    : BasePage("Persistent Organic Pollutants", parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/popspage.qss"}));
   setupUI();
@@ -50,11 +50,12 @@ POPsPage::POPsPage(QWidget* parent)
   if (fullYearIndex != -1) {
     timeRangeSelector->setCurrentIndex(fullYearIndex);
   }
-  
-  // Trigger initial display
+}
+
+void POPsPage::refreshView() {
+  loadData();
   updateDisplay(pollutantSelector->currentIndex());
   updateTimeRange(timeRangeSelector->currentIndex());
-  updateTimeRangeOptions(pollutantSelector->currentText());
 }
 
 void POPsPage::setupUI() {
@@ -63,64 +64,54 @@ void POPsPage::setupUI() {
   // Create left panel for data display
   QWidget* dataPanel = new QWidget();
   dataLayout = new QVBoxLayout(dataPanel);
-  dataLayout->setSpacing(10);
 
   // Create right panel for info
   infoPanel = new QFrame();
   infoPanel->setObjectName("infoPanel");
-
-  // Add shadow effect to info panel
-  QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect;
-  shadow->setBlurRadius(15);
-  shadow->setColor(QColor(0, 0, 0, 50));
-  shadow->setOffset(2, 2);
-  infoPanel->setGraphicsEffect(shadow);
-
   infoPanelLayout = new QVBoxLayout(infoPanel);
-  infoPanel->setFixedWidth(300);
 
   setupControls();
   setupDataDisplay();
   setupInfoPanel();
 
-  mainLayout->addWidget(dataPanel, 2);
-  mainLayout->addWidget(infoPanel, 1);
+  mainLayout->addWidget(dataPanel);
+  mainLayout->addWidget(infoPanel);
 }
 
 void POPsPage::setupControls() {
-    QFrame* controlsFrame = new QFrame();
-    controlsFrame->setObjectName("controlsFrame");
-    
-    controlsLayout = new QHBoxLayout(controlsFrame);
-    controlsLayout->setSpacing(20);
-    
-    pollutantSelector = new QComboBox();
-    pollutantSelector->addItems({"PCBs", "Endrin",
-                                "Aldrin", "Dieldrin"});
-    
-    timeRangeSelector = new QComboBox();
-    timeRangeSelector->addItems({"January 2024", "February 2024", "March 2024",
-                                "April 2024", "May 2024", "June 2024",
-                                "July 2024", "August 2024", "September 2024",
-                                "Full Year 2024"});
-    exportButton = new QPushButton("Export Data");
-    
-    QLabel* pollutantLabel = new QLabel("Pollutant:");
-    pollutantLabel->setStyleSheet("font-weight: bold;");
-    QLabel* timeRangeLabel = new QLabel("Time Range:");
-    timeRangeLabel->setStyleSheet("font-weight: bold;");
-    
-    controlsLayout->addWidget(pollutantLabel);
-    controlsLayout->addWidget(pollutantSelector);
-    controlsLayout->addWidget(timeRangeLabel);
-    controlsLayout->addWidget(timeRangeSelector);
-    
-    setupLocationSelector(); // Add location selector
-    
-    controlsLayout->addStretch();
-    controlsLayout->addWidget(exportButton);
-    
-    dataLayout->addWidget(controlsFrame);
+  QFrame* controlsFrame = new QFrame();
+  controlsFrame->setObjectName("controlsFrame");
+
+  controlsLayout = new QHBoxLayout(controlsFrame);
+
+  QVBoxLayout* pollutantVLabel = new QVBoxLayout();
+  QLabel* pollutantLabel = new QLabel("Pollutant:");
+  pollutantSelector = new QComboBox();
+  pollutantSelector->addItems({"PCBs", "Endrin",
+                               "Aldrin", "Dieldrin"});
+  pollutantVLabel->addWidget(pollutantLabel);
+  pollutantVLabel->addWidget(pollutantSelector);
+
+  QVBoxLayout* timeRangeVLabel = new QVBoxLayout();
+  QLabel* timeRangeLabel = new QLabel("Time Range:");
+  timeRangeSelector = new QComboBox();
+  timeRangeSelector->addItems({"January 2024", "February 2024", "March 2024",
+                               "April 2024", "May 2024", "June 2024",
+                               "July 2024", "August 2024", "September 2024",
+                               "Full Year 2024"});
+  exportButton = new QPushButton("Export Data");
+  timeRangeVLabel->addWidget(timeRangeLabel);
+  timeRangeVLabel->addWidget(timeRangeSelector);
+
+  controlsLayout->addLayout(pollutantVLabel);
+  controlsLayout->addLayout(timeRangeVLabel);
+
+  setupLocationSelector();  // Add location selector
+
+  controlsLayout->addStretch();
+  controlsLayout->addWidget(exportButton);
+
+  dataLayout->addWidget(controlsFrame);
 }
 
 void POPsPage::setupDataDisplay() {
@@ -166,50 +157,13 @@ void POPsPage::setupDataDisplay() {
   // Create chart view
   chartView = new QChartView(chart);
   chartView->setRenderHint(QPainter::Antialiasing);
-  chartView->setMinimumHeight(400);
 
   // Install event filter for tooltips
-  chartView->setMouseTracking(true);  // Enable mouse tracking
+  chartView->setMouseTracking(true);
   chartView->installEventFilter(this);
-
-  // Create and setup legend frame
-  legendFrame = new QFrame();
-  legendFrame->setObjectName("legendFrame");
-
-  QHBoxLayout* legendLayout = new QHBoxLayout(legendFrame);
-  legendLayout->setSpacing(20);
-
-  auto createLegendItem = [](const QString& text, const QString& color, const QString& style = "solid") {
-    QWidget* container = new QWidget();
-    QHBoxLayout* layout = new QHBoxLayout(container);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(5);
-
-    QFrame* line = new QFrame();
-    line->setFixedSize(20, 2);
-    QString styleSheet = QString("background-color: %1;").arg(color);
-    if (style == "dashed") {
-      styleSheet += "border: none; border-top: 2px dashed " + color + ";";
-    }
-    line->setStyleSheet(styleSheet);
-
-    QLabel* label = new QLabel(text);
-
-    layout->addWidget(line);
-    layout->addWidget(label);
-    layout->addStretch();
-
-    return container;
-  };
-
-  legendLayout->addWidget(createLegendItem("Current Levels", "#037a9b"));
-  legendLayout->addWidget(createLegendItem("Warning Threshold", "#ffd700", "dashed"));
-  legendLayout->addWidget(createLegendItem("Danger Threshold", "#ff4444", "dashed"));
-  legendLayout->addStretch();
 
   // Add widgets to layout
   displayLayout->addWidget(chartView);
-  displayLayout->addWidget(legendFrame);
 
   if (dataLayout) {
     dataLayout->addWidget(dataDisplayFrame);
@@ -220,8 +174,6 @@ void POPsPage::setupDataDisplay() {
 }
 
 void POPsPage::setupInfoPanel() {
-  infoPanelLayout->setSpacing(15);
-
   // Safety Status Section
   QFrame* safetyFrame = new QFrame();
   safetyFrame->setObjectName("safetyFrame");
@@ -282,70 +234,73 @@ void POPsPage::setupInfoPanel() {
 }
 
 void POPsPage::loadData() {
-    model.updateFromFile("../dataset/Y-2024-M.csv");
-    if (!model.hasData()) {
-        qWarning() << "Dataset not initialized";
-        return;
+  if (!model->hasData()) {
+    qWarning() << "Dataset not initialized";
+    return;
+  }
+
+  processedData.clear();
+  availableLocations.clear();
+  QDateTime latestDate;
+  bool firstValidDate = true;
+
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
+
+    // Add debug print to see what pollutants are being found
+    // qDebug() << "Found pollutant:" << pollutant;
+
+    // Include all PCB-related measurements
+    bool isPCB = pollutant.contains("PCB", Qt::CaseInsensitive);
+    if (isPCB) {
+      pollutant = "PCBs";  // Normalize to the category name
     }
 
-    processedData.clear();
-    availableLocations.clear();
-    QDateTime latestDate;
-    bool firstValidDate = true;
-
-    for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-        QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
-        
-        bool isPCB = pollutant.contains("PCB", Qt::CaseInsensitive);
-        if (isPCB) {
-            pollutant = "PCBs";
-        }
-
-        if (!isPCB && !knownPOPs.contains(pollutant)) {
-            continue;
-        }
-
-        QString dateStr = model.data(model.index(row, 3), Qt::DisplayRole).toString();
-        QDateTime sampleDate = QDateTime::fromString(dateStr, Qt::ISODate);
-
-        if (!sampleDate.isValid()) {
-            qWarning() << "Invalid date format for sample at row:" << row;
-            continue;
-        }
-
-        QString resultStr = model.data(model.index(row, 7), Qt::DisplayRole).toString();
-        bool belowDetectionLimit = resultStr.startsWith('<');
-
-        if (belowDetectionLimit) {
-            resultStr = resultStr.mid(1);
-        }
-
-        bool conversionOk;
-        double value = resultStr.toDouble(&conversionOk);
-
-        if (!conversionOk) {
-            qWarning() << "Invalid value format for sample at row:" << row;
-            continue;
-        }
-
-        QString location = model.data(model.index(row, 2), Qt::DisplayRole).toString();
-        availableLocations.insert(location);
-
-        ProcessedDataPoint point;
-        point.dateTime = sampleDate;
-        point.value = value;
-        point.belowDetectionLimit = belowDetectionLimit;
-        point.pollutantType = pollutant;
-        point.samplingPoint = location;
-        point.qualityScore = calculateQualityScore(point, latestDate);
-
-        processedData.append(point);
+    if (!isPCB && !knownPOPs.contains(pollutant)) {
+      continue;
     }
 
-    if (pollutantSelector) {
-        updateLocationSelector(pollutantSelector->currentText());
-        updateDisplay(pollutantSelector->currentIndex());
+    QString dateStr = model->data(model->index(row, 3), Qt::DisplayRole).toString();
+    QDateTime sampleDate = QDateTime::fromString(dateStr, Qt::ISODate);
+
+    if (!sampleDate.isValid()) {
+      qWarning() << "Invalid date format for sample at row:" << row;
+      continue;
     }
+
+    QString resultStr = model->data(model->index(row, 7), Qt::DisplayRole).toString();
+    bool belowDetectionLimit = resultStr.startsWith('<');
+
+    if (belowDetectionLimit) {
+      resultStr = resultStr.mid(1);
+    }
+
+    bool conversionOk;
+    double value = resultStr.toDouble(&conversionOk);
+
+    if (!conversionOk) {
+      qWarning() << "Invalid value format for sample at row:" << row;
+      continue;
+    }
+
+    QString location = model->data(model->index(row, 2), Qt::DisplayRole).toString();
+    availableLocations.insert(location);
+
+    ProcessedDataPoint point;
+    point.dateTime = sampleDate;
+    point.value = value;
+    point.belowDetectionLimit = belowDetectionLimit;
+    point.pollutantType = pollutant;
+    point.samplingPoint = location;
+    point.qualityScore = calculateQualityScore(point, latestDate);
+
+    processedData.append(point);
+  }
+
+  if (pollutantSelector) {
+    updateLocationSelector(pollutantSelector->currentText());
+    updateDisplay(pollutantSelector->currentIndex());
+  }
 }
 
 double POPsPage::calculateQualityScore(const ProcessedDataPoint& point, const QDateTime& latestDate) {
@@ -421,8 +376,6 @@ void POPsPage::updateDisplay(int index) {
 
   // Set time range based on selected month from timeRangeSelector
   QString timeRange = timeRangeSelector->currentText();
-
-  // ... [time range logic remains the same]
 
   // Filter and sort data points for all pollutants in the selected category
   QVector<QPair<qint64, double>> sortedPoints;
@@ -575,8 +528,7 @@ void POPsPage::updateTimeRangeOptions(const QString& selectedPollutant) {
   QStringList months = {
       "January 2024", "February 2024", "March 2024",
       "April 2024", "May 2024", "June 2024",
-      "July 2024", "August 2024", "September 2024"
-  };
+      "July 2024", "August 2024", "September 2024"};
 
   for (int i = 0; i < months.size(); ++i) {
     QStandardItem* item = new QStandardItem(months[i]);
@@ -946,26 +898,26 @@ void POPsPage::handleExport() {
   }
 
   int exportCount = 0;
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
     // Check pollutant match
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
     if (pollutant != selectedPollutant) {
       continue;
     }
 
     // Check date range
-    QString dateStr = model.data(model.index(row, 3), Qt::DisplayRole).toString();
+    QString dateStr = model->data(model->index(row, 3), Qt::DisplayRole).toString();
     QDateTime sampleDate = QDateTime::fromString(dateStr, Qt::ISODate);
     if (!sampleDate.isValid() || sampleDate < startDate || sampleDate > endDate) {
       continue;
     }
 
     // Write all columns for matching row
-    for (int col = 0; col < model.columnCount(QModelIndex()); ++col) {
+    for (int col = 0; col < model->columnCount(QModelIndex()); ++col) {
       if (col > 0) {
         stream << ",";
       }
-      stream << model.data(model.index(row, col), Qt::DisplayRole).toString();
+      stream << model->data(model->index(row, col), Qt::DisplayRole).toString();
     }
     stream << "\n";
     exportCount++;
@@ -976,145 +928,135 @@ void POPsPage::handleExport() {
   showSuccessMessage(QString("Successfully exported %1 records").arg(exportCount));
 }
 
-
 void POPsPage::setupLocationSelector() {
-    locationSelector = new QComboBox();
-    locationSelector->setMinimumWidth(180);
-    locationSelector->setPlaceholderText("Select Location");
-    
-    QLabel* locationLabel = new QLabel("Location:");
-    locationLabel->setStyleSheet("font-weight: bold;");
-    
-    controlsLayout->insertWidget(4, locationLabel);
-    controlsLayout->insertWidget(5, locationSelector);
-    
-    connect(locationSelector, QOverload<const QString&>::of(&QComboBox::currentTextChanged),
-            this, &POPsPage::filterDataByLocation);
+  QVBoxLayout* locationSelectorVLabel = new QVBoxLayout();
+  QLabel* locationLabel = new QLabel("Location:");
+  locationSelector = new QComboBox();
+  locationSelector->setMaximumWidth(250);
+  locationSelector->setPlaceholderText("Select Location");
+  locationSelectorVLabel->addWidget(locationLabel);
+  locationSelectorVLabel->addWidget(locationSelector);
+
+  controlsLayout->addLayout(locationSelectorVLabel);
+
+  connect(locationSelector, QOverload<const QString&>::of(&QComboBox::currentTextChanged),
+          this, &POPsPage::filterDataByLocation);
 }
 
-
 void POPsPage::updateLocationSelector(const QString& selectedPollutant) {
-    locationSelector->blockSignals(true);
-    locationSelector->clear();
-    
-    QSet<QString> relevantLocations;
-    QString selectedTimeRange = timeRangeSelector->currentText();
-    
-    // Calculate date range
-    QDateTime startDate, endDate;
-    if (selectedTimeRange == "Full Year 2024") {
-        startDate = QDateTime::fromString("2024-01-01 00:00:00", "yyyy-MM-dd HH:mm:ss");
-        endDate = QDateTime::fromString("2024-12-31 23:59:59", "yyyy-MM-dd HH:mm:ss");
-    } else {
-        QMap<QString, int> monthMap = {
-            {"January 2024", 1}, {"February 2024", 2}, {"March 2024", 3},
-            {"April 2024", 4}, {"May 2024", 5}, {"June 2024", 6},
-            {"July 2024", 7}, {"August 2024", 8}, {"September 2024", 9}
-        };
-        
-        int month = monthMap[selectedTimeRange];
-        int lastDay = QDate(2024, month, 1).daysInMonth();
-        startDate = QDateTime::fromString(
-            QString("2024-%1-01 00:00:00").arg(month, 2, 10, QChar('0')),
-            "yyyy-MM-dd HH:mm:ss");
-        endDate = QDateTime::fromString(
-            QString("2024-%1-%2 23:59:59").arg(month, 2, 10, QChar('0')).arg(lastDay),
-            "yyyy-MM-dd HH:mm:ss");
+  locationSelector->blockSignals(true);
+  locationSelector->clear();
+
+  QSet<QString> relevantLocations;
+  QString selectedTimeRange = timeRangeSelector->currentText();
+
+  // Calculate date range
+  QDateTime startDate, endDate;
+  if (selectedTimeRange == "Full Year 2024") {
+    startDate = QDateTime::fromString("2024-01-01 00:00:00", "yyyy-MM-dd HH:mm:ss");
+    endDate = QDateTime::fromString("2024-12-31 23:59:59", "yyyy-MM-dd HH:mm:ss");
+  } else {
+    QMap<QString, int> monthMap = {
+        {"January 2024", 1}, {"February 2024", 2}, {"March 2024", 3}, {"April 2024", 4}, {"May 2024", 5}, {"June 2024", 6}, {"July 2024", 7}, {"August 2024", 8}, {"September 2024", 9}};
+
+    int month = monthMap[selectedTimeRange];
+    int lastDay = QDate(2024, month, 1).daysInMonth();
+    startDate = QDateTime::fromString(
+        QString("2024-%1-01 00:00:00").arg(month, 2, 10, QChar('0')),
+        "yyyy-MM-dd HH:mm:ss");
+    endDate = QDateTime::fromString(
+        QString("2024-%1-%2 23:59:59").arg(month, 2, 10, QChar('0')).arg(lastDay),
+        "yyyy-MM-dd HH:mm:ss");
+  }
+
+  // Find locations with data in the selected time range
+  for (const auto& point : processedData) {
+    if (point.pollutantType == selectedPollutant &&
+        point.dateTime >= startDate &&
+        point.dateTime <= endDate) {
+      relevantLocations.insert(point.samplingPoint);
     }
-    
-    // Find locations with data in the selected time range
-    for (const auto& point : processedData) {
-        if (point.pollutantType == selectedPollutant &&
-            point.dateTime >= startDate &&
-            point.dateTime <= endDate) {
-            relevantLocations.insert(point.samplingPoint);
-        }
+  }
+
+  // Add "All Locations" option - grey it out if no data exists
+  QStandardItem* allLocationsItem = new QStandardItem("All Locations");
+  if (relevantLocations.isEmpty()) {
+    allLocationsItem->setFlags(allLocationsItem->flags() & ~Qt::ItemIsEnabled);
+    allLocationsItem->setData(QColor(128, 128, 128), Qt::ForegroundRole);
+  }
+  qobject_cast<QStandardItemModel*>(locationSelector->model())->appendRow(allLocationsItem);
+
+  // Add individual locations
+  for (const QString& location : availableLocations) {
+    QStandardItem* item = new QStandardItem(location);
+    if (!relevantLocations.contains(location)) {
+      item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+      item->setData(QColor(128, 128, 128), Qt::ForegroundRole);
     }
-    
-    // Add "All Locations" option - grey it out if no data exists
-    QStandardItem* allLocationsItem = new QStandardItem("All Locations");
-    if (relevantLocations.isEmpty()) {
-        allLocationsItem->setFlags(allLocationsItem->flags() & ~Qt::ItemIsEnabled);
-        allLocationsItem->setData(QColor(128, 128, 128), Qt::ForegroundRole);
-    }
-    qobject_cast<QStandardItemModel*>(locationSelector->model())->appendRow(allLocationsItem);
-    
-    // Add individual locations
-    for (const QString& location : availableLocations) {
-        QStandardItem* item = new QStandardItem(location);
-        if (!relevantLocations.contains(location)) {
-            item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-            item->setData(QColor(128, 128, 128), Qt::ForegroundRole);
-        }
-        qobject_cast<QStandardItemModel*>(locationSelector->model())->appendRow(item);
-    }
-    
-    locationSelector->blockSignals(false);
-    locationSelector->setCurrentText("All Locations");
+    qobject_cast<QStandardItemModel*>(locationSelector->model())->appendRow(item);
+  }
+
+  locationSelector->blockSignals(false);
+  locationSelector->setCurrentText("All Locations");
 }
 
 void POPsPage::filterDataByLocation(const QString& location) {
+  if (!chart) return;
 
-    if (!chart) return;
-    
-    currentLevelSeries->clear();
-    QString selectedPollutant = pollutantSelector->currentText();
-    QString timeRange = timeRangeSelector->currentText();
-    
-    // Calculate date range
-    QDateTime startDate, endDate;
-    if (timeRange == "Full Year 2024") {
-        startDate = QDateTime::fromString("2024-01-01 00:00:00", "yyyy-MM-dd HH:mm:ss");
-        endDate = QDateTime::fromString("2024-12-31 23:59:59", "yyyy-MM-dd HH:mm:ss");
-    } else {
-        QMap<QString, int> monthMap = {
-            {"January 2024", 1}, {"February 2024", 2}, {"March 2024", 3},
-            {"April 2024", 4}, {"May 2024", 5}, {"June 2024", 6},
-            {"July 2024", 7}, {"August 2024", 8}, {"September 2024", 9}
-        };
-        
-        int month = monthMap[timeRange];
-        int lastDay = QDate(2024, month, 1).daysInMonth();
-        startDate = QDateTime::fromString(
-            QString("2024-%1-01 00:00:00").arg(month, 2, 10, QChar('0')),
-            "yyyy-MM-dd HH:mm:ss");
-        endDate = QDateTime::fromString(
-            QString("2024-%1-%2 23:59:59").arg(month, 2, 10, QChar('0')).arg(lastDay),
-            "yyyy-MM-dd HH:mm:ss");
+  currentLevelSeries->clear();
+  QString selectedPollutant = pollutantSelector->currentText();
+  QString timeRange = timeRangeSelector->currentText();
+
+  // Calculate date range
+  QDateTime startDate, endDate;
+  if (timeRange == "Full Year 2024") {
+    startDate = QDateTime::fromString("2024-01-01 00:00:00", "yyyy-MM-dd HH:mm:ss");
+    endDate = QDateTime::fromString("2024-12-31 23:59:59", "yyyy-MM-dd HH:mm:ss");
+  } else {
+    QMap<QString, int> monthMap = {
+        {"January 2024", 1}, {"February 2024", 2}, {"March 2024", 3}, {"April 2024", 4}, {"May 2024", 5}, {"June 2024", 6}, {"July 2024", 7}, {"August 2024", 8}, {"September 2024", 9}};
+
+    int month = monthMap[timeRange];
+    int lastDay = QDate(2024, month, 1).daysInMonth();
+    startDate = QDateTime::fromString(
+        QString("2024-%1-01 00:00:00").arg(month, 2, 10, QChar('0')),
+        "yyyy-MM-dd HH:mm:ss");
+    endDate = QDateTime::fromString(
+        QString("2024-%1-%2 23:59:59").arg(month, 2, 10, QChar('0')).arg(lastDay),
+        "yyyy-MM-dd HH:mm:ss");
+  }
+
+  // Filter and sort data points
+  QVector<QPair<qint64, double>> sortedPoints;
+  double maxValue = 0;
+
+  for (const auto& point : processedData) {
+    if (point.dateTime >= startDate &&
+        point.dateTime <= endDate &&
+        point.pollutantType == selectedPollutant &&
+        (location == "All Locations" || point.samplingPoint == location)) {
+      sortedPoints.append({point.dateTime.toMSecsSinceEpoch(), point.value});
+      maxValue = qMax(maxValue, point.value);
     }
-    
-    // Filter and sort data points
-    QVector<QPair<qint64, double>> sortedPoints;
-    double maxValue = 0;
-    
-    for (const auto& point : processedData) {
-        if (point.dateTime >= startDate && 
-            point.dateTime <= endDate && 
-            point.pollutantType == selectedPollutant &&
-            (location == "All Locations" || point.samplingPoint == location)) {
-            
-            sortedPoints.append({point.dateTime.toMSecsSinceEpoch(), point.value});
-            maxValue = qMax(maxValue, point.value);
-        }
-    }
-    
-    // Sort points by time
-    std::sort(sortedPoints.begin(), sortedPoints.end());
-    
-    // Add sorted points to series
-    for (const auto& point : sortedPoints) {
-        currentLevelSeries->append(point.first, point.second);
-    }
-    
-    // Update chart
-    updateChartAxes(startDate, endDate, maxValue);
-    updateThresholds(selectedPollutant);
-    updateSafetyIndicator();
-    
-    // Update chart title to include location
-    QString locationText = (location == "All Locations") ? "" : QString(" at %1").arg(location);
-    chart->setTitle(QString("%1 Concentration Trends%2 (%3)")
-        .arg(selectedPollutant)
-        .arg(locationText)
-        .arg(timeRange));
+  }
+
+  // Sort points by time
+  std::sort(sortedPoints.begin(), sortedPoints.end());
+
+  // Add sorted points to series
+  for (const auto& point : sortedPoints) {
+    currentLevelSeries->append(point.first, point.second);
+  }
+
+  // Update chart
+  updateChartAxes(startDate, endDate, maxValue);
+  updateThresholds(selectedPollutant);
+  updateSafetyIndicator();
+
+  // Update chart title to include location
+  QString locationText = (location == "All Locations") ? "" : QString(" at %1").arg(location);
+  chart->setTitle(QString("%1 Concentration Trends%2 (%3)")
+                      .arg(selectedPollutant)
+                      .arg(locationText)
+                      .arg(timeRange));
 }
