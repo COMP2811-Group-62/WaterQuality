@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 void MainWindow::setupUI() {
   // Set window properties
-  resize(1280, 720);
+  resize(800, 800);
 
   // Create central widget
   centralWidget = new QWidget(this);

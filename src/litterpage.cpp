@@ -121,7 +121,6 @@ void LitterPage::setupCharts() {
 
   barLayout->addWidget(locationBarChart);
   chartsLayout->addWidget(barChartFrame);
-  // mainLayout->addLayout(chartsLayout);
 }
 
 void LitterPage::updateCharts() {
@@ -146,7 +145,7 @@ void LitterPage::updateCharts() {
   sewageSet->setColor(QColor("#4CAF50"));
 
   QBarSeries *barSeries = new QBarSeries();
-  barSeries->setBarWidth(0.85);
+  barSeries->setBarWidth(1);
   barSeries->setLabelsVisible(true);
   barSeries->setLabelsPosition(QAbstractBarSeries::LabelsOutsideEnd);
 
