@@ -1,20 +1,22 @@
 #include "fluorinatedcompounds.h"
 
 #include <QApplication>
+#include <QComboBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QQmlApplicationEngine>
 #include <QQuickWidget>
 #include <QTableView>
+#include <QVBoxLayout>
 #include <QXYSeries>
 
 #include "styles.h"
 
-FluorinatedCompounds::FluorinatedCompounds(QWidget* parent)
-    : BasePage("Fluorinated Compounds Page", parent) {
-  setupUI();
+FluorinatedCompounds::FluorinatedCompounds(SampleModel* model, QWidget* parent)
+    : BasePage("Fluorinated Compounds Page", parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/fluorinatedcompounds.qss"}));
+  setupUI();
 }
 
 void FluorinatedCompounds::setupUI() {
@@ -37,9 +39,9 @@ void FluorinatedCompounds::setupUI() {
   contentArea->setLayout(page);
 }
 
-void FluorinatedCompounds::loadDataset(const QString& filename) {
-  model.updateFromFile(filename);
-  // TODO: Refresh only the data-dependent parts (see other pages)
+void FluorinatedCompounds::refreshView() {
+  // Implement logic to refresh the view based on the shared model
+  // For example, update charts or tables
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {

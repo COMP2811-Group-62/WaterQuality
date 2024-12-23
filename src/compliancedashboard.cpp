@@ -13,13 +13,11 @@
 
 #include "styles.h"
 
-ComplianceDashboard::ComplianceDashboard(QWidget* parent)
-    : BasePage("Compliance Dashboard", parent) {
+ComplianceDashboard::ComplianceDashboard(SampleModel* model, QWidget* parent)
+    : BasePage("Compliance Dashboard", parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/compliancedashboard.qss"}));
   setupUI();
-  populateFilters();
-  updateCards();
 }
 
 void ComplianceDashboard::setupUI() {
@@ -40,10 +38,9 @@ void ComplianceDashboard::setupUI() {
   contentArea->setLayout(pageLayout);
 }
 
-void ComplianceDashboard::loadDataset(const QString& filename) {
-  model.updateFromFile(filename);
+void ComplianceDashboard::refreshView() {
   populateFilters();  // Repopulate filters with new data
-  updateCards();      // Refresh compliance cards
+  updateCards();
 }
 
 void ComplianceDashboard::setUpFilters(QHBoxLayout* layout) {
@@ -99,9 +96,9 @@ void ComplianceDashboard::populateFilters() {
   QSet<QString> locationSet;
   QSet<QString> pollutantSet;
 
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    QString location = model.data(model.index(row, 2), Qt::DisplayRole).toString();
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    QString location = model->data(model->index(row, 2), Qt::DisplayRole).toString();
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
 
     if (!location.isEmpty()) {
       locationSet.insert(location);
@@ -303,7 +300,7 @@ void ComplianceDashboard::updateCards() {
   cardsLayout->setContentsMargins(12, 12, 12, 12);
 
   // Safety check for model
-  if (model.rowCount(QModelIndex()) <= 0) {
+  if (model->rowCount(QModelIndex()) <= 0) {
     qDebug() << "Warning: No data in model";
     scrollArea->setWidget(scrollContent);
     return;
@@ -314,10 +311,10 @@ void ComplianceDashboard::updateCards() {
   int row = 0;
   int col = 0;
 
-  for (int i = 0; i < model.rowCount(QModelIndex()) && cardCount < MAX_CARDS; ++i) {
-    QString location = model.data(model.index(i, 2), Qt::DisplayRole).toString();
-    QString pollutant = model.data(model.index(i, 4), Qt::DisplayRole).toString();
-    QString result = model.data(model.index(i, 7), Qt::DisplayRole).toString();
+  for (int i = 0; i < model->rowCount(QModelIndex()) && cardCount < MAX_CARDS; ++i) {
+    QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
+    QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
+    QString result = model->data(model->index(i, 7), Qt::DisplayRole).toString();
 
     // Skip invalid data
     if (location.isEmpty() || pollutant.isEmpty() || result.isEmpty()) {

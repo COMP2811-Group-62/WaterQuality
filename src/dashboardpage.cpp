@@ -6,8 +6,8 @@
 
 #include "styles.h"
 
-DashboardPage::DashboardPage(QWidget* parent)
-    : BasePage("Dashboard", parent) {
+DashboardPage::DashboardPage(SampleModel* model, QWidget* parent)
+    : BasePage("Dashboard", parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/dashboard.qss"}));
   setupUI();
@@ -31,10 +31,9 @@ void DashboardPage::setupUI() {
   mainLayout->addLayout(cardsLayout);
 }
 
-void DashboardPage::loadDataset(const QString& filename) {
-  model.updateFromFile(filename);
-  processData();  // Recalculate metrics
-  // Update each card's content
+void DashboardPage::refreshView() {
+  // Implement logic to refresh the view based on the shared model
+  processData();
   cardsLayout->removeWidget(createPollutantsCard());
   cardsLayout->removeWidget(createPOPsCard());
   cardsLayout->removeWidget(createLitterCard());
@@ -49,7 +48,7 @@ void DashboardPage::loadDataset(const QString& filename) {
 }
 
 void DashboardPage::processData() {
-  if (!model.hasData()) {
+  if (!model->hasData()) {
     qWarning() << "No data loaded in model";
     return;
   }
@@ -62,10 +61,10 @@ void DashboardPage::processData() {
   QSet<QString> locations;
 
   // Process all rows
-  for (int row = 0; row < model.rowCount(QModelIndex()); row++) {
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
-    QString location = model.data(model.index(row, 2), Qt::DisplayRole).toString();
-    QString result = model.data(model.index(row, 7), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); row++) {
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
+    QString location = model->data(model->index(row, 2), Qt::DisplayRole).toString();
+    QString result = model->data(model->index(row, 7), Qt::DisplayRole).toString();
 
     // Skip invalid data
     bool ok;

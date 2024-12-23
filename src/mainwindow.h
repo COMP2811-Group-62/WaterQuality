@@ -2,6 +2,8 @@
 
 #include <QMainWindow>
 
+#include "model.h"
+
 class QWidget;
 class QHBoxLayout;
 class QFrame;
@@ -30,6 +32,8 @@ class MainWindow : public QMainWindow {
   void setupPages();
   void setupMenu();
   void distributeDataset(const QString &filename);
+
+  SampleModel sharedModel;  // Shared model instance
 
   QWidget *centralWidget;
   QHBoxLayout *mainLayout;

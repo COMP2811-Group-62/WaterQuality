@@ -10,8 +10,8 @@
 
 #include "styles.h"
 
-TrendsOverviewPage::TrendsOverviewPage(QWidget* parent)
-    : BasePage("Pollutants Overview", parent) {
+TrendsOverviewPage::TrendsOverviewPage(SampleModel* model, QWidget* parent)
+    : BasePage("Pollutants Overview", parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/trendsoverview.qss"}));
   setupUI();
@@ -66,12 +66,11 @@ void TrendsOverviewPage::setupUI() {
   contentArea->setLayout(pageLayout);
 }
 
-void TrendsOverviewPage::loadDataset(const QString& filename) {
-  model.updateFromFile(filename);
-  buildLocationCache();  // Rebuild location cache
-  populatePollutants();  // Repopulate pollutant list
-  updateChart();         // Update chart with new data
-  updateStats();         // Update statistics
+void TrendsOverviewPage::refreshView() {
+  buildLocationCache();
+  populatePollutants();
+  updateChart();
+  updateStats();
 }
 
 void TrendsOverviewPage::setupStatsSection(QVBoxLayout* leftLayout, QVBoxLayout* rightLayout) {
@@ -271,7 +270,7 @@ QColor TrendsOverviewPage::getComplianceColor(double value) const {
 }
 
 void TrendsOverviewPage::updateChart() {
-  if (!model.hasData() || currentPollutant.isEmpty() || currentLocation.isEmpty()) {
+  if (!model->hasData() || currentPollutant.isEmpty() || currentLocation.isEmpty()) {
     return;
   }
 
@@ -316,17 +315,17 @@ void TrendsOverviewPage::updateChart() {
 QMap<QDateTime, double> TrendsOverviewPage::collectChartData() const {
   QMap<QDateTime, double> dataPoints;
 
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    if (model.data(model.index(row, 4), Qt::DisplayRole).toString() != currentPollutant ||
-        model.data(model.index(row, 2), Qt::DisplayRole).toString() != currentLocation) {
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    if (model->data(model->index(row, 4), Qt::DisplayRole).toString() != currentPollutant ||
+        model->data(model->index(row, 2), Qt::DisplayRole).toString() != currentLocation) {
       continue;
     }
 
-    QString dateStr = model.data(model.index(row, 3), Qt::DisplayRole).toString();
+    QString dateStr = model->data(model->index(row, 3), Qt::DisplayRole).toString();
     QDateTime datetime = QDateTime::fromString(dateStr, Qt::ISODate);
 
     bool ok;
-    QString resultStr = model.data(model.index(row, 7), Qt::DisplayRole).toString();
+    QString resultStr = model->data(model->index(row, 7), Qt::DisplayRole).toString();
     double value = resultStr.toDouble(&ok);
 
     if (ok && datetime.isValid()) {
@@ -424,8 +423,8 @@ bool TrendsOverviewPage::hasResultData(const QString& pollutant, const QString& 
 
 void TrendsOverviewPage::populatePollutants() {
   QSet<QString> pollutantSet;
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
     if (!pollutant.isEmpty() && isOverviewPollutant(pollutant)) {
       pollutantSet.insert(pollutant);
     }
@@ -481,9 +480,9 @@ void TrendsOverviewPage::onPollutantSelected(const QString& pollutant) {
 
   // Find the unit for this pollutant
   currentUnit = "";
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    if (model.data(model.index(row, 4), Qt::DisplayRole).toString() == pollutant) {
-      currentUnit = model.data(model.index(row, 8), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    if (model->data(model->index(row, 4), Qt::DisplayRole).toString() == pollutant) {
+      currentUnit = model->data(model->index(row, 8), Qt::DisplayRole).toString();
       break;
     }
   }
@@ -529,12 +528,12 @@ void TrendsOverviewPage::buildLocationCache() {
   validLocationCache.clear();
 
   // Pre-calculate all valid pollutant-location pairs
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
     if (!pollutant.isEmpty() && isOverviewPollutant(pollutant)) {
-      QString location = model.data(model.index(row, 2), Qt::DisplayRole).toString();
+      QString location = model->data(model->index(row, 2), Qt::DisplayRole).toString();
       if (!location.isEmpty()) {
-        QString resultStr = model.data(model.index(row, 7), Qt::DisplayRole).toString();
+        QString resultStr = model->data(model->index(row, 7), Qt::DisplayRole).toString();
         bool ok;
         resultStr.toDouble(&ok);
         if (ok) {
@@ -552,7 +551,7 @@ void TrendsOverviewPage::onLocationChanged(const QString& location) {
 }
 
 void TrendsOverviewPage::updateStats() {
-  if (!model.hasData() || currentPollutant.isEmpty() || currentLocation.isEmpty()) {
+  if (!model->hasData() || currentPollutant.isEmpty() || currentLocation.isEmpty()) {
     return;
   }
 
@@ -564,18 +563,18 @@ void TrendsOverviewPage::updateStats() {
   int count = 0;
 
   // Calculate statistics
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    if (model.data(model.index(row, 4), Qt::DisplayRole).toString() != currentPollutant ||
-        model.data(model.index(row, 2), Qt::DisplayRole).toString() != currentLocation) {
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    if (model->data(model->index(row, 4), Qt::DisplayRole).toString() != currentPollutant ||
+        model->data(model->index(row, 2), Qt::DisplayRole).toString() != currentLocation) {
       continue;
     }
 
     bool ok;
-    double value = model.data(model.index(row, 7), Qt::DisplayRole).toString().toDouble(&ok);
+    double value = model->data(model->index(row, 7), Qt::DisplayRole).toString().toDouble(&ok);
     if (!ok) continue;
 
     QDateTime datetime = QDateTime::fromString(
-        model.data(model.index(row, 3), Qt::DisplayRole).toString(), Qt::ISODate);
+        model->data(model->index(row, 3), Qt::DisplayRole).toString(), Qt::ISODate);
 
     sum += value;
     min = std::min(min, value);

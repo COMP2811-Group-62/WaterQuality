@@ -13,8 +13,8 @@ class LitterPage : public BasePage {
   Q_OBJECT
 
  public:
-  LitterPage(QWidget *parent = nullptr);
-  void loadDataset(const QString &filename) override;
+  LitterPage(SampleModel *model, QWidget *parent = nullptr);
+  void refreshView() override;
 
  private slots:
   void updateCharts();
@@ -31,7 +31,7 @@ class LitterPage : public BasePage {
   void updateLocationCompleter();
   void setupInfoPanel();
 
-  SampleModel model;
+  SampleModel *model;
   QStringList allLocations;
 
   QFrame *controlsFrame;

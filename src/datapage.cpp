@@ -7,8 +7,8 @@
 
 #include "styles.h"
 
-DataPage::DataPage(QWidget* parent)
-    : BasePage("Data Page", parent) {
+DataPage::DataPage(SampleModel* model, QWidget* parent)
+    : BasePage("Data Page", parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/datapage.qss"}));
   setupUI();
@@ -16,7 +16,7 @@ DataPage::DataPage(QWidget* parent)
 
 void DataPage::setupUI() {
   table = new QTableView();
-  table->setModel(&model);
+  table->setModel(model);
   table->resizeColumnsToContents();
 
   // hide columns
@@ -32,8 +32,7 @@ void DataPage::setupUI() {
   pageLayout->addWidget(table);
 }
 
-void DataPage::loadDataset(const QString& filename) {
-  model.updateFromFile(filename);
+void DataPage::refreshView() {
   if (table) {
     table->reset();
     table->resizeColumnsToContents();

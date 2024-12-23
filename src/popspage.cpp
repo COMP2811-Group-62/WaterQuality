@@ -25,29 +25,17 @@
 #include "qualitysample.h"
 #include "styles.h"
 
-POPsPage::POPsPage(QWidget* parent)
-    : BasePage("Persistent Organic Pollutants", parent) {
+POPsPage::POPsPage(SampleModel* model, QWidget* parent)
+    : BasePage("Persistent Organic Pollutants", parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/popspage.qss"}));
   setupUI();
+}
+
+void POPsPage::refreshView() {
   loadData();
-
-  // Connect signals - update both when pollutant changes
-  connect(pollutantSelector, QOverload<int>::of(&QComboBox::currentIndexChanged),
-          [this](int index) {
-            updateTimeRangeOptions(pollutantSelector->currentText());
-            updateDisplay(index);
-            updateTimeRange(timeRangeSelector->currentIndex());
-          });
-  connect(timeRangeSelector, QOverload<int>::of(&QComboBox::currentIndexChanged),
-          this, &POPsPage::updateTimeRange);
-  connect(exportButton, &QPushButton::clicked,
-          this, &POPsPage::handleExport);
-
-  // Trigger initial display
   updateDisplay(pollutantSelector->currentIndex());
   updateTimeRange(timeRangeSelector->currentIndex());
-  updateTimeRangeOptions(pollutantSelector->currentText());
 }
 
 void POPsPage::setupUI() {
@@ -77,13 +65,6 @@ void POPsPage::setupUI() {
 
   mainLayout->addWidget(dataPanel, 2);
   mainLayout->addWidget(infoPanel, 1);
-}
-
-void POPsPage::loadDataset(const QString& filename) {
-  model.updateFromFile(filename);
-  loadData();  // Process new data
-  updateDisplay(pollutantSelector->currentIndex());
-  updateTimeRange(timeRangeSelector->currentIndex());
 }
 
 void POPsPage::setupControls() {
@@ -289,7 +270,7 @@ void POPsPage::setupInfoPanel() {
 }
 
 void POPsPage::loadData() {
-  if (!model.hasData()) {
+  if (!model->hasData()) {
     qWarning() << "Dataset not initialized";
     return;
   }
@@ -298,8 +279,8 @@ void POPsPage::loadData() {
   QDateTime latestDate;
   bool firstValidDate = true;
 
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
 
     // Add debug print to see what pollutants are being found
     // qDebug() << "Found pollutant:" << pollutant;
@@ -314,7 +295,7 @@ void POPsPage::loadData() {
       continue;
     }
 
-    QString dateStr = model.data(model.index(row, 3), Qt::DisplayRole).toString();
+    QString dateStr = model->data(model->index(row, 3), Qt::DisplayRole).toString();
     QDateTime sampleDate = QDateTime::fromString(dateStr, Qt::ISODate);
 
     if (!sampleDate.isValid()) {
@@ -322,7 +303,7 @@ void POPsPage::loadData() {
       continue;
     }
 
-    QString resultStr = model.data(model.index(row, 7), Qt::DisplayRole).toString();
+    QString resultStr = model->data(model->index(row, 7), Qt::DisplayRole).toString();
     bool belowDetectionLimit = resultStr.startsWith('<');
 
     if (belowDetectionLimit) {
@@ -345,7 +326,7 @@ void POPsPage::loadData() {
     point.value = value;
     point.belowDetectionLimit = belowDetectionLimit;
     point.pollutantType = pollutant;
-    point.samplingPoint = model.data(model.index(row, 2), Qt::DisplayRole).toString();
+    point.samplingPoint = model->data(model->index(row, 2), Qt::DisplayRole).toString();
     point.qualityScore = calculateQualityScore(point, latestDate);
 
     processedData.append(point);
@@ -945,26 +926,26 @@ void POPsPage::handleExport() {
   }
 
   int exportCount = 0;
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
     // Check pollutant match
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
     if (pollutant != selectedPollutant) {
       continue;
     }
 
     // Check date range
-    QString dateStr = model.data(model.index(row, 3), Qt::DisplayRole).toString();
+    QString dateStr = model->data(model->index(row, 3), Qt::DisplayRole).toString();
     QDateTime sampleDate = QDateTime::fromString(dateStr, Qt::ISODate);
     if (!sampleDate.isValid() || sampleDate < startDate || sampleDate > endDate) {
       continue;
     }
 
     // Write all columns for matching row
-    for (int col = 0; col < model.columnCount(QModelIndex()); ++col) {
+    for (int col = 0; col < model->columnCount(QModelIndex()); ++col) {
       if (col > 0) {
         stream << ",";
       }
-      stream << model.data(model.index(row, col), Qt::DisplayRole).toString();
+      stream << model->data(model->index(row, col), Qt::DisplayRole).toString();
     }
     stream << "\n";
     exportCount++;

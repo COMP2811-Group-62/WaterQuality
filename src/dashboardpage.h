@@ -13,8 +13,8 @@ class DashboardPage : public BasePage {
   Q_OBJECT
 
  public:
-  DashboardPage(QWidget* parent = nullptr);
-  void loadDataset(const QString& filename) override;
+  DashboardPage(SampleModel* model, QWidget* parent = nullptr);
+  void refreshView() override;
 
  private slots:
   void navigateToPage(int pageIndex);
@@ -60,7 +60,7 @@ class DashboardPage : public BasePage {
   double calculateCompliance(const QVector<double>& values, double threshold);
 
   QGridLayout* cardsLayout;
-  SampleModel model;
+  SampleModel* model;
   QComboBox* timeRangeFilter;
   QComboBox* regionFilter;
 

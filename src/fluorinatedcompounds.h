@@ -1,18 +1,19 @@
-#include <QtCharts>
+#pragma once
 
 #include "basepage.h"
 #include "model.h"
 
 class QHBoxLayout;
 class QTableView;
+class QComboBox;
 class QChart;
 
 class FluorinatedCompounds : public BasePage {
   Q_OBJECT
 
  public:
-  FluorinatedCompounds(QWidget* parent = nullptr);
-  void loadDataset(const QString& filename) override;
+  FluorinatedCompounds(SampleModel* model, QWidget* parent = nullptr);
+  void refreshView() override;
 
  private:
   void setupUI() override;
@@ -20,7 +21,7 @@ class FluorinatedCompounds : public BasePage {
   void configureMap(QVBoxLayout* column);
   void configureSidebar(QVBoxLayout* column);
 
-  SampleModel model;
+  SampleModel* model;
 
   QVBoxLayout* header;
   QHBoxLayout* body;

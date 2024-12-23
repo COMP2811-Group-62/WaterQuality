@@ -68,28 +68,28 @@ void MainWindow::setupNavigation() {
 }
 
 void MainWindow::setupPages() {
-  DashboardPage* dbPage = new DashboardPage();
+  DashboardPage* dbPage = new DashboardPage(&sharedModel);
   stackedWidget->addWidget(dbPage);
 
   connect(dbPage, &DashboardPage::pageChangeRequested,
           navBar, &NavigationBar::setCurrentPage);
 
-  DataPage* dataPage = new DataPage();
+  DataPage* dataPage = new DataPage(&sharedModel);
   stackedWidget->addWidget(dataPage);
 
-  TrendsOverviewPage* pollutantsOverview = new TrendsOverviewPage();
+  TrendsOverviewPage* pollutantsOverview = new TrendsOverviewPage(&sharedModel);
   stackedWidget->addWidget(pollutantsOverview);
 
-  FluorinatedCompounds* fluorinatedCompounds = new FluorinatedCompounds();
+  FluorinatedCompounds* fluorinatedCompounds = new FluorinatedCompounds(&sharedModel);
   stackedWidget->addWidget(fluorinatedCompounds);
 
-  POPsPage* popsPage = new POPsPage();
+  POPsPage* popsPage = new POPsPage(&sharedModel);
   stackedWidget->addWidget(popsPage);
 
-  LitterPage* litterPage = new LitterPage();
+  LitterPage* litterPage = new LitterPage(&sharedModel);
   stackedWidget->addWidget(litterPage);
 
-  ComplianceDashboard* complianceDashboard = new ComplianceDashboard();
+  ComplianceDashboard* complianceDashboard = new ComplianceDashboard(&sharedModel);
   stackedWidget->addWidget(complianceDashboard);
 }
 
@@ -140,14 +140,17 @@ void MainWindow::loadDataset(const QString& filename) {
 }
 
 void MainWindow::distributeDataset(const QString& filename) {
-  // Update each page with the new dataset
+  try {
+    sharedModel.updateFromFile(filename);
+  } catch (const std::exception& e) {
+    QMessageBox::critical(this, "Error", QString("Error loading dataset: %1").arg(e.what()));
+    return;
+  }
+
+  // Notify all pages to refresh their views if necessary
   for (int i = 0; i < stackedWidget->count(); i++) {
     if (auto page = qobject_cast<BasePage*>(stackedWidget->widget(i))) {
-      try {
-        page->loadDataset(filename);
-      } catch (const std::exception& e) {
-        qWarning() << "Error updating page" << i << ":" << e.what();
-      }
+      page->refreshView();
     }
   }
 

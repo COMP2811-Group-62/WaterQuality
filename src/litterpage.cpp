@@ -2,17 +2,17 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QVBoxLayout>
 #include <set>
 
 #include "styles.h"
 
-LitterPage::LitterPage(QWidget *parent)
-    : BasePage("Litter Indicators", parent) {
-  setupUI();
-  updateLocationCompleter();
+LitterPage::LitterPage(SampleModel *model, QWidget *parent)
+    : BasePage("Litter Indicators", parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/litter.qss"}));
 
+  setupUI();
   updateCharts();
 }
 
@@ -36,8 +36,7 @@ void LitterPage::setupUI() {
   mainLayout->addLayout(horizontalLayout);
 }
 
-void LitterPage::loadDataset(const QString &filename) {
-  model.updateFromFile(filename);
+void LitterPage::refreshView() {
   updateLocationCompleter();  // Update location list
   updateCharts();             // Refresh charts with new data
 }
@@ -152,8 +151,8 @@ void LitterPage::updateCharts() {
   barSeries->setLabelsPosition(QAbstractBarSeries::LabelsOutsideEnd);
 
   // Iterate through data set and apply filter conditions
-  for (int i = 0; i < model.rowCount(QModelIndex()); i++) {
-    QString location = model.data(model.index(i, 2), Qt::DisplayRole).toString();
+  for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
+    QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
 
     // Apply location search filter
     if (!searchLocation.isEmpty() &&
@@ -161,9 +160,9 @@ void LitterPage::updateCharts() {
       continue;
     }
 
-    QString litterType = model.data(model.index(i, 4), Qt::DisplayRole).toString();
-    QString litterDef = model.data(model.index(i, 5), Qt::DisplayRole).toString();
-    QString resultStr = model.data(model.index(i, 7), Qt::DisplayRole).toString();
+    QString litterType = model->data(model->index(i, 4), Qt::DisplayRole).toString();
+    QString litterDef = model->data(model->index(i, 5), Qt::DisplayRole).toString();
+    QString resultStr = model->data(model->index(i, 7), Qt::DisplayRole).toString();
 
     bool isPlastic = litterDef.contains("Plastic", Qt::CaseInsensitive) ||
                      litterType.contains("Plastic", Qt::CaseInsensitive);
@@ -323,8 +322,8 @@ void LitterPage::onBarHovered(bool status, int index, QBarSet *barset) {
 
 void LitterPage::updateLocationCompleter() {
   QSet<QString> locations;
-  for (int i = 0; i < model.rowCount(QModelIndex()); i++) {
-    QString location = model.data(model.index(i, 2), Qt::DisplayRole).toString();
+  for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
+    QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
     if (!location.isEmpty()) {
       locations.insert(location);
     }

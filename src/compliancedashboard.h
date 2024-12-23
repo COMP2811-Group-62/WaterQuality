@@ -20,8 +20,8 @@ class ComplianceDashboard : public BasePage {
   Q_OBJECT
 
  public:
-  explicit ComplianceDashboard(QWidget* parent = nullptr);
-  void loadDataset(const QString& filename) override;
+  ComplianceDashboard(SampleModel* model, QWidget* parent = nullptr);
+  void refreshView() override;
 
  private slots:
   void onLocationFiltered(const QString& location);
@@ -48,7 +48,7 @@ class ComplianceDashboard : public BasePage {
   QComboBox* complianceSelect;
 
   // Data Management
-  SampleModel model;
+  SampleModel* model;
   QStringList locations;
   QStringList pollutants;
   QString currentLocation;
