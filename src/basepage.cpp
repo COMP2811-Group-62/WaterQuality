@@ -4,8 +4,12 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
+#include "styles.h"
+
 BasePage::BasePage(const QString& title, QWidget* parent)
     : QWidget(parent), pageTitle(title) {
+  setObjectName("basePage");
+  setStyleSheet(Styles::loadStyleSheet(":/styles/basepage.qss"));
   setupUI();
 }
 
@@ -21,38 +25,24 @@ void BasePage::setupUI() {
   // Create content area
   contentArea = new QWidget();
   contentArea->setObjectName("contentArea");
-  contentArea->setStyleSheet(R"(
-    QWidget#contentArea {
-      border: 1px solid red;
-    }
-  )");
-  contentArea->setMinimumSize(500, 720);
-  mainLayout->addWidget(contentArea);
+
+  mainLayout->addWidget(contentArea, 1);
 }
 
 void BasePage::createHeader() {
   QWidget* headerContainer = new QWidget();
   headerContainer->setObjectName("headerContainer");
-  headerContainer->setStyleSheet(R"(
-    QWidget#headerContainer {
-      border: 1px solid blue;
-    }
-  )");
+  headerContainer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
   // Create layout for title container
-  QHBoxLayout* headerLayout = new QHBoxLayout();
-  headerContainer->setLayout(headerLayout);
+  QHBoxLayout* headerLayout = new QHBoxLayout(headerContainer);
+  headerLayout->setContentsMargins(24, 24, 24, 24);
 
   // Create and style the title label
   titleLabel = new QLabel(pageTitle);
-  titleLabel->setStyleSheet(R"(
-    color: white;
-    font-size: 24px;  
-    font-weight: bold;
-  )");
+  titleLabel->setObjectName("pageTitle");
   headerLayout->addWidget(titleLabel);
 
   // Add title container to main layout
   mainLayout->addWidget(headerContainer);
-  mainLayout->addStretch();
 }

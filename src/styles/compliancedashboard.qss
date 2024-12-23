@@ -1,0 +1,14 @@
+QFrame#filtersFrame{
+    background-color: white;
+    border-radius: 8px;
+    border-color: #acacac;
+    border: 1px solid;
+    padding: 15px;
+}
+QFrame#cardsFrame{
+    background-color: white;
+    border-radius: 8px;
+    border-color: #acacac;
+    border: 1px solid;
+    padding: 15px;
+}

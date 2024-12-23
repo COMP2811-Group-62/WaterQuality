@@ -1,0 +1,104 @@
+/* Main layout styling */
+QFrame#contentFrame {
+    border-radius: 6px;
+}
+
+/* Controls section */
+QFrame#controlsFrame {
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+/* Chart styling */
+QFrame#chartFrame {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+/* Info card styling */
+QFrame.infoCard {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    text-align: left;
+    border-radius: 6px;
+}
+
+QLabel.infoTitle {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+QLabel.infoValue {
+    font-size: 14px;
+}
+
+/* Labels */
+QLabel {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Chart frame */
+QFrame#chartFrame {
+    background-color: white;
+}
+
+/* Tooltips */
+QToolTip {
+    background-color: #9fdcff;
+    border: 1px solid #051826;
+    border-radius: 4px;
+    color: #051826;
+    padding: 8px;
+    font-size: 12px;
+}
+
+/* Safety threshold indicators */
+QFrame.thresholdIndicator {
+    border-radius: 4px;
+    padding: 2px 4px;
+    height: 30px;
+    width: 60px;
+}
+
+QFrame#safeIndicator {
+    background-color: #4caf50;
+}
+
+QFrame#warningIndicator {
+    background-color: #ff9800;
+}
+
+QFrame#dangerIndicator {
+    background-color: #f44336;
+}
+
+QLabel.thresholdLabel {
+    color: white;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+QLineEdit { 
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+QComboBox#locationDropdown {
+    border-radius: 6px;
+    color: white;
+    padding: 8px 12px;
+}
+
+/* QComboBox#locationDropdown:hover {
+    background-color: rgba(64, 186, 213, 0.1);
+    border: 1px solid rgba(64, 186, 213, 0.3);
+} */
+
+QComboBox#locationDropdown::drop-down {
+    border: none;
+    color: white;
+}

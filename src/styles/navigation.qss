@@ -1,0 +1,57 @@
+QFrame#navigationBar {
+    background-color: #051826;
+    min-width: 250px;
+    max-width: 300px;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);  /* Subtle separator */
+}
+
+#navigationBar QLabel {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 20px 0;
+    margin-bottom: 10px;
+}
+
+#navigationBar QPushButton {
+    background-color: rgba(255, 255, 255, 0.03);
+    text-align: left;
+    padding: 12px 24px;
+    border-radius: 8px;
+    margin: 4px 12px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    border: none;
+}
+
+#navigationBar QPushButton:hover:!checked {
+    background-color: rgba(64, 186, 213, 0.1);  /* Teal hover */
+}
+
+#navigationBar QPushButton:checked {
+    background-color: rgba(64, 186, 213, 0.15);  /* Stronger teal for active */
+    border: 1px solid rgba(64, 186, 213, 0.3);
+}
+
+#navigationBar QComboBox {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 12px;
+    color: white;
+}
+
+#navigationBar QComboBox:hover {
+    background-color: rgba(64, 186, 213, 0.1);
+    border: 1px solid rgba(64, 186, 213, 0.3);
+}
+
+#navigationBar QComboBox::drop-down {
+    border: none;
+}
+
+#navigationBar QComboBox::down-arrow {
+    image: none;
+}

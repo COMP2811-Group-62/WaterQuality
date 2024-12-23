@@ -9,8 +9,13 @@
 #include <QVBoxLayout>
 
 #include "dashboardpage.h"
-#include "examplepage.h"
+#include "datapage.h"
+#include "fluorinatedcompounds.h"
+#include "litterpage.h"
 #include "navigationbar.h"
+#include "popspage.h"
+#include "trendsoverview.h"
+#include "compliancedashboard.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   setupUI();
@@ -20,16 +25,14 @@ void MainWindow::setupUI() {
   // Set window properties
   resize(1280, 720);
 
-#ifdef Q_OS_MAC
-  setUnifiedTitleAndToolBarOnMac(true);
-#endif
-
   // Create central widget
   centralWidget = new QWidget(this);
   setCentralWidget(centralWidget);
 
   // Create main layout
   mainLayout = new QHBoxLayout(centralWidget);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+  mainLayout->setSpacing(0);
 
   // Create and setup navigation bar
   setupNavigation();
@@ -57,8 +60,23 @@ void MainWindow::setupPages() {
   DashboardPage *dbPage = new DashboardPage();
   stackedWidget->addWidget(dbPage);
 
-  ExamplePage *examplePage = new ExamplePage();
-  stackedWidget->addWidget(examplePage);
+  DataPage *dataPage = new DataPage();
+  stackedWidget->addWidget(dataPage);
+
+  TrendsOverviewPage *pollutantsOverview = new TrendsOverviewPage();
+  stackedWidget->addWidget(pollutantsOverview);
+
+  FluorinatedCompounds *fluorinatedCompounds = new FluorinatedCompounds();
+  stackedWidget->addWidget(fluorinatedCompounds);
+
+  POPsPage *popsPage = new POPsPage();
+  stackedWidget->addWidget(popsPage);
+
+  LitterPage *litterPage = new LitterPage();
+  stackedWidget->addWidget(litterPage);
+
+  ComplianceDashboard *complianceDashboard = new ComplianceDashboard();
+  stackedWidget->addWidget(complianceDashboard);
 }
 
 void MainWindow::switchPage(int index) {
