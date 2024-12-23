@@ -10,11 +10,21 @@ Rectangle {
     border.width: 2
     radius: 8.0
 
+    Plugin { 
+        id: mapPlugin
+        name: "osm" 
+        PluginParameter {
+            name: "osm.mapping.custom.host" 
+            value: "https://tile.openstreetmap.org/" 
+        } 
+    }
+
+
     Map {
         id: map
         anchors.fill: parent
-        plugin: Plugin { name: "osm" }
-
+        plugin: mapPlugin
+        activeMapType: map.supportedMapTypes[map.supportedMapTypes.length - 1]
         zoomLevel: 14
         center {
             latitude: 53.80908899159547
