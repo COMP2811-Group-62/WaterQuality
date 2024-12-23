@@ -1,16 +1,8 @@
-/* Control frame styling */
 QFrame#controlsFrame {
-    background-color: #ffffff;
+    background-color: white;
     border: 1px solid #dee2e6;
     border-radius: 8px;
-    padding: 15px;
-}
-
-QComboBox {
-    min-width: 180px;
     padding: 8px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
 }
 
 QPushButton {
@@ -64,7 +56,6 @@ QMessageBox QPushButton {
     border-radius: 4px;
     padding: 6px 20px;
     font-weight: bold;
-    min-width: 100px;
     margin: 8px;
 }
 
@@ -88,7 +79,6 @@ QMessageBox#successBox QPushButton {
     border-radius: 4px;
     padding: 6px 20px;
     font-weight: bold;
-    min-width: 100px;
     margin: 8px;
 }
 
@@ -108,7 +98,6 @@ QMessageBox#errorBox QPushButton {
     border-radius: 4px;
     padding: 6px 20px;
     font-weight: bold;
-    min-width: 100px;
     margin: 8px;
 }
 
@@ -120,20 +109,15 @@ QMessageBox#errorBox QPushButton:hover {
 QFrame#infoPanel {
     border: 1px solid #037a9b;
     border-radius: 8px;
-    margin: 5px;
-    padding: 15px;
-    background-color: #f8f9fa;
+    background-color: white;
+    padding: 8px;
 }
 
 QFrame#safetyFrame, QFrame#healthFrame, QFrame#thresholdFrame {
     border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 15px;
     background-color: white;
-}
-
-QFrame#healthFrame:hover {
-    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 8px;
 }
 
 QLabel#statusLabel {

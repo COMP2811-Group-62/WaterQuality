@@ -1,46 +1,56 @@
 #pragma once
 
 #include <QComboBox>
+#include <QCompleter>
+#include <QLineEdit>
 #include <QtCharts>
+
 #include "basepage.h"
 #include "dataset.h"
+#include "model.h"
 
-class LitterPage : public BasePage
-{
-    Q_OBJECT
+class LitterPage : public BasePage {
+  Q_OBJECT
 
-public:
-    LitterPage(QWidget *parent = nullptr);
+ public:
+  LitterPage(SampleModel *model, QWidget *parent = nullptr);
+  void refreshView() override;
 
-private slots:
-    void updateCharts();
-    void onLocationFilterChanged(const QString &location);
-    void onWaterTypeFilterChanged(const QString &type);
-    void onBarHovered(bool status, int index, QBarSet *barset);
+ private slots:
+  void updateCharts();
+  void onWaterTypeFilterChanged(const QString &type);
+  void onLocationSelected(const QString &location);
+  void onLocationSearchChanged(const QString &text);
+  void onBarHovered(bool status, int index, QBarSet *barset);
 
-private:
-    void setupUI() override;
-    void setupCharts();
-    void setupFilters();
-    void loadData();
-    QString getLocationCoordinates(const QString &location) const;  // 辅助函数获取坐标
+ private:
+  void setupUI() override;
+  void setupCharts();
+  void setupFilters();
+  void loadData();
+  void updateLocationCompleter();
+  void setupInfoPanel();
 
-    // 数据
-    WaterQualityDataset dataset;
+  SampleModel *model;
+  QStringList allLocations;
 
-    // 控制区域组件
-    QFrame *controlsFrame;
-    QHBoxLayout *controlsLayout;
-    QComboBox *locationFilter;
-    QComboBox *waterTypeFilter;
+  QFrame *controlsFrame;
+  QHBoxLayout *controlsLayout;
+  QComboBox *waterTypeFilter;
+  QLineEdit *locationSearch;
+  QCompleter *locationCompleter;
 
-    // 图表组件
-    QChartView *locationBarChart;
-    QChartView *waterTypePieChart;
-    QChart *barChart;
-    QChart *pieChart;
+  QChartView *locationBarChart;
+  QChart *barChart;
 
-    // 布局
-    QVBoxLayout *mainLayout;
-    QHBoxLayout *chartsLayout;
+  QVBoxLayout *mainLayout;
+  QFrame *infoPanel;
+  QHBoxLayout *chartsLayout;
+
+  std::map<QString, std::pair<double, double>> locationLevels;
+
+  QLineSeries *warningThresholdLine;      // 警告阈值线
+  QLineSeries *dangerThresholdLine;       // 危险阈值线
+  const double WARNING_THRESHOLD = 15.0;  // 警告阈值
+  const double DANGER_THRESHOLD = 25.0;   // 危险阈值
 };

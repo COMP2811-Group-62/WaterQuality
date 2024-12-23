@@ -26,10 +26,10 @@ void NavigationBar::setupUI() {
   navButtons.append(createNavButton("Dashboard", 0, true));  // Default
   navButtons.append(createNavButton("Data Page", 1, false));
   navButtons.append(createNavButton("Pollutants Overview", 2, false));
-  navButtons.append(createNavButton("Example Page", 3, false));
-  navButtons.append(createNavButton("Fluorinated Compounds", 4, false));
-  navButtons.append(createNavButton("POPs Page", 5, false));
-  navButtons.append(createNavButton("Litter Indicators", 6, false));
+  navButtons.append(createNavButton("Fluorinated Compounds", 3, false));
+  navButtons.append(createNavButton("POPs Page", 4, false));
+  navButtons.append(createNavButton("Litter Indicators", 5, false));
+  navButtons.append(createNavButton("Compliance Dashboard", 6, false));
 
   for (auto button : navButtons) {
     layout->addWidget(button);
@@ -40,8 +40,7 @@ void NavigationBar::setupUI() {
   // Add language selector
   languageSelector = new QComboBox(this);
   languageSelector->addItems({"English", "Français", "Español"});
-  connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged),
-          this, &NavigationBar::languageChanged);
+  connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &NavigationBar::languageChanged);
   layout->addWidget(languageSelector);
 }
 
@@ -56,4 +55,17 @@ QPushButton *NavigationBar::createNavButton(const QString &text, int index, bool
     emit pageChanged(index);
   });
   return button;
+}
+
+void NavigationBar::setCurrentPage(int index) {
+  // Uncheck all buttons
+  for (auto button : navButtons) {
+    button->setChecked(false);
+  }
+
+  // Check the button corresponding to the index
+  if (index >= 0 && index < navButtons.size()) {
+    navButtons[index]->setChecked(true);
+    emit pageChanged(index);
+  }
 }

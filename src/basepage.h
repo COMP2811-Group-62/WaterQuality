@@ -13,6 +13,7 @@ class BasePage : public QWidget {
  public:
   explicit BasePage(const QString& title, QWidget* parent = nullptr);
   virtual ~BasePage() = default;
+  virtual void refreshView() = 0;  // Pure virtual function to refresh the view
 
  protected:
   // Content area where derived classes should add their widgets

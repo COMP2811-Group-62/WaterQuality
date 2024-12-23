@@ -7,7 +7,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Quick QuickWidgets Location)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Quick QuickWidgets)
 qt_standard_project_setup()
 
 set(SOURCES
@@ -18,7 +18,6 @@ set(SOURCES
     src/dashboardpage.cpp
     src/datapage.cpp
     src/trendsoverview.cpp
-    src/examplepage.cpp
     src/fluorinatedcompounds.cpp
     src/styles.cpp
     src/qualitysample.cpp
@@ -26,6 +25,7 @@ set(SOURCES
     src/model.cpp
     src/popspage.cpp
     src/litterpage.cpp
+    src/compliancedashboard.cpp
 )
 
 set(HEADERS
@@ -35,7 +35,6 @@ set(HEADERS
     src/dashboardpage.h
     src/datapage.h
     src/trendsoverview.h
-    src/examplepage.h
     src/fluorinatedcompounds.h
     src/styles.h
     src/qualitysample.h
@@ -43,6 +42,7 @@ set(HEADERS
     src/model.h
     src/litterpage.h
     src/popspage.h
+    src/compliancedashboard.h
 )
 
 qt_add_executable(water
@@ -58,7 +58,7 @@ target_link_libraries(water PRIVATE
     Qt6::Charts
     Qt6::Quick
     Qt6::QuickWidgets
-    Qt6::Location
+    # Qt6::Location
 )
 
 set_target_properties(water PROPERTIES
