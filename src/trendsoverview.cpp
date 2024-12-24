@@ -11,7 +11,7 @@
 #include "styles.h"
 
 TrendsOverviewPage::TrendsOverviewPage(SampleModel* model, QWidget* parent)
-    : BasePage("Pollutants Overview", parent), model(model) {
+    : BasePage(tr("Pollutants Overview"), parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/trendsoverview.qss"}));
   setupUI();
@@ -74,10 +74,10 @@ void TrendsOverviewPage::refreshView() {
 }
 
 void TrendsOverviewPage::setupStatsSection(QVBoxLayout* leftLayout, QVBoxLayout* rightLayout) {
-  addInfoCard(leftLayout, "Average", "0.0 µg/L");
-  addInfoCard(leftLayout, "Last Reading", "0.0 µg/L");
-  addInfoCard(rightLayout, "Minimum", "0.0 µg/L");
-  addInfoCard(rightLayout, "Maximum", "0.0 µg/L");
+  addInfoCard(leftLayout, tr("Average"), "0.0 µg/L");
+  addInfoCard(leftLayout, tr("Last Reading"), "0.0 µg/L");
+  addInfoCard(rightLayout, tr("Minimum"), "0.0 µg/L");
+  addInfoCard(rightLayout, tr("Maximum"), "0.0 µg/L");
 }
 
 void TrendsOverviewPage::setupControlsSection(QVBoxLayout* parentLayout) {
@@ -97,11 +97,11 @@ void TrendsOverviewPage::setupControlsSection(QVBoxLayout* parentLayout) {
 }
 
 void TrendsOverviewPage::setupSearchControls(QVBoxLayout* layout) {
-  QLabel* pollutantLabel = new QLabel("Search Pollutant:");
+  QLabel* pollutantLabel = new QLabel(tr("Search Pollutant:"));
   pollutantSearch = new SearchLineEdit();
-  pollutantSearch->setPlaceholderText("Type to search pollutants...");
+  pollutantSearch->setPlaceholderText(tr("Type to search pollutants..."));
 
-  QLabel* locationLabel = new QLabel("Select Location:");
+  QLabel* locationLabel = new QLabel(tr("Select Location:"));
   locationSelector = new QComboBox();
   locationSelector->setObjectName("locationDropdown");
   locationSelector->setStyleSheet("");  // Clear any existing styles
@@ -158,9 +158,9 @@ void TrendsOverviewPage::addInfoCard(QVBoxLayout* layout, const QString& title,
 
 void TrendsOverviewPage::setupThresholdIndicators(QHBoxLayout* layout) {
   // No units in the threshold indicators since they are relative values
-  layout->addWidget(createThresholdIndicator("Safe", "≤ 5.0", "safeIndicator"));
-  layout->addWidget(createThresholdIndicator("Warning", "5.1-7.0", "warningIndicator"));
-  layout->addWidget(createThresholdIndicator("Danger", "> 7.0", "dangerIndicator"));
+  layout->addWidget(createThresholdIndicator(tr("Safe"), tr("≤ 5.0"), "safeIndicator"));
+  layout->addWidget(createThresholdIndicator(tr("Warning"), tr("5.1-7.0"), "warningIndicator"));
+  layout->addWidget(createThresholdIndicator(tr("Danger"), tr("> 7.0"), "dangerIndicator"));
   layout->addStretch();
 }
 
@@ -212,7 +212,7 @@ void TrendsOverviewPage::setupChart() {
   chart->addSeries(series);
 
   axisX = new QDateTimeAxis;
-  axisX->setTitleText("Month");
+  axisX->setTitleText(tr("Month"));
   axisX->setTitleFont(QFont("Arial", 14, QFont::Medium));
   axisX->setLabelsFont(QFont("Arial", 12));
   axisX->setFormat("MMM yyyy");
@@ -223,7 +223,7 @@ void TrendsOverviewPage::setupChart() {
   chart->addAxis(axisX, Qt::AlignBottom);
 
   axisY = new QValueAxis;
-  axisY->setTitleText("Concentration");
+  axisY->setTitleText(tr("Concentration"));
   axisY->setTitleFont(QFont("Arial", 14, QFont::Medium));
   axisY->setLabelsFont(QFont("Arial", 12));
   axisY->setLabelFormat("%.2f");
@@ -245,10 +245,9 @@ void TrendsOverviewPage::onPointHovered(const QPointF& point, bool state) {
   QDateTime datetime = QDateTime::fromMSecsSinceEpoch(point.x());
   double value = point.y();
 
-  QString tooltip = QString(
-                        "Date: %1\n"
-                        "Value: %2 %3\n"
-                        "Status: %4")
+  QString tooltip = tr("Date: %1\n"
+                       "Value: %2 %3\n"
+                       "Status: %4")
                         .arg(datetime.toString("dd MMM yyyy"))
                         .arg(value, 0, 'f', 2)
                         .arg(currentUnit)
@@ -258,9 +257,9 @@ void TrendsOverviewPage::onPointHovered(const QPointF& point, bool state) {
 }
 
 QString TrendsOverviewPage::getComplianceStatus(double value) const {
-  if (value <= SAFE_THRESHOLD) return "Safe";
-  if (value <= DANGER_THRESHOLD) return "Warning - Approaching Danger Limit";
-  return "Danger - Exceeds Safety Limit";
+  if (value <= SAFE_THRESHOLD) return tr("Safe");
+  if (value <= DANGER_THRESHOLD) return tr("Warning - Approaching Danger Limit");
+  return tr("Danger - Exceeds Safety Limit");
 }
 
 QColor TrendsOverviewPage::getComplianceColor(double value) const {

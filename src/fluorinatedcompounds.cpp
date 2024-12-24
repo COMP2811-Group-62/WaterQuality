@@ -13,7 +13,7 @@
 #include "styles.h"
 
 FluorinatedCompounds::FluorinatedCompounds(SampleModel* model, QWidget* parent)
-    : BasePage("Fluorinated Compounds Page", parent), model(model) {
+    : BasePage(tr("Fluorinated Compounds Page"), parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/fluorinatedcompounds.qss"}));
   setupUI();
@@ -53,7 +53,7 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
   mapControls->setSpacing(20);
 
-  QLabel* titleLabel = new QLabel("The map below shows all Polutants with the 'PF' Prefix and the sampling point location.");
+  QLabel* titleLabel = new QLabel(tr("The map below shows all Polutants with the 'PF' Prefix and the sampling point location."));
   titleLabel->setObjectName("h1");
 
   // define combo boxes
@@ -66,11 +66,11 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
   timeRangeSelector = new QComboBox();
   timeRangeSelector->addItems({"Jan", "Feb", "March", "Or dynamic based off selections"});
 
-  QLabel* locationLabel = new QLabel("Location:");
+  QLabel* locationLabel = new QLabel(tr("Location:"));
   locationLabel->setObjectName("h2");
-  QLabel* pollutantLabel = new QLabel("Pollutant:");
+  QLabel* pollutantLabel = new QLabel(tr("Pollutant:"));
   pollutantLabel->setObjectName("h2");
-  QLabel* timeRangeLabel = new QLabel("Time Range:");
+  QLabel* timeRangeLabel = new QLabel(tr("Time Range:"));
   timeRangeLabel->setObjectName("h2");
 
   mapControls->addWidget(locationLabel);

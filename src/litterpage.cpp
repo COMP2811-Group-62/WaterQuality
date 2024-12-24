@@ -8,7 +8,7 @@
 #include "styles.h"
 
 LitterPage::LitterPage(SampleModel *model, QWidget *parent)
-    : BasePage("Litter Indicators", parent), model(model) {
+    : BasePage(tr("Litter Indicators"), parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/litter.qss"}));
 
@@ -355,17 +355,17 @@ void LitterPage::setupInfoPanel() {
   QVBoxLayout *thresholdLayout = new QVBoxLayout(thresholdFrame);
 
   // 标题
-  QLabel *thresholdTitle = new QLabel("Safety Thresholds", thresholdFrame);
+  QLabel *thresholdTitle = new QLabel(tr("Safety Thresholds"), thresholdFrame);
   thresholdTitle->setStyleSheet("font-size: 16px; font-weight: bold;");
 
   // 内容
   QLabel *thresholdLabel = new QLabel(thresholdFrame);
   thresholdLabel->setWordWrap(true);
-  thresholdLabel->setText(
+  thresholdLabel->setText(tr(
       "UK/EU Safety Thresholds for Plastic Waste:\n"
       "• Safe: < 15.0 mg/L\n"
       "• Warning: 15.0-25.0 mg/L\n"
-      "• Danger: > 25.0 mg/L");
+      "• Danger: > 25.0 mg/L"));
 
   // 添加到布局
   thresholdLayout->addWidget(thresholdTitle);
