@@ -210,10 +210,9 @@ QFrame* DashboardPage::createPollutantsCard() {
   header->setObjectName("cardHeader");
   QVBoxLayout* headerLayout = new QVBoxLayout(header);
 
-  QLabel* titleLabel = new QLabel("Common Pollutants");
+  QLabel* titleLabel = new QLabel(tr("Pollutants Overview"));
   titleLabel->setObjectName("cardTitle");
-
-  QLabel* subtitleLabel = new QLabel("Overview of water pollutants and their levels");
+  QLabel* subtitleLabel = new QLabel(tr("Summary of pollutant levels and trends"));
   subtitleLabel->setObjectName("cardSubtitle");
 
   headerLayout->addWidget(titleLabel);
@@ -223,12 +222,11 @@ QFrame* DashboardPage::createPollutantsCard() {
   QWidget* content = new QWidget;
   QVBoxLayout* contentLayout = new QVBoxLayout(content);
 
-  // Add key metrics
   QString metricsText = QString(
-                            "• Average Level: %1 µg/L\n"
-                            "• Samples Above Limit: %2 \n"
-                            "• Most Common: %3\n"
-                            "• Trend: %4")
+                            tr("• Average Level: %1 µg/L\n"
+                               "• Samples Above Limit: %2\n"
+                               "• Most Common: %3\n"
+                               "• Trend: %4"))
                             .arg(commonPollutantMetrics.averageLevel)
                             .arg(int(commonPollutantMetrics.samplesAboveLimit * 100.0 /
                                      commonPollutantMetrics.totalSamples))
@@ -248,7 +246,7 @@ QFrame* DashboardPage::createPollutantsCard() {
                    .name()));
 
   // Navigate button
-  QPushButton* navButton = new QPushButton("View Detailed Analysis");
+  QPushButton* navButton = new QPushButton(tr("View Detailed Analysis"));
   navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked,
           [this]() { navigateToPage(2); });  // Index 2 is Pollutants Overview
@@ -276,9 +274,9 @@ QFrame* DashboardPage::createPOPsCard() {
   header->setObjectName("cardHeader");
   QVBoxLayout* headerLayout = new QVBoxLayout(header);
 
-  QLabel* titleLabel = new QLabel("Persistent Organic Pollutants (POPs)");
+  QLabel* titleLabel = new QLabel(tr("Persistent Organic Pollutants (POPs)"));
   titleLabel->setObjectName("cardTitle");
-  QLabel* subtitleLabel = new QLabel("Status of POPs in water supplies");
+  QLabel* subtitleLabel = new QLabel(tr("Status of POPs in water supplies"));
   subtitleLabel->setObjectName("cardSubtitle");
 
   headerLayout->addWidget(titleLabel);
@@ -304,7 +302,8 @@ QFrame* DashboardPage::createPOPsCard() {
       QString("background-color: %1; color: white; padding: 8px; border-radius: 4px;")
           .arg(getStatusColor(popsMetrics.averageLevel, POPS_WARNING, POPS_DANGER).name()));
 
-  QPushButton* navButton = new QPushButton("View POPs Analysis");
+  // Navigate button
+  QPushButton* navButton = new QPushButton(tr("View Detailed Analysis"));
   navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(4); });
 
@@ -331,9 +330,9 @@ QFrame* DashboardPage::createLitterCard() {
   header->setObjectName("cardHeader");
   QVBoxLayout* headerLayout = new QVBoxLayout(header);
 
-  QLabel* titleLabel = new QLabel("Environmental Litter");
+  QLabel* titleLabel = new QLabel(tr("Environmental Litter"));
   titleLabel->setObjectName("cardTitle");
-  QLabel* subtitleLabel = new QLabel("Water litter levels and trends");
+  QLabel* subtitleLabel = new QLabel(tr("Water litter levels and trends"));
   subtitleLabel->setObjectName("cardSubtitle");
 
   headerLayout->addWidget(titleLabel);
@@ -359,7 +358,8 @@ QFrame* DashboardPage::createLitterCard() {
       QString("background-color: %1; color: white; padding: 8px; border-radius: 4px;")
           .arg(getStatusColor(litterMetrics.averageLevel, LITTER_WARNING, LITTER_DANGER).name()));
 
-  QPushButton* navButton = new QPushButton("View Litter Analysis");
+  // Navigate button
+  QPushButton* navButton = new QPushButton(tr("View Litter Analysis"));
   navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(5); });
 
@@ -441,9 +441,9 @@ QFrame* DashboardPage::createComplianceCard() {
   header->setObjectName("cardHeader");
   QVBoxLayout* headerLayout = new QVBoxLayout(header);
 
-  QLabel* titleLabel = new QLabel("Overall Compliance Status");
+  QLabel* titleLabel = new QLabel(tr("Overall Compliance Status"));
   titleLabel->setObjectName("cardTitle");
-  QLabel* subtitleLabel = new QLabel("Summary of safety compliance across all categories");
+  QLabel* subtitleLabel = new QLabel(tr("Summary of safety compliance across all categories"));
   subtitleLabel->setObjectName("cardSubtitle");
 
   headerLayout->addWidget(titleLabel);
@@ -453,11 +453,10 @@ QFrame* DashboardPage::createComplianceCard() {
   QWidget* content = new QWidget;
   QVBoxLayout* contentLayout = new QVBoxLayout(content);
 
-  QString metricsText = QString(
-                            "• Overall Compliance: %1\n"
-                            "• Sites Meeting Standards: %2/%3\n"
-                            "• Main Concern: %4\n"
-                            "• Locations Needing Action: %5")
+  QString metricsText = QString(tr("• Overall Compliance: %1\n"
+                                   "• Sites Meeting Standards: %2/%3\n"
+                                   "• Main Concern: %4\n"
+                                   "• Locations Needing Action: %5"))
                             .arg(complianceMetrics.overallCompliance, 0, 'f', 1)
                             .arg(complianceMetrics.sitesCompliant)
                             .arg(complianceMetrics.totalSites)

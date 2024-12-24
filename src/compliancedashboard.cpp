@@ -14,7 +14,7 @@
 #include "styles.h"
 
 ComplianceDashboard::ComplianceDashboard(SampleModel* model, QWidget* parent)
-    : BasePage("Compliance Dashboard", parent), model(model) {
+    : BasePage(tr("Compliance Dashboard"), parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/compliancedashboard.qss"}));
   setupUI();
@@ -46,20 +46,20 @@ void ComplianceDashboard::refreshView() {
 void ComplianceDashboard::setUpFilters(QHBoxLayout* layout) {
   // Search Bar
   searchBar = new QLineEdit();
-  searchBar->setPlaceholderText("Search pollutants...");
+  searchBar->setPlaceholderText(tr("Search pollutants..."));
   searchBar->setObjectName("searchBar");
 
-  locationLabel = new QLabel("Location:");
+  locationLabel = new QLabel(tr("Location:"));
   locationSelect = new QComboBox();
   locationSelect->setObjectName("locationSelect");
 
-  complianceLabel = new QLabel("Compliance Status:");
+  complianceLabel = new QLabel(tr("Compliance Status:"));
   complianceSelect = new QComboBox();
   complianceSelect->setObjectName("complianceSelect");
 
-  complianceSelect->addItem("All");
-  complianceSelect->addItem("Compliant");
-  complianceSelect->addItem("Non-Compliant");
+  complianceSelect->addItem(tr("All"));
+  complianceSelect->addItem(tr("Compliant"));
+  complianceSelect->addItem(tr("Non-Compliant"));
 
   layout->addWidget(searchBar);
   layout->addWidget(locationLabel);
@@ -166,13 +166,10 @@ double ComplianceDashboard::getThresholdForPollutant(const QString& pollutant) {
 }
 
 QString ComplianceDashboard::getTrendAnalysis(const QString& pollutant, const QString& location) {
-  // In a real implementation, this would analyze historical data
-  // For now, return a placeholder analysis
-  return QString(
-             "Historical Analysis for %1 at %2:\n\n"
-             "• Past 3 months show stable levels\n"
-             "• No significant spikes detected\n"
-             "• Seasonal variations are within normal range")
+  return tr("Historical Analysis for %1 at %2:\n\n"
+            "• Past 3 months show stable levels\n"
+            "• No significant spikes detected\n"
+            "• Seasonal variations are within normal range")
       .arg(pollutant)
       .arg(location);
 }
@@ -221,20 +218,20 @@ void ComplianceDashboard::showPollutantDetails(const QString& pollutant,
                                                const QString& location,
                                                const QString& value) {
   QDialog* detailsDialog = new QDialog(this);
-  detailsDialog->setWindowTitle(QString("%1 - Detailed Analysis").arg(pollutant));
+  detailsDialog->setWindowTitle(tr("%1 - Detailed Analysis").arg(pollutant));
   detailsDialog->setMinimumWidth(400);
 
   QVBoxLayout* dialogLayout = new QVBoxLayout(detailsDialog);
 
   // Current Status
-  QLabel* statusLabel = new QLabel("Current Status");
+  QLabel* statusLabel = new QLabel(tr("Current Status"));
   statusLabel->setStyleSheet("font-weight: bold; font-size: 14px;");
   dialogLayout->addWidget(statusLabel);
 
   double threshold = getThresholdForPollutant(pollutant);
   bool isCompliant = value.toDouble() <= threshold;
 
-  QString complianceInfo = isCompliant ? "✓ Currently within safe limits." : "⚠ Exceeds safety threshold. Immediate attention required.";
+  QString complianceInfo = isCompliant ? tr("✓ Currently within safe limits.") : tr("⚠ Exceeds safety threshold. Immediate attention required.");
 
   QLabel* complianceLabel = new QLabel(complianceInfo);
   complianceLabel->setStyleSheet(isCompliant ? "color: #2ecc71;" : "color: #e74c3c;");
@@ -242,7 +239,7 @@ void ComplianceDashboard::showPollutantDetails(const QString& pollutant,
   dialogLayout->addWidget(complianceLabel);
 
   // Trend Analysis
-  QLabel* trendTitle = new QLabel("Trend Analysis");
+  QLabel* trendTitle = new QLabel(tr("Trend Analysis"));
   trendTitle->setStyleSheet("font-weight: bold; font-size: 14px; margin-top: 10px;");
   dialogLayout->addWidget(trendTitle);
 
@@ -251,17 +248,17 @@ void ComplianceDashboard::showPollutantDetails(const QString& pollutant,
   dialogLayout->addWidget(trendLabel);
 
   // Recommendations
-  QLabel* recomTitle = new QLabel("Recommendations");
+  QLabel* recomTitle = new QLabel(tr("Recommendations"));
   recomTitle->setStyleSheet("font-weight: bold; font-size: 14px; margin-top: 10px;");
   dialogLayout->addWidget(recomTitle);
 
-  QString recommendations = isCompliant ? "• Continue regular monitoring\n"
-                                          "• Maintain current control measures\n"
-                                          "• Schedule next review in 30 days"
-                                        : "• Increase monitoring frequency\n"
-                                          "• Review control measures\n"
-                                          "• Prepare incident report\n"
-                                          "• Schedule immediate follow-up testing";
+  QString recommendations = isCompliant ? tr("• Continue regular monitoring\n"
+                                             "• Maintain current control measures\n"
+                                             "• Schedule next review in 30 days")
+                                        : tr("• Increase monitoring frequency\n"
+                                             "• Review control measures\n"
+                                             "• Prepare incident report\n"
+                                             "• Schedule immediate follow-up testing");
 
   QLabel* recomLabel = new QLabel(recommendations);
   dialogLayout->addWidget(recomLabel);

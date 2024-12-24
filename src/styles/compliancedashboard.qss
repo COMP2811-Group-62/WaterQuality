@@ -33,7 +33,6 @@
     border-radius: 8px;
     padding: 16px;
     margin: 6px;
-    min-width: 300px;  /* Set a minimum width for the cards */
     max-width: 400px;  /* Set a maximum width for the cards */
 }
 
