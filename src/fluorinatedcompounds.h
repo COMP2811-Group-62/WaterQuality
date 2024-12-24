@@ -20,6 +20,7 @@ class FluorinatedCompounds : public BasePage {
   void configureHeader(QVBoxLayout* header);
   void configureMap(QVBoxLayout* column);
   void configureSidebar(QVBoxLayout* column);
+  void findPollutants();
 
   SampleModel* model;
 
@@ -38,4 +39,7 @@ class FluorinatedCompounds : public BasePage {
   QComboBox* locationSelector;
   QComboBox* pollutantSelector;
   QComboBox* timeRangeSelector;
+
+  QList<QString> filteredPolutants;
+  QList<QString> filteredLocations;
 };

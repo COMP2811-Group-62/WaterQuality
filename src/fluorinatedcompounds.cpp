@@ -42,6 +42,7 @@ void FluorinatedCompounds::setupUI() {
 void FluorinatedCompounds::refreshView() {
   // Implement logic to refresh the view based on the shared model
   // For example, update charts or tables
+  findPollutants();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -57,14 +58,21 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
   titleLabel->setObjectName("h1");
 
   // define combo boxes
-  locationSelector = new QComboBox();
-  locationSelector->addItems({"Some", "Locations", "Will be", "Here"});
 
   pollutantSelector = new QComboBox();
-  pollutantSelector->addItems({"Some", "PFAS", "Or any compound", "Starting with PF", "Will be", "Here"});
+  pollutantSelector->setPlaceholderText("Select Pollutant");
+  findPollutants();
 
   timeRangeSelector = new QComboBox();
-  timeRangeSelector->addItems({"Jan", "Feb", "March", "Or dynamic based off selections"});
+  timeRangeSelector->setPlaceholderText("Select Time range");
+  timeRangeSelector->addItems({"January 2024", "February 2024", "March 2024",
+                               "April 2024", "May 2024", "June 2024",
+                               "July 2024", "August 2024", "September 2024",
+                               "Most Recent"});
+
+  locationSelector = new QComboBox();
+  locationSelector->setPlaceholderText("Select Location");
+  locationSelector->addItems({"Some", "Locations", "Will be", "Here"});
 
   QLabel* locationLabel = new QLabel("Location:");
   locationLabel->setObjectName("h2");
@@ -73,12 +81,12 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
   QLabel* timeRangeLabel = new QLabel("Time Range:");
   timeRangeLabel->setObjectName("h2");
 
-  mapControls->addWidget(locationLabel);
-  mapControls->addWidget(locationSelector);
   mapControls->addWidget(pollutantLabel);
   mapControls->addWidget(pollutantSelector);
   mapControls->addWidget(timeRangeLabel);
   mapControls->addWidget(timeRangeSelector);
+  mapControls->addWidget(locationLabel);
+  mapControls->addWidget(locationSelector);
   mapControls->addStretch();
 
   headerLables->addWidget(titleLabel);
@@ -124,4 +132,30 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
 
   column->addWidget(sidebarFrameHeader);
   column->addWidget(sidebarFrameBody);
+}
+
+void FluorinatedCompounds::findPollutants() {
+  for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
+    QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
+    QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
+    
+    if (pollutant.startsWith("PF", Qt::CaseInsensitive) ) {
+      
+      if (!filteredLocations.contains(location)) {
+        filteredLocations.append(location);
+      }
+      if (!filteredPolutants.contains(pollutant)) {
+        filteredPolutants.append(pollutant);
+      }
+      
+    }
+  }
+  qDebug() << filteredLocations;
+  qDebug() << filteredPolutants;
+  qDebug() << model->rowCount(QModelIndex());
+  
+  if (!filteredLocations.empty() && !filteredPolutants.empty()) {
+    pollutantSelector->addItems(filteredPolutants);
+    locationSelector->addItems(filteredLocations);
+  }
 }
