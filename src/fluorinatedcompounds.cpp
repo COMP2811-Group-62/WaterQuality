@@ -45,7 +45,7 @@ void FluorinatedCompounds::refreshView() {
   // Implement logic to refresh the view based on the shared model
   // For example, update charts or tables
   findPollutants();
-  addMapCirlces();
+  clearMap();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -75,7 +75,9 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
   locationSelector = new QComboBox();
   locationSelector->setPlaceholderText("Select Location");
-  locationSelector->addItems({"Some", "Locations", "Will be", "Here"});
+
+  connect(pollutantSelector, &QComboBox::currentTextChanged,
+          this, &FluorinatedCompounds::addMapCirlces);
 
   QLabel* locationLabel = new QLabel("Location:");
   locationLabel->setObjectName("h2");
@@ -162,9 +164,24 @@ void FluorinatedCompounds::findPollutants() {
 
 void FluorinatedCompounds::addMapCirlces() {
 
-  QString msg = "If you're reading this in the console then data got from C++ to QML and invoked a function to print this out, meaning I can add fancy circles to the map.";
+  clearMap();
+
+  QVariant lat = 0;
+  QVariant lon = 0;
+  QVariant colour = "red";
+
   QObject *rootObject = mapView->rootObject();
-  QMetaObject::invokeMethod(rootObject, "test",
-        Q_ARG(QString, msg));
+  QMetaObject::invokeMethod(rootObject, "addCircle", 
+        Q_ARG(QVariant, lat), 
+        Q_ARG(QVariant, lon), 
+        Q_ARG(QVariant, colour));
+
+}
+
+void FluorinatedCompounds::clearMap() {
+
+  qDebug() << "Clearing Map";
+  QObject *rootObject = mapView->rootObject();
+  QMetaObject::invokeMethod(rootObject, "clearMap");
 
 }

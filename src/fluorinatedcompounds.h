@@ -24,6 +24,7 @@ class FluorinatedCompounds : public BasePage {
   void configureSidebar(QVBoxLayout* column);
   void findPollutants();
   void addMapCirlces();
+  void clearMap();
 
   SampleModel* model;
 
