@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QQmlApplicationEngine>
 #include <QQuickWidget>
+#include <QQuickItem>
 #include <QTableView>
 #include <QVBoxLayout>
 #include <QXYSeries>
@@ -17,6 +18,7 @@ FluorinatedCompounds::FluorinatedCompounds(SampleModel* model, QWidget* parent)
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/fluorinatedcompounds.qss"}));
   setupUI();
+  addMapCirlces();
 }
 
 void FluorinatedCompounds::setupUI() {
@@ -43,6 +45,7 @@ void FluorinatedCompounds::refreshView() {
   // Implement logic to refresh the view based on the shared model
   // For example, update charts or tables
   findPollutants();
+  addMapCirlces();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -99,7 +102,7 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
 void FluorinatedCompounds::configureMap(QVBoxLayout* column) {
   // configure QQuickWiget which can display a QML project
-  QQuickWidget* mapView = new QQuickWidget();
+  mapView = new QQuickWidget();
   mapView->setSource(QUrl(QStringLiteral("../src/fluorinatedcompounds-mapdisplay.qml")));
   mapView->setResizeMode(QQuickWidget::SizeRootObjectToView);
   mapView->show();
@@ -150,12 +153,18 @@ void FluorinatedCompounds::findPollutants() {
       
     }
   }
-  qDebug() << filteredLocations;
-  qDebug() << filteredPolutants;
-  qDebug() << model->rowCount(QModelIndex());
   
   if (!filteredLocations.empty() && !filteredPolutants.empty()) {
     pollutantSelector->addItems(filteredPolutants);
     locationSelector->addItems(filteredLocations);
   }
+}
+
+void FluorinatedCompounds::addMapCirlces() {
+
+  QString msg = "If you're reading this in the console then data got from C++ to QML and invoked a function to print this out, meaning I can add fancy circles to the map.";
+  QObject *rootObject = mapView->rootObject();
+  QMetaObject::invokeMethod(rootObject, "test",
+        Q_ARG(QString, msg));
+
 }

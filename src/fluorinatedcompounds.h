@@ -3,6 +3,8 @@
 #include "basepage.h"
 #include "model.h"
 
+#include <QQuickWidget>
+
 class QHBoxLayout;
 class QTableView;
 class QComboBox;
@@ -21,6 +23,7 @@ class FluorinatedCompounds : public BasePage {
   void configureMap(QVBoxLayout* column);
   void configureSidebar(QVBoxLayout* column);
   void findPollutants();
+  void addMapCirlces();
 
   SampleModel* model;
 
@@ -42,4 +45,6 @@ class FluorinatedCompounds : public BasePage {
 
   QList<QString> filteredPolutants;
   QList<QString> filteredLocations;
+
+  QQuickWidget* mapView;
 };

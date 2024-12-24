@@ -54,4 +54,7 @@ Rectangle {
         }
 
     }
+    function test(msg: string) {
+        console.log("Got message:", msg)
+    }
 }
