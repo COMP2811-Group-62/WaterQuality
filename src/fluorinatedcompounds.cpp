@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QQmlApplicationEngine>
+#include <QQuickItem>
 #include <QQuickWidget>
 #include <QTableView>
 #include <QVBoxLayout>
@@ -40,8 +41,8 @@ void FluorinatedCompounds::setupUI() {
 }
 
 void FluorinatedCompounds::refreshView() {
-  // Implement logic to refresh the view based on the shared model
-  // For example, update charts or tables
+  findPollutants();
+  clearMap();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -57,14 +58,23 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
   titleLabel->setObjectName("h1");
 
   // define combo boxes
-  locationSelector = new QComboBox();
-  locationSelector->addItems({"Some", "Locations", "Will be", "Here"});
 
   pollutantSelector = new QComboBox();
-  pollutantSelector->addItems({"Some", "PFAS", "Or any compound", "Starting with PF", "Will be", "Here"});
+  pollutantSelector->setPlaceholderText("Select Pollutant");
+  findPollutants();
 
   timeRangeSelector = new QComboBox();
-  timeRangeSelector->addItems({"Jan", "Feb", "March", "Or dynamic based off selections"});
+  timeRangeSelector->setPlaceholderText("Select Time range");
+  timeRangeSelector->addItems({"January 2024", "February 2024", "March 2024",
+                               "April 2024", "May 2024", "June 2024",
+                               "July 2024", "August 2024", "September 2024",
+                               "Most Recent"});
+
+  locationSelector = new QComboBox();
+  locationSelector->setPlaceholderText("Select Location");
+
+  connect(pollutantSelector, &QComboBox::currentTextChanged,
+          this, &FluorinatedCompounds::addMapCirlces);
 
   QLabel* locationLabel = new QLabel(tr("Location:"));
   locationLabel->setObjectName("h2");
@@ -73,12 +83,12 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
   QLabel* timeRangeLabel = new QLabel(tr("Time Range:"));
   timeRangeLabel->setObjectName("h2");
 
-  mapControls->addWidget(locationLabel);
-  mapControls->addWidget(locationSelector);
   mapControls->addWidget(pollutantLabel);
   mapControls->addWidget(pollutantSelector);
   mapControls->addWidget(timeRangeLabel);
   mapControls->addWidget(timeRangeSelector);
+  mapControls->addWidget(locationLabel);
+  mapControls->addWidget(locationSelector);
   mapControls->addStretch();
 
   headerLables->addWidget(titleLabel);
@@ -91,7 +101,7 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
 void FluorinatedCompounds::configureMap(QVBoxLayout* column) {
   // configure QQuickWiget which can display a QML project
-  QQuickWidget* mapView = new QQuickWidget();
+  mapView = new QQuickWidget();
   mapView->setSource(QUrl(QStringLiteral("../src/fluorinatedcompounds-mapdisplay.qml")));
   mapView->setResizeMode(QQuickWidget::SizeRootObjectToView);
   mapView->show();
@@ -125,4 +135,64 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
 
   column->addWidget(sidebarFrameHeader);
   column->addWidget(sidebarFrameBody);
+}
+
+void FluorinatedCompounds::findPollutants() {
+  for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
+    QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
+
+    if (pollutant.startsWith("PF", Qt::CaseInsensitive)) {
+      QString dateTime = model->data(model->index(i, 3), Qt::DisplayRole).toString();
+      QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
+      QString dataURL = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+
+      dataPoint newPoint;
+      newPoint.dataURL = dataURL;
+      newPoint.location = location;
+      newPoint.pollutant = pollutant;
+      newPoint.date = dateTime;
+
+      if (!filteredLocations.contains(location)) {
+        filteredLocations.append(location);
+      }
+      if (!filteredPolutants.contains(pollutant)) {
+        filteredPolutants.append(pollutant);
+      }
+      dataPoints.append(newPoint);
+    }
+  }
+
+  if (!filteredLocations.empty() && !filteredPolutants.empty()) {
+    pollutantSelector->addItems(filteredPolutants);
+    locationSelector->addItems(filteredLocations);
+  }
+}
+
+void FluorinatedCompounds::addMapCirlces() {
+  clearMap();
+  int counter = 0;
+  QVariant colour = "green";
+  QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
+
+  QObject* rootObject = mapView->rootObject();
+
+  for (int i = 0; i < dataPoints.size(); ++i) {
+    dataPoint& point = dataPoints[i];
+
+    // add circle for each datapoint which matches the text in pollutant
+
+    if (point.pollutant == pollutantSelector->currentText()) {
+      QMetaObject::invokeMethod(rootObject, "addCircle",
+                                Q_ARG(QVariant, colour),
+                                Q_ARG(QVariant, point.dataURL));
+      counter++;
+    }
+  }
+  qDebug() << counter << "Done, resizing map";
+}
+
+void FluorinatedCompounds::clearMap() {
+  qDebug() << "Clearing Map";
+  QObject* rootObject = mapView->rootObject();
+  QMetaObject::invokeMethod(rootObject, "clearMap");
 }
