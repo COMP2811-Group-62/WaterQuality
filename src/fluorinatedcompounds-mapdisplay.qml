@@ -55,7 +55,7 @@ Rectangle {
         }
     }
 
-    function addCircle(colour, dataURL) { 
+    function addCircle(colour, dataURL, moveView) { 
         var requestURL = "https://environment.data.gov.uk/water-quality/id/sampling-point/" + dataURL
         //console.log(requestURL)
         //console.log("Adding circle")
@@ -79,7 +79,13 @@ Rectangle {
                     //console.log(latitude, longitude)
 
                     // create the circle now we have all required data
-                    createCircle(latitude, longitude, colour)
+                    if (moveView) {
+                        moveViewport(latitude, longitude)
+                    }
+                    else {
+                        createCircle(latitude, longitude, colour)
+                    }
+                   
                 } 
                 else { 
                     console.log("Error: " + httpRequest.status); 
@@ -129,5 +135,10 @@ Rectangle {
     
     function clearMap() {
         map.clearMapItems()
+    }
+    function moveViewport(lat, lon) {
+        map.center.latitude  = lat
+        map.center.longitude = lon
+        map.zoomLevel = 10
     }
 }

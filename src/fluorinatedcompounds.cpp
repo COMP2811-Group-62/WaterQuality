@@ -75,6 +75,9 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
   connect(pollutantSelector, &QComboBox::currentTextChanged,
           this, &FluorinatedCompounds::addMapCirlces);
+  
+  connect(locationSelector, &QComboBox::currentTextChanged,
+          this, &FluorinatedCompounds::onLocationChange);
 
   QLabel* locationLabel = new QLabel("Location:");
   locationLabel->setObjectName("h2");
@@ -189,18 +192,47 @@ void FluorinatedCompounds::addMapCirlces() {
     if (point.pollutant == pollutantSelector->currentText()) {
           QMetaObject::invokeMethod(rootObject, "addCircle", 
             Q_ARG(QVariant, colour),
-            Q_ARG(QVariant, point.dataURL));
+            Q_ARG(QVariant, point.dataURL), 
+            Q_ARG(QVariant, false));
+
           counter++;
     }
 
   }
-  qDebug() << counter << "Done, resizing map";
+  qDebug() << counter << "Pollutant Circles added to the map for: " << pollutantSelector->currentText();
 }
 
 void FluorinatedCompounds::clearMap() {
 
-  qDebug() << "Clearing Map";
   QObject *rootObject = mapView->rootObject();
   QMetaObject::invokeMethod(rootObject, "clearMap");
+
+}
+
+void FluorinatedCompounds::onLocationChange() {
+  
+  QVariant colour = "transparent";
+  
+  //find a point with the correct location name to pass to QML
+  int i = 0;
+  while (i < dataPoints.size()) 
+  { 
+    dataPoint& point = dataPoints[i];  
+    
+    if (point.location == locationSelector->currentText()) {
+
+        QObject *rootObject = mapView->rootObject();
+        QMetaObject::invokeMethod(rootObject, "addCircle", 
+          Q_ARG(QVariant, colour),
+          Q_ARG(QVariant, point.dataURL),
+          Q_ARG(QVariant, true)
+          );
+
+        i = dataPoints.size();
+    }
+    i++;
+  }
+
+
 
 }
