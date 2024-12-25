@@ -19,7 +19,7 @@ void NavigationBar::setupUI() {
   // Add title
   titleLabel = new QLabel(tr("AquaWatch"), this);
   titleLabel->setAlignment(Qt::AlignCenter);
-  titleLabel->setStyleSheet("font-size: 32px; font-family: 'SF Pro'; color: #00c2e5; font-weight: bold; padding: 10px;");
+  titleLabel->setStyleSheet("font-size: 32px; color: #00c2e5; font-weight: bold; padding: 10px;");
   layout->addWidget(titleLabel);
 
   // Add navigation buttons

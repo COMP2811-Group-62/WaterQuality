@@ -117,6 +117,8 @@ void LitterPage::setupCharts() {
 
   locationBarChart = new QChartView(barChart);
   locationBarChart->setRenderHint(QPainter::Antialiasing);
+  locationBarChart->setBackgroundBrush(Qt::transparent);  // Make background transparent
+  locationBarChart->setStyleSheet("background: transparent;");
   locationBarChart->setInteractive(true);
 
   barLayout->addWidget(locationBarChart);
@@ -277,8 +279,6 @@ void LitterPage::updateCharts() {
   // 重新连接信号
   connect(barSeries, &QBarSeries::hovered,
           this, &LitterPage::onBarHovered);
-
-  qDebug() << "图表更新完成,数据点数量:" << barSeries->count();
 }
 
 void LitterPage::onWaterTypeFilterChanged(const QString &) {
@@ -313,10 +313,6 @@ void LitterPage::onBarHovered(bool status, int index, QBarSet *barset) {
 
   // 使用替代方法显示工具提示
   QToolTip::showText(pos, tooltipText, locationBarChart);
-
-  // 添加调试输出
-  qDebug() << "显示工具提示:" << tooltipText;
-  qDebug() << "在位置:" << pos;
 }
 
 void LitterPage::updateLocationCompleter() {

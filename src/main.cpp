@@ -1,6 +1,6 @@
 #include <QApplication>
-#include <QDebug>
 #include <QFile>
+#include <QStyle>
 #include <QTranslator>
 
 #include "languagemanager.h"
@@ -12,6 +12,8 @@ int main(int argc, char* argv[]) {
 
   // Initialize language from saved settings or system locale
   LanguageManager::instance().initialize();
+
+  app.setStyle("fusion");
 
   QString styleSheet = Styles::loadStyleSheet(":/styles/main.qss");
   if (!styleSheet.isEmpty()) {

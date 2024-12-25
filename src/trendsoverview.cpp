@@ -122,7 +122,7 @@ void TrendsOverviewPage::setupChartSection(QVBoxLayout* parentLayout) {
   QVBoxLayout* chartLayout = new QVBoxLayout(chartFrame);
 
   chart = new QChart();
-  chart->setAnimationOptions(QChart::SeriesAnimations);
+  chart->setAnimationOptions(QChart::AllAnimations);
   chart->setTheme(QChart::ChartThemeLight);
 
   chartView = new QChartView(chart);

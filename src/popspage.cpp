@@ -157,7 +157,8 @@ void POPsPage::setupDataDisplay() {
   // Create chart view
   chartView = new QChartView(chart);
   chartView->setRenderHint(QPainter::Antialiasing);
-
+  chartView->setBackgroundBrush(Qt::transparent);
+  chartView->setStyleSheet("background: transparent;");
   // Install event filter for tooltips
   chartView->setMouseTracking(true);
   chartView->installEventFilter(this);

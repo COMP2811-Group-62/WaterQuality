@@ -96,6 +96,7 @@ void FluorinatedCompounds::configureMap(QVBoxLayout* column) {
   mapView->setResizeMode(QQuickWidget::SizeRootObjectToView);
   mapView->show();
 
+  mapView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   column->addWidget(mapView);
 }
 
@@ -120,7 +121,7 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
   bodyTitleLabel->setObjectName("h1dark");
 
   sidbarInnerBody->addWidget(bodyTitleLabel);
-  sidbarInnerBody->addStretch(1);
+  sidbarInnerBody->addStretch();
 
   column->addWidget(sidebarFrameHeader);
   column->addWidget(sidebarFrameBody);
