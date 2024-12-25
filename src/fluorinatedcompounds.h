@@ -25,8 +25,8 @@ class FluorinatedCompounds : public BasePage {
     QString location;
     QString pollutant;
     QString date;
-    QString lat;
-    QString lon;
+    QString result;
+    QString units;
   };
 
   void setupUI() override;

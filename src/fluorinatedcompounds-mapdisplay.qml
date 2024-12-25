@@ -54,8 +54,7 @@ Rectangle {
             opacity: 0.5
         }
     }
-
-    function addCircle(colour, dataURL, moveView) { 
+    function addCircle(colour, dataURL, moveView, locationName, pollutantName, date, resultValue, resultUnits) { 
         var requestURL = "https://environment.data.gov.uk/water-quality/id/sampling-point/" + dataURL
         //console.log(requestURL)
         //console.log("Adding circle")
@@ -83,7 +82,7 @@ Rectangle {
                         moveViewport(latitude, longitude)
                     }
                     else {
-                        createCircle(latitude, longitude, colour)
+                        createCircle(latitude, longitude, colour, locationName, pollutantName, date, resultValue, resultUnits)
                     }
                    
                 } 
@@ -96,7 +95,7 @@ Rectangle {
         httpRequest.send(); 
         //console.log("Request sent to:", requestURL)
     }
-    function createCircle(lat, lon, colour) { 
+    function createCircle(lat, lon, colour, locationName, pollutantName, date, resultValue, resultUnits) { 
         var circle = Qt.createQmlObject('
             
             import QtLocation; 
@@ -107,6 +106,7 @@ Rectangle {
                 radius: 2500
                 opacity: 0.5
             
+            property alias toolTipText: toolTip.text
 
             MouseArea { 
                     id: mouseArea 
@@ -119,7 +119,7 @@ Rectangle {
             ToolTip { 
                     id: toolTip 
                     visible: false 
-                    text: "Circle at here with here and that" 
+                    text: "<>"
                     delay: 500 
                 }
             }
@@ -128,6 +128,9 @@ Rectangle {
         circle.center.latitude = lat
         circle.center.longitude = lon
         circle.color = colour
+
+        circle.toolTipText = locationName + " on " + date + " with pollutant " + pollutantName + " at level " + resultValue + resultUnits 
+
         map.addMapItem(circle)
 
         map.fitViewportToMapItems()

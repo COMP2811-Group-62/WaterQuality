@@ -145,6 +145,8 @@ void FluorinatedCompounds::findPollutants() {
     
     if (pollutant.startsWith("PF", Qt::CaseInsensitive) ) {
       
+      QString units = model->data(model->index(i, 8), Qt::DisplayRole).toString();
+      QString result = model->data(model->index(i, 7), Qt::DisplayRole).toString();
       QString dateTime = model->data(model->index(i, 3), Qt::DisplayRole).toString();
       QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
       QString dataURL = model->data(model->index(i, 1), Qt::DisplayRole).toString();
@@ -154,6 +156,8 @@ void FluorinatedCompounds::findPollutants() {
       newPoint.location = location;
       newPoint.pollutant = pollutant;
       newPoint.date = dateTime;
+      newPoint.result = result;
+      newPoint.units = units;
 
 
       if (!filteredLocations.contains(location)) {
@@ -193,7 +197,12 @@ void FluorinatedCompounds::addMapCirlces() {
           QMetaObject::invokeMethod(rootObject, "addCircle", 
             Q_ARG(QVariant, colour),
             Q_ARG(QVariant, point.dataURL), 
-            Q_ARG(QVariant, false));
+            Q_ARG(QVariant, false),
+            Q_ARG(QVariant, point.location),
+            Q_ARG(QVariant, point.pollutant),
+            Q_ARG(QVariant, point.date),
+            Q_ARG(QVariant, point.result),
+            Q_ARG(QVariant, point.units));
 
           counter++;
     }
@@ -225,8 +234,12 @@ void FluorinatedCompounds::onLocationChange() {
         QMetaObject::invokeMethod(rootObject, "addCircle", 
           Q_ARG(QVariant, colour),
           Q_ARG(QVariant, point.dataURL),
-          Q_ARG(QVariant, true)
-          );
+          Q_ARG(QVariant, true),
+          Q_ARG(QVariant, point.location),
+          Q_ARG(QVariant, point.pollutant),
+          Q_ARG(QVariant, point.date),
+          Q_ARG(QVariant, point.result),
+          Q_ARG(QVariant, point.units));
 
         i = dataPoints.size();
     }
