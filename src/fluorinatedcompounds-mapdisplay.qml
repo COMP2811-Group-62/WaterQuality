@@ -76,7 +76,30 @@ Rectangle {
         console.log("Centre: ", circle.center)
         console.log("Radius: ", circle.radius)
     }
-
+    function makeRequest() { 
+        var httpRequest = new XMLHttpRequest();  
+        httpRequest.onreadystatechange = function() { 
+        httpRequest.responseType = XMLHttpRequest.JSON;
+            if (httpRequest.readyState === XMLHttpRequest.DONE) { 
+                console.log("Request completed")
+                if (httpRequest.status === 200) { 
+                    
+                    var jsonResponse = JSON.parse(httpRequest.responseText);
+                    var longitude = jsonResponse.items[0].sample.samplingPoint.lat;
+                    var latitude = jsonResponse.items[0].sample.samplingPoint.long;
+                    console.log(latitude, longitude)
+                } 
+                else { 
+                    console.log("Error: " + httpRequest.status); 
+                } 
+            } 
+        } 
+        httpRequest.open("GET", "http://environment.data.gov.uk/water-quality/data/measurement/NE-1759092-2972"); 
+        httpRequest.send(); 
+        console.log("Request sent")
+        
+    }
+    
     function clearMap() {
         map.clearMapItems()
     }

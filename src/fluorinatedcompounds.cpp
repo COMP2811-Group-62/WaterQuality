@@ -42,10 +42,9 @@ void FluorinatedCompounds::setupUI() {
 }
 
 void FluorinatedCompounds::refreshView() {
-  // Implement logic to refresh the view based on the shared model
-  // For example, update charts or tables
   findPollutants();
   clearMap();
+  getLatLong();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -142,24 +141,49 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
 void FluorinatedCompounds::findPollutants() {
   for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
     QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
-    QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
     
     if (pollutant.startsWith("PF", Qt::CaseInsensitive) ) {
       
+      QString dateTime = model->data(model->index(i, 3), Qt::DisplayRole).toString();
+      QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
+      QString dataURL = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+
+      dataPoint newPoint;
+      newPoint.dataURL = dataURL;
+      newPoint.location = location;
+      newPoint.pollutant = pollutant;
+      newPoint.date = dateTime;
+
+
       if (!filteredLocations.contains(location)) {
         filteredLocations.append(location);
+        //getLatLong(newPoint);
+
       }
       if (!filteredPolutants.contains(pollutant)) {
         filteredPolutants.append(pollutant);
       }
-      
+
+      dataPoints.append(newPoint);
+
     }
+
   }
   
   if (!filteredLocations.empty() && !filteredPolutants.empty()) {
     pollutantSelector->addItems(filteredPolutants);
     locationSelector->addItems(filteredLocations);
+
+    qDebug() << "Lats: " << lats << "Longs: " << longs;
   }
+}
+
+void FluorinatedCompounds::getLatLong() {
+
+  qDebug() << "Getting lat long";
+  QObject *rootObject = mapView->rootObject();
+  QMetaObject::invokeMethod(rootObject, "makeRequest");
+
 }
 
 void FluorinatedCompounds::addMapCirlces() {
@@ -169,6 +193,17 @@ void FluorinatedCompounds::addMapCirlces() {
   QVariant lat = 0;
   QVariant lon = 0;
   QVariant colour = "red";
+
+  for (int i = 0; i < model->rowCount(QModelIndex()); i++)
+  {
+    QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
+    QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
+
+    if (pollutant == pollutantSelector->currentText())
+    {
+
+    }
+  }
 
   QObject *rootObject = mapView->rootObject();
   QMetaObject::invokeMethod(rootObject, "addCircle", 

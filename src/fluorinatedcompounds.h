@@ -18,6 +18,17 @@ class FluorinatedCompounds : public BasePage {
   void refreshView() override;
 
  private:
+
+  struct dataPoint
+  {
+    QString dataURL;
+    QString location;
+    QString pollutant;
+    QString date;
+    QString lat;
+    QString lon;
+  };
+
   void setupUI() override;
   void configureHeader(QVBoxLayout* header);
   void configureMap(QVBoxLayout* column);
@@ -25,6 +36,7 @@ class FluorinatedCompounds : public BasePage {
   void findPollutants();
   void addMapCirlces();
   void clearMap();
+  void getLatLong();
 
   SampleModel* model;
 
@@ -46,6 +58,11 @@ class FluorinatedCompounds : public BasePage {
 
   QList<QString> filteredPolutants;
   QList<QString> filteredLocations;
+
+  QList<double> lats;
+  QList<double> longs;
+  
+  QList<dataPoint> dataPoints;
 
   QQuickWidget* mapView;
 };
