@@ -27,8 +27,8 @@ Rectangle {
         activeMapType: map.supportedMapTypes[map.supportedMapTypes.length - 1]
         zoomLevel: 14
         center {
-            latitude: 0
-            longitude: 0
+            latitude: 53.80908899159547
+            longitude: -1.5539251847199977
         }
         
         DragHandler {
@@ -55,8 +55,42 @@ Rectangle {
         }
     }
 
-    function addCircle(lat, lon, colour) { 
+    function addCircle(colour, dataURL) { 
+        var requestURL = "https://environment.data.gov.uk/water-quality/id/sampling-point/" + dataURL
+        console.log(requestURL)
+        console.log("Adding circle")
+        // use the dataURL from the CSV to get the lat + long to use to add to the map rather than easting and norting
 
+        var httpRequest = new XMLHttpRequest();  
+        httpRequest.onreadystatechange = function() { 
+        httpRequest.responseType = XMLHttpRequest.JSON;
+            
+            // request will run async
+
+            if (httpRequest.readyState === XMLHttpRequest.DONE) { 
+                console.log("Request completed")
+                if (httpRequest.status === 200) { 
+                    
+                    // once request complete and 200
+
+                    var jsonResponse = JSON.parse(httpRequest.responseText);
+                    var longitude = jsonResponse.items[0].long;
+                    var latitude = jsonResponse.items[0].lat;
+                    console.log(latitude, longitude)
+
+                    // create the circle now we have all required data
+                    createCircle(latitude, longitude, colour)
+                } 
+                else { 
+                    console.log("Error: " + httpRequest.status); 
+                } 
+            } 
+        } 
+        httpRequest.open("GET", requestURL); 
+        httpRequest.send(); 
+        console.log("Request sent to:", dataURL)
+    }
+    function createCircle(lat, lon, colour) { 
         var circle = Qt.createQmlObject('
             
             import QtLocation; 
@@ -75,29 +109,9 @@ Rectangle {
         console.log("cirle:", circle)
         console.log("Centre: ", circle.center)
         console.log("Radius: ", circle.radius)
-    }
-    function makeRequest() { 
-        var httpRequest = new XMLHttpRequest();  
-        httpRequest.onreadystatechange = function() { 
-        httpRequest.responseType = XMLHttpRequest.JSON;
-            if (httpRequest.readyState === XMLHttpRequest.DONE) { 
-                console.log("Request completed")
-                if (httpRequest.status === 200) { 
-                    
-                    var jsonResponse = JSON.parse(httpRequest.responseText);
-                    var longitude = jsonResponse.items[0].sample.samplingPoint.lat;
-                    var latitude = jsonResponse.items[0].sample.samplingPoint.long;
-                    console.log(latitude, longitude)
-                } 
-                else { 
-                    console.log("Error: " + httpRequest.status); 
-                } 
-            } 
-        } 
-        httpRequest.open("GET", "http://environment.data.gov.uk/water-quality/data/measurement/NE-1759092-2972"); 
-        httpRequest.send(); 
-        console.log("Request sent")
         
+        map.fitViewportToMapItems()
+
     }
     
     function clearMap() {

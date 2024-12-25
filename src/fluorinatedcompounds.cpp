@@ -18,7 +18,6 @@ FluorinatedCompounds::FluorinatedCompounds(SampleModel* model, QWidget* parent)
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/fluorinatedcompounds.qss"}));
   setupUI();
-  addMapCirlces();
 }
 
 void FluorinatedCompounds::setupUI() {
@@ -190,26 +189,21 @@ void FluorinatedCompounds::addMapCirlces() {
 
   clearMap();
 
-  QVariant lat = 0;
-  QVariant lon = 0;
   QVariant colour = "red";
-
-  for (int i = 0; i < model->rowCount(QModelIndex()); i++)
-  {
-    QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
-    QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
-
-    if (pollutant == pollutantSelector->currentText())
-    {
-
-    }
-  }
+  QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
 
   QObject *rootObject = mapView->rootObject();
+
+  for (int i = 0; i < dataPoints.size(); ++i) 
+  { 
+    dataPoint& point = dataPoints[i];  
+
+    // add circle for each datapoint which matches the text in pollutant
+  }
+  
   QMetaObject::invokeMethod(rootObject, "addCircle", 
-        Q_ARG(QVariant, lat), 
-        Q_ARG(QVariant, lon), 
-        Q_ARG(QVariant, colour));
+        Q_ARG(QVariant, colour),
+        Q_ARG(QVariant, dataURL));
 
 }
 
