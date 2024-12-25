@@ -57,8 +57,8 @@ Rectangle {
 
     function addCircle(colour, dataURL) { 
         var requestURL = "https://environment.data.gov.uk/water-quality/id/sampling-point/" + dataURL
-        console.log(requestURL)
-        console.log("Adding circle")
+        //console.log(requestURL)
+        //console.log("Adding circle")
         // use the dataURL from the CSV to get the lat + long to use to add to the map rather than easting and norting
 
         var httpRequest = new XMLHttpRequest();  
@@ -68,7 +68,7 @@ Rectangle {
             // request will run async
 
             if (httpRequest.readyState === XMLHttpRequest.DONE) { 
-                console.log("Request completed")
+                //console.log("Request completed")
                 if (httpRequest.status === 200) { 
                     
                     // once request complete and 200
@@ -76,7 +76,7 @@ Rectangle {
                     var jsonResponse = JSON.parse(httpRequest.responseText);
                     var longitude = jsonResponse.items[0].long;
                     var latitude = jsonResponse.items[0].lat;
-                    console.log(latitude, longitude)
+                    //console.log(latitude, longitude)
 
                     // create the circle now we have all required data
                     createCircle(latitude, longitude, colour)
@@ -88,17 +88,35 @@ Rectangle {
         } 
         httpRequest.open("GET", requestURL); 
         httpRequest.send(); 
-        console.log("Request sent to:", dataURL)
+        //console.log("Request sent to:", requestURL)
     }
     function createCircle(lat, lon, colour) { 
         var circle = Qt.createQmlObject('
             
             import QtLocation; 
+            import QtQuick;
+            import QtQuick.Controls;
+
             MapCircle {
                 radius: 2500
                 opacity: 0.5
-            }
             
+
+            MouseArea { 
+                    id: mouseArea 
+                    anchors.fill: parent 
+                    hoverEnabled: true 
+                    onEntered: toolTip.visible = true 
+                    onExited: toolTip.visible = false 
+                }      
+
+            ToolTip { 
+                    id: toolTip 
+                    visible: false 
+                    text: "Circle at here with here and that" 
+                    delay: 500 
+                }
+            }
             ', map)
         
         circle.center.latitude = lat
@@ -106,12 +124,7 @@ Rectangle {
         circle.color = colour
         map.addMapItem(circle)
 
-        console.log("cirle:", circle)
-        console.log("Centre: ", circle.center)
-        console.log("Radius: ", circle.radius)
-        
         map.fitViewportToMapItems()
-
     }
     
     function clearMap() {

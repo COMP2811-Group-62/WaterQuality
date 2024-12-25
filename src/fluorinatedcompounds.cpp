@@ -43,7 +43,6 @@ void FluorinatedCompounds::setupUI() {
 void FluorinatedCompounds::refreshView() {
   findPollutants();
   clearMap();
-  getLatLong();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -156,40 +155,27 @@ void FluorinatedCompounds::findPollutants() {
 
       if (!filteredLocations.contains(location)) {
         filteredLocations.append(location);
-        //getLatLong(newPoint);
-
       }
       if (!filteredPolutants.contains(pollutant)) {
         filteredPolutants.append(pollutant);
       }
-
       dataPoints.append(newPoint);
 
     }
-
   }
-  
+
   if (!filteredLocations.empty() && !filteredPolutants.empty()) {
     pollutantSelector->addItems(filteredPolutants);
     locationSelector->addItems(filteredLocations);
 
-    qDebug() << "Lats: " << lats << "Longs: " << longs;
   }
-}
-
-void FluorinatedCompounds::getLatLong() {
-
-  qDebug() << "Getting lat long";
-  QObject *rootObject = mapView->rootObject();
-  QMetaObject::invokeMethod(rootObject, "makeRequest");
-
 }
 
 void FluorinatedCompounds::addMapCirlces() {
 
   clearMap();
-
-  QVariant colour = "red";
+  int counter = 0;
+  QVariant colour = "green";
   QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
 
   QObject *rootObject = mapView->rootObject();
@@ -197,14 +183,18 @@ void FluorinatedCompounds::addMapCirlces() {
   for (int i = 0; i < dataPoints.size(); ++i) 
   { 
     dataPoint& point = dataPoints[i];  
-
+    
     // add circle for each datapoint which matches the text in pollutant
-  }
-  
-  QMetaObject::invokeMethod(rootObject, "addCircle", 
-        Q_ARG(QVariant, colour),
-        Q_ARG(QVariant, dataURL));
+    
+    if (point.pollutant == pollutantSelector->currentText()) {
+          QMetaObject::invokeMethod(rootObject, "addCircle", 
+            Q_ARG(QVariant, colour),
+            Q_ARG(QVariant, point.dataURL));
+          counter++;
+    }
 
+  }
+  qDebug() << counter << "Done, resizing map";
 }
 
 void FluorinatedCompounds::clearMap() {

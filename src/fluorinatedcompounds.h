@@ -36,7 +36,6 @@ class FluorinatedCompounds : public BasePage {
   void findPollutants();
   void addMapCirlces();
   void clearMap();
-  void getLatLong();
 
   SampleModel* model;
 
@@ -58,9 +57,6 @@ class FluorinatedCompounds : public BasePage {
 
   QList<QString> filteredPolutants;
   QList<QString> filteredLocations;
-
-  QList<double> lats;
-  QList<double> longs;
   
   QList<dataPoint> dataPoints;
 
