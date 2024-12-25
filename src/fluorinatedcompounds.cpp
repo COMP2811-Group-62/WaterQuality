@@ -5,8 +5,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QQmlApplicationEngine>
-#include <QQuickWidget>
 #include <QQuickItem>
+#include <QQuickWidget>
 #include <QTableView>
 #include <QVBoxLayout>
 #include <QXYSeries>
@@ -41,8 +41,8 @@ void FluorinatedCompounds::setupUI() {
 }
 
 void FluorinatedCompounds::refreshView() {
-  findPollutants();
-  clearMap();
+  // Implement logic to refresh the view based on the shared model
+  // For example, update charts or tables
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -51,10 +51,16 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
   headerInner = new QVBoxLayout(headerFrame);
   mapControls = new QHBoxLayout();
   headerLables = new QVBoxLayout();
+  QFrame* headerFrame = new QFrame();
+  headerFrame->setObjectName("headerFrame");
+  headerInner = new QVBoxLayout(headerFrame);
+  mapControls = new QHBoxLayout();
+  headerLables = new QVBoxLayout();
 
   mapControls->setSpacing(20);
+  mapControls->setSpacing(20);
 
-  QLabel* titleLabel = new QLabel("The map below shows all Polutants with the 'PF' Prefix and the sampling point location.");
+  QLabel* titleLabel = new QLabel(tr("The map below shows all Polutants with the 'PF' Prefix and the sampling point location."));
   titleLabel->setObjectName("h1");
 
   // define combo boxes
@@ -106,6 +112,7 @@ void FluorinatedCompounds::configureMap(QVBoxLayout* column) {
   mapView->setResizeMode(QQuickWidget::SizeRootObjectToView);
   mapView->show();
 
+  mapView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   column->addWidget(mapView);
 }
 
@@ -130,7 +137,7 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
   bodyTitleLabel->setObjectName("h1dark");
 
   sidbarInnerBody->addWidget(bodyTitleLabel);
-  sidbarInnerBody->addStretch(1);
+  sidbarInnerBody->addStretch();
 
   column->addWidget(sidebarFrameHeader);
   column->addWidget(sidebarFrameBody);
@@ -139,9 +146,8 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
 void FluorinatedCompounds::findPollutants() {
   for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
     QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
-    
-    if (pollutant.startsWith("PF", Qt::CaseInsensitive) ) {
-      
+
+    if (pollutant.startsWith("PF", Qt::CaseInsensitive)) {
       QString dateTime = model->data(model->index(i, 3), Qt::DisplayRole).toString();
       QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
       QString dataURL = model->data(model->index(i, 1), Qt::DisplayRole).toString();
@@ -152,7 +158,6 @@ void FluorinatedCompounds::findPollutants() {
       newPoint.pollutant = pollutant;
       newPoint.date = dateTime;
 
-
       if (!filteredLocations.contains(location)) {
         filteredLocations.append(location);
       }
@@ -160,47 +165,40 @@ void FluorinatedCompounds::findPollutants() {
         filteredPolutants.append(pollutant);
       }
       dataPoints.append(newPoint);
-
     }
   }
 
   if (!filteredLocations.empty() && !filteredPolutants.empty()) {
     pollutantSelector->addItems(filteredPolutants);
     locationSelector->addItems(filteredLocations);
-
   }
 }
 
 void FluorinatedCompounds::addMapCirlces() {
-
   clearMap();
   int counter = 0;
   QVariant colour = "green";
   QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
 
-  QObject *rootObject = mapView->rootObject();
+  QObject* rootObject = mapView->rootObject();
 
-  for (int i = 0; i < dataPoints.size(); ++i) 
-  { 
-    dataPoint& point = dataPoints[i];  
-    
+  for (int i = 0; i < dataPoints.size(); ++i) {
+    dataPoint& point = dataPoints[i];
+
     // add circle for each datapoint which matches the text in pollutant
-    
-    if (point.pollutant == pollutantSelector->currentText()) {
-          QMetaObject::invokeMethod(rootObject, "addCircle", 
-            Q_ARG(QVariant, colour),
-            Q_ARG(QVariant, point.dataURL));
-          counter++;
-    }
 
+    if (point.pollutant == pollutantSelector->currentText()) {
+      QMetaObject::invokeMethod(rootObject, "addCircle",
+                                Q_ARG(QVariant, colour),
+                                Q_ARG(QVariant, point.dataURL));
+      counter++;
+    }
   }
   qDebug() << counter << "Done, resizing map";
 }
 
 void FluorinatedCompounds::clearMap() {
-
   qDebug() << "Clearing Map";
-  QObject *rootObject = mapView->rootObject();
+  QObject* rootObject = mapView->rootObject();
   QMetaObject::invokeMethod(rootObject, "clearMap");
-
 }

@@ -43,6 +43,7 @@ set(HEADERS
     src/litterpage.h
     src/popspage.h
     src/compliancedashboard.h
+    src/languagemanager.h
 )
 
 qt_add_executable(water

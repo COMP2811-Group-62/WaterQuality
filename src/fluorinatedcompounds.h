@@ -1,9 +1,9 @@
 #pragma once
 
+#include <QQuickWidget>
+
 #include "basepage.h"
 #include "model.h"
-
-#include <QQuickWidget>
 
 class QHBoxLayout;
 class QTableView;
@@ -18,9 +18,7 @@ class FluorinatedCompounds : public BasePage {
   void refreshView() override;
 
  private:
-
-  struct dataPoint
-  {
+  struct dataPoint {
     QString dataURL;
     QString location;
     QString pollutant;
@@ -33,9 +31,6 @@ class FluorinatedCompounds : public BasePage {
   void configureHeader(QVBoxLayout* header);
   void configureMap(QVBoxLayout* column);
   void configureSidebar(QVBoxLayout* column);
-  void findPollutants();
-  void addMapCirlces();
-  void clearMap();
 
   SampleModel* model;
 
@@ -57,7 +52,7 @@ class FluorinatedCompounds : public BasePage {
 
   QList<QString> filteredPolutants;
   QList<QString> filteredLocations;
-  
+
   QList<dataPoint> dataPoints;
 
   QQuickWidget* mapView;
