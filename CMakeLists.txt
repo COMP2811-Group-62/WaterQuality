@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(aquawatch VERSION 1.0.0 LANGUAGES CXX)
+project(cwk2 VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -7,8 +7,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Quick QuickWidgets LinguistTools)
-qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES de ar)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Quick QuickWidgets)
+qt_standard_project_setup()
 
 set(SOURCES
     src/main.cpp
@@ -43,10 +43,6 @@ set(HEADERS
     src/litterpage.h
     src/popspage.h
     src/compliancedashboard.h
-<<<<<<< HEAD
-=======
-    src/languagemanager.h
->>>>>>> dev
 )
 
 qt_add_executable(water
@@ -64,8 +60,6 @@ target_link_libraries(water PRIVATE
     Qt6::QuickWidgets
     # Qt6::Location
 )
-
-qt_add_translations(water)
 
 set_target_properties(water PROPERTIES
     WIN32_EXECUTABLE ON

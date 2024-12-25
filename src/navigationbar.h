@@ -27,4 +27,5 @@ class NavigationBar : public QFrame {
   QVBoxLayout *layout;
   QLabel *titleLabel;
   QList<QPushButton *> navButtons;
+  QComboBox *languageSelector;
 };
