@@ -1,26 +1,30 @@
 #pragma once
+#pragma once
+
+#include <QQuickWidget>
 
 #include "basepage.h"
 #include "model.h"
 
-#include <QQuickWidget>
-
 class QHBoxLayout;
 class QTableView;
+class QComboBox;
 class QComboBox;
 class QChart;
 
 class FluorinatedCompounds : public BasePage {
   Q_OBJECT
 
+  Q_OBJECT
+
  public:
+  FluorinatedCompounds(SampleModel* model, QWidget* parent = nullptr);
+  void refreshView() override;
   FluorinatedCompounds(SampleModel* model, QWidget* parent = nullptr);
   void refreshView() override;
 
  private:
-
-  struct dataPoint
-  {
+  struct dataPoint {
     QString dataURL;
     QString location;
     QString pollutant;
@@ -37,6 +41,7 @@ class FluorinatedCompounds : public BasePage {
   void addMapCirlces();
   void clearMap();
 
+  SampleModel* model;
   SampleModel* model;
 
   QVBoxLayout* header;
@@ -57,7 +62,7 @@ class FluorinatedCompounds : public BasePage {
 
   QList<QString> filteredPolutants;
   QList<QString> filteredLocations;
-  
+
   QList<dataPoint> dataPoints;
 
   QQuickWidget* mapView;

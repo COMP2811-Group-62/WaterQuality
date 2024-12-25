@@ -63,8 +63,6 @@ void MainWindow::setupNavigation() {
   // Connect navigation signals
   connect(navBar, &NavigationBar::pageChanged,
           this, &MainWindow::switchPage);
-  connect(navBar, &NavigationBar::languageChanged,
-          this, &MainWindow::updateLanguage);
 }
 
 void MainWindow::setupPages() {

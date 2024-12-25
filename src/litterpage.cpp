@@ -8,7 +8,7 @@
 #include "styles.h"
 
 LitterPage::LitterPage(SampleModel *model, QWidget *parent)
-    : BasePage("Litter Indicators", parent), model(model) {
+    : BasePage(tr("Litter Indicators"), parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/litter.qss"}));
 
@@ -117,6 +117,8 @@ void LitterPage::setupCharts() {
 
   locationBarChart = new QChartView(barChart);
   locationBarChart->setRenderHint(QPainter::Antialiasing);
+  locationBarChart->setBackgroundBrush(Qt::transparent);  // Make background transparent
+  locationBarChart->setStyleSheet("background: transparent;");
   locationBarChart->setInteractive(true);
 
   barLayout->addWidget(locationBarChart);
@@ -277,8 +279,6 @@ void LitterPage::updateCharts() {
   // 重新连接信号
   connect(barSeries, &QBarSeries::hovered,
           this, &LitterPage::onBarHovered);
-
-  qDebug() << "图表更新完成,数据点数量:" << barSeries->count();
 }
 
 void LitterPage::onWaterTypeFilterChanged(const QString &) {
@@ -313,10 +313,6 @@ void LitterPage::onBarHovered(bool status, int index, QBarSet *barset) {
 
   // 使用替代方法显示工具提示
   QToolTip::showText(pos, tooltipText, locationBarChart);
-
-  // 添加调试输出
-  qDebug() << "显示工具提示:" << tooltipText;
-  qDebug() << "在位置:" << pos;
 }
 
 void LitterPage::updateLocationCompleter() {
@@ -355,17 +351,17 @@ void LitterPage::setupInfoPanel() {
   QVBoxLayout *thresholdLayout = new QVBoxLayout(thresholdFrame);
 
   // 标题
-  QLabel *thresholdTitle = new QLabel("Safety Thresholds", thresholdFrame);
+  QLabel *thresholdTitle = new QLabel(tr("Safety Thresholds"), thresholdFrame);
   thresholdTitle->setStyleSheet("font-size: 16px; font-weight: bold;");
 
   // 内容
   QLabel *thresholdLabel = new QLabel(thresholdFrame);
   thresholdLabel->setWordWrap(true);
-  thresholdLabel->setText(
+  thresholdLabel->setText(tr(
       "UK/EU Safety Thresholds for Plastic Waste:\n"
       "• Safe: < 15.0 mg/L\n"
       "• Warning: 15.0-25.0 mg/L\n"
-      "• Danger: > 25.0 mg/L");
+      "• Danger: > 25.0 mg/L"));
 
   // 添加到布局
   thresholdLayout->addWidget(thresholdTitle);
