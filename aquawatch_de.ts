@@ -6,7 +6,7 @@
     <message>
         <location filename="src/compliancedashboard.cpp" line="17"/>
         <source>Compliance Dashboard</source>
-        <translation type="unfinished">comcpad</translation>
+        <translation type="unfinished">Compliance-Übersicht</translation>
     </message>
     <message>
         <location filename="src/compliancedashboard.cpp" line="49"/>
@@ -273,7 +273,7 @@
     <message>
         <location filename="src/navigationbar.cpp" line="32"/>
         <source>Compliance Dashboard</source>
-        <translation type="unfinished">comcpad</translation>
+        <translation type="unfinished">Compliance-Übersicht</translation>
     </message>
 </context>
 <context>
@@ -603,23 +603,23 @@ Note: Below detection limit</source>
     <name>QObject</name>
     <message>
         <source>Dashboard</source>
-        <translation type="vanished">german dashboard</translation>
+        <translation>Instrumententafel</translation>
     </message>
     <message>
         <source>Persistent Organic Pollutants</source>
-        <translation type="vanished">popopop</translation>
+        <translation>Persistente organische Schadstoffe</translation>
     </message>
     <message>
         <source>Litter Indicators</source>
-        <translation type="vanished">litltlit</translation>
+        <translation>Müll-Indikatoren</translation>
     </message>
     <message>
         <source>Compliance Dashboard</source>
-        <translation type="vanished">comcpad</translation>
+        <translation>Compliance-Übersicht</translation>
     </message>
     <message>
         <source>Data Page</source>
-        <translation type="vanished">faptadat</translation>
+        <translation>Datenseite</translation>
     </message>
 </context>
 <context>
