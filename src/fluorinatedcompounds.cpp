@@ -42,7 +42,7 @@ void FluorinatedCompounds::setupUI() {
 
 void FluorinatedCompounds::refreshView() {
   clearMap();
-  configureHeader();
+  findPollutants();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
