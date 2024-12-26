@@ -132,7 +132,7 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
   // configure frame for sidebar header block
   QFrame* sidebarFrameHeader = new QFrame();
   sidebarFrameHeader->setObjectName("sidebarFrameHeader");
-  sidebarFrameHeader->setFixedHeight(100);
+  sidebarFrameHeader->setFixedHeight(130);
   sidbarInnerHeader = new QVBoxLayout(sidebarFrameHeader);
 
   QFrame* sidebarFrameBody = new QFrame();
