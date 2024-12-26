@@ -41,8 +41,8 @@ void FluorinatedCompounds::setupUI() {
 }
 
 void FluorinatedCompounds::refreshView() {
-  findPollutants();
   clearMap();
+  configureHeader();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -65,13 +65,25 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
   timeRangeSelector = new QComboBox();
   timeRangeSelector->setPlaceholderText("Select Time range");
-  timeRangeSelector->addItems({"January 2024", "February 2024", "March 2024",
-                               "April 2024", "May 2024", "June 2024",
-                               "July 2024", "August 2024", "September 2024",
-                               "Most Recent"});
+  timeRangeSelector->addItems({ "January 2024",
+                                "February 2024",
+                                "March 2024",
+                                "April 2024",
+                                "May 2024",
+                                "June 2024",
+                                "July 2024",
+                                "August 2024",
+                                "September 2024",
+                                "October 2024",
+                                "November 2024",
+                                "December 2024",
+                                "All points"
+                              });
 
   locationSelector = new QComboBox();
   locationSelector->setPlaceholderText("Select Location");
+
+  // connect combo boxes 
 
   connect(pollutantSelector, &QComboBox::currentTextChanged,
           this, &FluorinatedCompounds::addMapCirlces);
@@ -116,6 +128,8 @@ void FluorinatedCompounds::configureMap(QVBoxLayout* column) {
 }
 
 void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
+
+  // configure frame for sidebar header block
   QFrame* sidebarFrameHeader = new QFrame();
   sidebarFrameHeader->setObjectName("sidebarFrameHeader");
   sidebarFrameHeader->setFixedHeight(100);
@@ -238,16 +252,16 @@ void FluorinatedCompounds::addMapCirlces()
 
   if (timeRangeSelector->currentText() != "" && pollutantSelector->currentText() != "")
   {
-    int counter = 0;
+
     QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
     QObject *rootObject = mapView->rootObject();
 
     for (int i = 0; i < dataPoints.size(); ++i)
     {
       dataPoint &point = dataPoints[i];
-
+      
       // add circle for each datapoint which matches the text in pollutant
-      if (point.pollutant == pollutantSelector->currentText())
+      if (point.pollutant == pollutantSelector->currentText() && point.date.contains(months[timeRangeSelector->currentText()]))
       {
         QVariant colour = "red";
 
@@ -266,13 +280,12 @@ void FluorinatedCompounds::addMapCirlces()
                                   Q_ARG(QVariant, point.result),
                                   Q_ARG(QVariant, point.units));
 
-        counter++;
       }
     }
-    qDebug() << counter << "Pollutant Circles added to the map for: " << pollutantSelector->currentText();
   }
   else
   {
+    // await time selection before anything else
     return;
   }
 }
@@ -288,7 +301,7 @@ void FluorinatedCompounds::onLocationChange() {
   
   QVariant colour = "transparent";
   
-  //find a point with the correct location name to pass to QML
+  // find a point with the correct location name to pass to QML
   int i = 0;
   while (i < dataPoints.size()) 
   { 
@@ -296,6 +309,7 @@ void FluorinatedCompounds::onLocationChange() {
     
     if (point.location == locationSelector->currentText()) {
 
+        // call the add circle function but branch to just change the view rather than add new circle to the map
         QObject *rootObject = mapView->rootObject();
         QMetaObject::invokeMethod(rootObject, "addCircle", 
           Q_ARG(QVariant, colour),
@@ -311,7 +325,4 @@ void FluorinatedCompounds::onLocationChange() {
     }
     i++;
   }
-
-
-
 }
