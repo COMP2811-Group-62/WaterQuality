@@ -18,47 +18,114 @@ DashboardPage::DashboardPage(SampleModel* model, QWidget* parent)
 void DashboardPage::setupUI() {
   processData();
 
-  // Create main layout
   QVBoxLayout* mainLayout = new QVBoxLayout(contentArea);
+
+  // Add filter section
+  QHBoxLayout* filterLayout = new QHBoxLayout();
+
+  QLabel* timeFilterLabel = new QLabel(tr("Time Range:"));
+  timeRangeFilter = new QComboBox();
+  timeRangeFilter->addItem(tr("All Time"), AllTime);
+  timeRangeFilter->addItem(tr("Last Month"), LastMonth);
+  timeRangeFilter->addItem(tr("Last 3 Months"), LastThreeMonths);
+  timeRangeFilter->addItem(tr("Last 6 Months"), LastSixMonths);
+
+  connect(timeRangeFilter, QOverload<int>::of(&QComboBox::currentIndexChanged),
+          this, [this](int index) {
+            currentTimeRange = static_cast<TimeRange>(timeRangeFilter->itemData(index).toInt());
+            refreshView();
+          });
+
+  filterLayout->addWidget(timeFilterLabel);
+  filterLayout->addWidget(timeRangeFilter);
+  filterLayout->addStretch();
+
+  mainLayout->addLayout(filterLayout);
 
   // Cards grid
   cardsLayout = new QGridLayout();
 
-  cardsLayout->addWidget(createPollutantsCard(), 0, 0);
-  cardsLayout->addWidget(createPOPsCard(), 0, 1);
-  cardsLayout->addWidget(createLitterCard(), 1, 0);
-  cardsLayout->addWidget(createFluorinatedCard(), 1, 1);
-  cardsLayout->addWidget(createComplianceCard(), 2, 0, 1, 2);
+  pollutantsCard = createPollutantsCard();
+  popsCard = createPOPsCard();
+  litterCard = createLitterCard();
+  fluorinatedCard = createFluorinatedCard();
+  complianceCard = createComplianceCard();
+
+  cardsLayout->addWidget(pollutantsCard, 0, 0);
+  cardsLayout->addWidget(popsCard, 0, 1);
+  cardsLayout->addWidget(litterCard, 1, 0);
+  cardsLayout->addWidget(fluorinatedCard, 1, 1);
+  cardsLayout->addWidget(complianceCard, 2, 0, 1, 2);
 
   mainLayout->addLayout(cardsLayout);
+
+  // Add footer
+  QFrame* footer = createFooter();
+  mainLayout->addWidget(footer);
+  mainLayout->setAlignment(footer, Qt::AlignBottom);
 }
 
 void DashboardPage::refreshView() {
-  // Implement logic to refresh the view based on the shared model
   processData();
-  cardsLayout->removeWidget(createPollutantsCard());
-  cardsLayout->removeWidget(createPOPsCard());
-  cardsLayout->removeWidget(createLitterCard());
-  cardsLayout->removeWidget(createFluorinatedCard());
-  cardsLayout->removeWidget(createComplianceCard());
-  // Re-add cards with new data
-  cardsLayout->addWidget(createPollutantsCard(), 0, 0);
-  cardsLayout->addWidget(createPOPsCard(), 0, 1);
-  cardsLayout->addWidget(createLitterCard(), 1, 0);
-  cardsLayout->addWidget(createFluorinatedCard(), 1, 1);
-  cardsLayout->addWidget(createComplianceCard(), 2, 0, 1, 2);
+
+  // Delete old widgets
+  delete pollutantsCard;
+  delete popsCard;
+  delete litterCard;
+  delete fluorinatedCard;
+  delete complianceCard;
+
+  // Create new widgets
+  pollutantsCard = createPollutantsCard();
+  popsCard = createPOPsCard();
+  litterCard = createLitterCard();
+  fluorinatedCard = createFluorinatedCard();
+  complianceCard = createComplianceCard();
+
+  // Add to layout
+  cardsLayout->addWidget(pollutantsCard, 0, 0);
+  cardsLayout->addWidget(popsCard, 0, 1);
+  cardsLayout->addWidget(litterCard, 1, 0);
+  cardsLayout->addWidget(fluorinatedCard, 1, 1);
+  cardsLayout->addWidget(complianceCard, 2, 0, 1, 2);
 }
 
 void DashboardPage::processData() {
-  // Maps to store data for different pollutant types
   QMap<QString, QVector<double>> commonPollutants;
   QMap<QString, QVector<double>> pops;
   QMap<QString, QVector<double>> litter;
   QMap<QString, QVector<double>> pfas;
   QSet<QString> locations;
 
+  // Get current date for filtering
+  QDateTime currentDate = QDateTime::currentDateTime();
+  QDateTime filterDate;
+
+  switch (currentTimeRange) {
+    case LastMonth:
+      filterDate = currentDate.addMonths(-1);
+      break;
+    case LastThreeMonths:
+      filterDate = currentDate.addMonths(-3);
+      break;
+    case LastSixMonths:
+      filterDate = currentDate.addMonths(-6);
+      break;
+    case AllTime:
+    default:
+      filterDate = QDateTime();
+  }
+
   // Process all rows
   for (int row = 0; row < model->rowCount(QModelIndex()); row++) {
+    // Check date filter
+    QString dateStr = model->data(model->index(row, 3), Qt::DisplayRole).toString();
+    QDateTime sampleDate = QDateTime::fromString(dateStr, Qt::ISODate);
+
+    if (!filterDate.isNull() && sampleDate < filterDate) {
+      continue;
+    }
+
     QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
     QString location = model->data(model->index(row, 2), Qt::DisplayRole).toString();
     QString result = model->data(model->index(row, 7), Qt::DisplayRole).toString();
@@ -571,6 +638,32 @@ QFrame* DashboardPage::createComplianceCard() {
   layout->addWidget(content);
 
   return card;
+}
+
+QFrame* DashboardPage::createFooter() {
+  QFrame* footer = new QFrame();
+  footer->setObjectName("dashboardFooter");
+
+  QHBoxLayout* footerLayout = new QHBoxLayout(footer);
+
+  // Add resource links
+  auto addLink = [&](const QString& text, const QString& url) {
+    QPushButton* link = new QPushButton(text);
+    link->setObjectName("footerLink");
+    link->setCursor(Qt::PointingHandCursor);
+    connect(link, &QPushButton::clicked, [url]() {
+      QDesktopServices::openUrl(QUrl(url));
+    });
+    footerLayout->addWidget(link);
+  };
+
+  addLink(tr("EU Water Guidelines"), "https://ec.europa.eu/environment/water/");
+  addLink(tr("UK Water Standards"), "https://www.gov.uk/topic/environmental-management/water");
+  addLink(tr("WHO Guidelines"), "https://www.who.int/teams/environment-climate-change-and-health/water-sanitation-and-health/");
+
+  footerLayout->addStretch();  // Push links to the left
+
+  return footer;
 }
 
 bool DashboardPage::isOverviewPollutant(const QString& pollutant) const {

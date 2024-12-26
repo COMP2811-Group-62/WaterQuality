@@ -53,6 +53,7 @@ class DashboardPage : public BasePage {
   QFrame* createLitterCard();
   QFrame* createFluorinatedCard();
   QFrame* createComplianceCard();
+  QFrame* createFooter();
 
   void processData();
   bool isOverviewPollutant(const QString& pollutant) const;
@@ -66,6 +67,12 @@ class DashboardPage : public BasePage {
   QComboBox* timeRangeFilter;
   QComboBox* regionFilter;
 
+  QFrame* pollutantsCard;
+  QFrame* popsCard;
+  QFrame* litterCard;
+  QFrame* fluorinatedCard;
+  QFrame* complianceCard;
+
   // Constants for thresholds
   const double POLLUTANTS_WARNING = 5.0;
   const double POLLUTANTS_DANGER = 7.0;
@@ -75,4 +82,13 @@ class DashboardPage : public BasePage {
   const double LITTER_DANGER = 25.0;
   const double PFAS_WARNING = 0.1;
   const double PFAS_DANGER = 0.2;
+
+  enum TimeRange {
+    AllTime,
+    LastMonth,
+    LastThreeMonths,
+    LastSixMonths
+  };
+
+  TimeRange currentTimeRange = AllTime;
 };
