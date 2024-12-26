@@ -132,7 +132,28 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
   bodyTitleLabel->setWordWrap(true);
   bodyTitleLabel->setObjectName("h1dark");
 
+  // OK FRAME
+  QFrame* complianceOKFrame = new QFrame();
+  complianceOKFrame->setObjectName("complianceOKFrame");
+  complianceOKFrame->setFixedHeight(100);
+  QVBoxLayout* complianceOKlayout = new QVBoxLayout(complianceOKFrame);
+
+  QLabel* OKlabel = new QLabel("SAFE: < 0.1 ug/l");
+  OKlabel->setWordWrap(true);
+  OKlabel->setObjectName("h1dark");
+  
+  complianceOKlayout->addWidget(OKlabel);
+
+
+  // WARNING FRAME 
+
+
+  // DANGER FRAME
+
+
+
   sidbarInnerBody->addWidget(bodyTitleLabel);
+  sidbarInnerBody->addWidget(complianceOKFrame);
   sidbarInnerBody->addStretch(1);
 
   column->addWidget(sidebarFrameHeader);
@@ -144,7 +165,7 @@ void FluorinatedCompounds::findPollutants() {
     QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
     
     if (pollutant.startsWith("PF", Qt::CaseInsensitive) ) {
-      
+
       QString units = model->data(model->index(i, 8), Qt::DisplayRole).toString();
       QString result = model->data(model->index(i, 7), Qt::DisplayRole).toString();
       QString dateTime = model->data(model->index(i, 3), Qt::DisplayRole).toString();
@@ -159,12 +180,14 @@ void FluorinatedCompounds::findPollutants() {
       newPoint.result = result;
       newPoint.units = units;
 
+      qDebug() <<  result << units << location << pollutant;
 
       if (!filteredLocations.contains(location)) {
         filteredLocations.append(location);
       }
       if (!filteredPolutants.contains(pollutant)) {
         filteredPolutants.append(pollutant);
+        
       }
       dataPoints.append(newPoint);
 
@@ -173,6 +196,7 @@ void FluorinatedCompounds::findPollutants() {
 
   if (!filteredLocations.empty() && !filteredPolutants.empty()) {
     pollutantSelector->addItems(filteredPolutants);
+    
     locationSelector->addItems(filteredLocations);
 
   }
@@ -182,7 +206,7 @@ void FluorinatedCompounds::addMapCirlces() {
 
   clearMap();
   int counter = 0;
-  QVariant colour = "green";
+  
   QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
 
   QObject *rootObject = mapView->rootObject();
@@ -194,6 +218,13 @@ void FluorinatedCompounds::addMapCirlces() {
     // add circle for each datapoint which matches the text in pollutant
     
     if (point.pollutant == pollutantSelector->currentText()) {
+          QVariant colour = "red";
+
+          if (point.result.toDouble() < 0.1)
+              colour = "green";
+          else if (point.result.toDouble() < 0.2)
+              colour = "yellow";
+
           QMetaObject::invokeMethod(rootObject, "addCircle", 
             Q_ARG(QVariant, colour),
             Q_ARG(QVariant, point.dataURL), 
