@@ -26,6 +26,7 @@ set(SOURCES
     src/popspage.cpp
     src/litterpage.cpp
     src/compliancedashboard.cpp
+    src/compliance.cpp
 )
 
 set(HEADERS
@@ -44,6 +45,7 @@ set(HEADERS
     src/popspage.h
     src/compliancedashboard.h
     src/languagemanager.h
+    src/compliance.h
 )
 
 qt_add_executable(water

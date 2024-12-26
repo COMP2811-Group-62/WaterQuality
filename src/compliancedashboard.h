@@ -1,4 +1,3 @@
-// compliancedashboard.h
 #pragma once
 
 #include <QDialog>
@@ -7,6 +6,7 @@
 #include <QScrollArea>
 
 #include "basepage.h"
+#include "compliance.h"
 #include "model.h"
 
 class QGridLayout;
@@ -22,6 +22,9 @@ class ComplianceDashboard : public BasePage {
  public:
   ComplianceDashboard(SampleModel* model, QWidget* parent = nullptr);
   void refreshView() override;
+
+ protected:
+  void showEvent(QShowEvent* event) override;
 
  private slots:
   void onLocationFiltered(const QString& location);
@@ -55,21 +58,16 @@ class ComplianceDashboard : public BasePage {
   QString currentSearchText;
   QString currentCompliance;
 
-  // Compliance Thresholds (µg/L)
-  const QMap<QString, double> COMPLIANCE_THRESHOLDS = {
-      {"PFAS", 0.1},
-      {"1,1,2-Trichloroethane", 0.2},
-      {"Chloroform", 0.3},
-      {"PCBs", 0.05}};
+  // Add compliance status enum
+  enum class ComplianceLevel {
+    Compliant,
+    Warning,
+    Critical
+  };
 
   void setupUI() override;
   void setUpFilters(QHBoxLayout* layout);
   void setUpScrollableCards();
-  void createComplianceCard(QVBoxLayout* layout,
-                            const QString& pollutant,
-                            const QString& location,
-                            const QString& value,
-                            bool compliant);
   void populateFilters();
   void showTrendPopup(const QString& pollutant, const QString& location);
   double getThresholdForPollutant(const QString& pollutant);
@@ -81,4 +79,9 @@ class ComplianceDashboard : public BasePage {
                            const QString& location,
                            const QString& value,
                            bool compliant);
+
+  void resizeEvent(QResizeEvent* event) override;
+  void adjustCardSizes();
+  const int CARD_MARGIN = 12;
+  const int MIN_CARD_WIDTH = 300;
 };
