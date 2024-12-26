@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Quick QuickWidgets LinguistTools)
-qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES de ar)
+qt_standard_project_setup()
 
 set(SOURCES
     src/main.cpp
@@ -64,7 +64,7 @@ target_link_libraries(water PRIVATE
     # Qt6::Location
 )
 
-qt_add_translations(water)
+qt_add_translations(water TS_FILES aquawatch_de.ts aquawatch_ar.ts)
 
 set_target_properties(water PROPERTIES
     WIN32_EXECUTABLE ON
