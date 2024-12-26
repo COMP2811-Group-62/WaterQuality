@@ -243,12 +243,12 @@
     <message>
         <location filename="src/navigationbar.cpp" line="26"/>
         <source>Dashboard</source>
-        <translation type="unfinished">german dashboard</translation>
+        <translation type="unfinished">Instrumententafel</translation>
     </message>
     <message>
         <location filename="src/navigationbar.cpp" line="27"/>
         <source>Data Page</source>
-        <translation type="unfinished">faptadat</translation>
+        <translation type="unfinished">Gegevenspagina</translation>
     </message>
     <message>
         <location filename="src/navigationbar.cpp" line="28"/>
@@ -258,17 +258,17 @@
     <message>
         <location filename="src/navigationbar.cpp" line="29"/>
         <source>Fluorinated Compounds</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gefluoreerde Verbindingen</translation>
     </message>
     <message>
         <location filename="src/navigationbar.cpp" line="30"/>
         <source>POPs Page</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Persistente organische Schadstoffe</translation>
     </message>
     <message>
         <location filename="src/navigationbar.cpp" line="31"/>
         <source>Litter Indicators</source>
-        <translation type="unfinished">litltlit</translation>
+        <translation type="unfinished">Müll-Indikatoren</translation>
     </message>
     <message>
         <location filename="src/navigationbar.cpp" line="32"/>
