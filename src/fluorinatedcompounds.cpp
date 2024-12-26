@@ -75,6 +75,9 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
   connect(pollutantSelector, &QComboBox::currentTextChanged,
           this, &FluorinatedCompounds::addMapCirlces);
+
+  connect(timeRangeSelector, &QComboBox::currentTextChanged,
+          this, &FluorinatedCompounds::addMapCirlces);
   
   connect(locationSelector, &QComboBox::currentTextChanged,
           this, &FluorinatedCompounds::onLocationChange);
@@ -135,25 +138,54 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
   // OK FRAME
   QFrame* complianceOKFrame = new QFrame();
   complianceOKFrame->setObjectName("complianceOKFrame");
-  complianceOKFrame->setFixedHeight(100);
   QVBoxLayout* complianceOKlayout = new QVBoxLayout(complianceOKFrame);
 
-  QLabel* OKlabel = new QLabel("SAFE: < 0.1 ug/l");
+  QLabel* OKlabel = new QLabel("SAFE: < 0.1 µg/l");
+  QLabel* OKsublabel = new QLabel("The value is below the threshold and is not a risk");
   OKlabel->setWordWrap(true);
-  OKlabel->setObjectName("h1dark");
+  OKsublabel->setWordWrap(true);
+  OKlabel->setObjectName("h2");
+  OKsublabel->setObjectName("dangerLabel");
   
   complianceOKlayout->addWidget(OKlabel);
-
+  complianceOKlayout->addWidget(OKsublabel);
 
   // WARNING FRAME 
+  QFrame* complianceWARNINGFrame = new QFrame();
+  complianceWARNINGFrame->setObjectName("complianceWARNINGFrame");
+  QVBoxLayout* complianceWARNINGlayout = new QVBoxLayout(complianceWARNINGFrame);
+
+  QLabel* WARNINGlabel = new QLabel("WARNING: = 0.1 µg/l");
+  QLabel* WARNINGsublabel = new QLabel("The value is at the threshold and may be a risk");
+  WARNINGlabel->setWordWrap(true);
+  WARNINGsublabel->setWordWrap(true);
+  WARNINGlabel->setObjectName("h2");
+  WARNINGsublabel->setObjectName("dangerLabel");
+  
+  complianceWARNINGlayout->addWidget(WARNINGlabel);
+  complianceWARNINGlayout->addWidget(WARNINGsublabel);
 
 
   // DANGER FRAME
+  QFrame* complianceDANGERFrame = new QFrame();
+  complianceDANGERFrame->setObjectName("complianceDANGERFrame");
+  QVBoxLayout* complianceDANGERlayout = new QVBoxLayout(complianceDANGERFrame);
 
+  QLabel* DANGERlabel = new QLabel("DANGER: > 0.1 µg/l");
+  QLabel* DANGERsublabel = new QLabel("The value is over the threshold and is a risk");
+  DANGERlabel->setWordWrap(true);
+  DANGERsublabel->setWordWrap(true);
+  DANGERlabel->setObjectName("h2");
+  DANGERsublabel->setObjectName("dangerLabel");
+  
+  complianceDANGERlayout->addWidget(DANGERlabel);
+  complianceDANGERlayout->addWidget(DANGERsublabel);
 
 
   sidbarInnerBody->addWidget(bodyTitleLabel);
   sidbarInnerBody->addWidget(complianceOKFrame);
+  sidbarInnerBody->addWidget(complianceWARNINGFrame);
+  sidbarInnerBody->addWidget(complianceDANGERFrame);
   sidbarInnerBody->addStretch(1);
 
   column->addWidget(sidebarFrameHeader);
@@ -180,8 +212,6 @@ void FluorinatedCompounds::findPollutants() {
       newPoint.result = result;
       newPoint.units = units;
 
-      qDebug() <<  result << units << location << pollutant;
-
       if (!filteredLocations.contains(location)) {
         filteredLocations.append(location);
       }
@@ -202,44 +232,49 @@ void FluorinatedCompounds::findPollutants() {
   }
 }
 
-void FluorinatedCompounds::addMapCirlces() {
-
+void FluorinatedCompounds::addMapCirlces()
+{
   clearMap();
-  int counter = 0;
-  
-  QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
 
-  QObject *rootObject = mapView->rootObject();
+  if (timeRangeSelector->currentText() != "" && pollutantSelector->currentText() != "")
+  {
+    int counter = 0;
+    QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
+    QObject *rootObject = mapView->rootObject();
 
-  for (int i = 0; i < dataPoints.size(); ++i) 
-  { 
-    dataPoint& point = dataPoints[i];  
-    
-    // add circle for each datapoint which matches the text in pollutant
-    
-    if (point.pollutant == pollutantSelector->currentText()) {
-          QVariant colour = "red";
+    for (int i = 0; i < dataPoints.size(); ++i)
+    {
+      dataPoint &point = dataPoints[i];
 
-          if (point.result.toDouble() < 0.1)
-              colour = "green";
-          else if (point.result.toDouble() < 0.2)
-              colour = "yellow";
+      // add circle for each datapoint which matches the text in pollutant
+      if (point.pollutant == pollutantSelector->currentText())
+      {
+        QVariant colour = "red";
 
-          QMetaObject::invokeMethod(rootObject, "addCircle", 
-            Q_ARG(QVariant, colour),
-            Q_ARG(QVariant, point.dataURL), 
-            Q_ARG(QVariant, false),
-            Q_ARG(QVariant, point.location),
-            Q_ARG(QVariant, point.pollutant),
-            Q_ARG(QVariant, point.date),
-            Q_ARG(QVariant, point.result),
-            Q_ARG(QVariant, point.units));
+        if (point.result.toDouble() < 0.1)
+          colour = "green";
+        else if (point.result.toDouble() < 0.2)
+          colour = "yellow";
 
-          counter++;
+        QMetaObject::invokeMethod(rootObject, "addCircle",
+                                  Q_ARG(QVariant, colour),
+                                  Q_ARG(QVariant, point.dataURL),
+                                  Q_ARG(QVariant, false),
+                                  Q_ARG(QVariant, point.location),
+                                  Q_ARG(QVariant, point.pollutant),
+                                  Q_ARG(QVariant, point.date),
+                                  Q_ARG(QVariant, point.result),
+                                  Q_ARG(QVariant, point.units));
+
+        counter++;
+      }
     }
-
+    qDebug() << counter << "Pollutant Circles added to the map for: " << pollutantSelector->currentText();
   }
-  qDebug() << counter << "Pollutant Circles added to the map for: " << pollutantSelector->currentText();
+  else
+  {
+    return;
+  }
 }
 
 void FluorinatedCompounds::clearMap() {

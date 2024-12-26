@@ -7,6 +7,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_PREFIX_PATH "/Users/alexandermccall/Qt/6.8.0/macos/lib/cmake")
 find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Quick QuickWidgets)
 qt_standard_project_setup()
 

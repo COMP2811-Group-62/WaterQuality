@@ -142,6 +142,6 @@ Rectangle {
     function moveViewport(lat, lon) {
         map.center.latitude  = lat
         map.center.longitude = lon
-        map.zoomLevel = 10
+        map.zoomLevel = 12
     }
 }
