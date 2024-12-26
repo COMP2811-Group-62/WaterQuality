@@ -41,8 +41,8 @@ void FluorinatedCompounds::setupUI() {
 }
 
 void FluorinatedCompounds::refreshView() {
-  findPollutants();
   clearMap();
+  findPollutants();
 }
 
 void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
@@ -65,16 +65,34 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
   timeRangeSelector = new QComboBox();
   timeRangeSelector->setPlaceholderText("Select Time range");
-  timeRangeSelector->addItems({"January 2024", "February 2024", "March 2024",
-                               "April 2024", "May 2024", "June 2024",
-                               "July 2024", "August 2024", "September 2024",
-                               "Most Recent"});
+  timeRangeSelector->addItems({ "January 2024",
+                                "February 2024",
+                                "March 2024",
+                                "April 2024",
+                                "May 2024",
+                                "June 2024",
+                                "July 2024",
+                                "August 2024",
+                                "September 2024",
+                                "October 2024",
+                                "November 2024",
+                                "December 2024",
+                                "All points"
+                              });
 
   locationSelector = new QComboBox();
   locationSelector->setPlaceholderText("Select Location");
 
+  // connect combo boxes 
+
   connect(pollutantSelector, &QComboBox::currentTextChanged,
           this, &FluorinatedCompounds::addMapCirlces);
+
+  connect(timeRangeSelector, &QComboBox::currentTextChanged,
+          this, &FluorinatedCompounds::addMapCirlces);
+  
+  connect(locationSelector, &QComboBox::currentTextChanged,
+          this, &FluorinatedCompounds::onLocationChange);
 
   QLabel* locationLabel = new QLabel(tr("Location:"));
   locationLabel->setObjectName("h2");
@@ -111,9 +129,11 @@ void FluorinatedCompounds::configureMap(QVBoxLayout* column) {
 }
 
 void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
+
+  // configure frame for sidebar header block
   QFrame* sidebarFrameHeader = new QFrame();
   sidebarFrameHeader->setObjectName("sidebarFrameHeader");
-  sidebarFrameHeader->setFixedHeight(100);
+  sidebarFrameHeader->setFixedHeight(130);
   sidbarInnerHeader = new QVBoxLayout(sidebarFrameHeader);
 
   QFrame* sidebarFrameBody = new QFrame();
@@ -130,8 +150,58 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
   bodyTitleLabel->setWordWrap(true);
   bodyTitleLabel->setObjectName("h1dark");
 
+  // OK FRAME
+  QFrame* complianceOKFrame = new QFrame();
+  complianceOKFrame->setObjectName("complianceOKFrame");
+  QVBoxLayout* complianceOKlayout = new QVBoxLayout(complianceOKFrame);
+
+  QLabel* OKlabel = new QLabel("SAFE: < 0.1 µg/l");
+  QLabel* OKsublabel = new QLabel("The value is below the threshold and is not a risk");
+  OKlabel->setWordWrap(true);
+  OKsublabel->setWordWrap(true);
+  OKlabel->setObjectName("h2");
+  OKsublabel->setObjectName("dangerLabel");
+  
+  complianceOKlayout->addWidget(OKlabel);
+  complianceOKlayout->addWidget(OKsublabel);
+
+  // WARNING FRAME 
+  QFrame* complianceWARNINGFrame = new QFrame();
+  complianceWARNINGFrame->setObjectName("complianceWARNINGFrame");
+  QVBoxLayout* complianceWARNINGlayout = new QVBoxLayout(complianceWARNINGFrame);
+
+  QLabel* WARNINGlabel = new QLabel("WARNING: = 0.1 µg/l");
+  QLabel* WARNINGsublabel = new QLabel("The value is at the threshold and may be a risk");
+  WARNINGlabel->setWordWrap(true);
+  WARNINGsublabel->setWordWrap(true);
+  WARNINGlabel->setObjectName("h2");
+  WARNINGsublabel->setObjectName("dangerLabel");
+  
+  complianceWARNINGlayout->addWidget(WARNINGlabel);
+  complianceWARNINGlayout->addWidget(WARNINGsublabel);
+
+
+  // DANGER FRAME
+  QFrame* complianceDANGERFrame = new QFrame();
+  complianceDANGERFrame->setObjectName("complianceDANGERFrame");
+  QVBoxLayout* complianceDANGERlayout = new QVBoxLayout(complianceDANGERFrame);
+
+  QLabel* DANGERlabel = new QLabel("DANGER: > 0.1 µg/l");
+  QLabel* DANGERsublabel = new QLabel("The value is over the threshold and is a risk");
+  DANGERlabel->setWordWrap(true);
+  DANGERsublabel->setWordWrap(true);
+  DANGERlabel->setObjectName("h2");
+  DANGERsublabel->setObjectName("dangerLabel");
+  
+  complianceDANGERlayout->addWidget(DANGERlabel);
+  complianceDANGERlayout->addWidget(DANGERsublabel);
+
+
   sidbarInnerBody->addWidget(bodyTitleLabel);
-  sidbarInnerBody->addStretch();
+  sidbarInnerBody->addWidget(complianceOKFrame);
+  sidbarInnerBody->addWidget(complianceWARNINGFrame);
+  sidbarInnerBody->addWidget(complianceDANGERFrame);
+  sidbarInnerBody->addStretch(1);
 
   column->addWidget(sidebarFrameHeader);
   column->addWidget(sidebarFrameBody);
@@ -140,8 +210,12 @@ void FluorinatedCompounds::configureSidebar(QVBoxLayout* column) {
 void FluorinatedCompounds::findPollutants() {
   for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
     QString pollutant = model->data(model->index(i, 4), Qt::DisplayRole).toString();
+    
+    if (pollutant.startsWith("PF", Qt::CaseInsensitive) ) {
 
-    if (pollutant.startsWith("PF", Qt::CaseInsensitive)) {
+      QString units = model->data(model->index(i, 8), Qt::DisplayRole).toString();
+      QString result = model->data(model->index(i, 7), Qt::DisplayRole).toString();
+
       QString dateTime = model->data(model->index(i, 3), Qt::DisplayRole).toString();
       QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
       QString dataURL = model->data(model->index(i, 1), Qt::DisplayRole).toString();
@@ -151,12 +225,16 @@ void FluorinatedCompounds::findPollutants() {
       newPoint.location = location;
       newPoint.pollutant = pollutant;
       newPoint.date = dateTime;
+      newPoint.result = result;
+      newPoint.units = units;
+
 
       if (!filteredLocations.contains(location)) {
         filteredLocations.append(location);
       }
       if (!filteredPolutants.contains(pollutant)) {
         filteredPolutants.append(pollutant);
+        
       }
       dataPoints.append(newPoint);
     }
@@ -164,35 +242,91 @@ void FluorinatedCompounds::findPollutants() {
 
   if (!filteredLocations.empty() && !filteredPolutants.empty()) {
     pollutantSelector->addItems(filteredPolutants);
+    
     locationSelector->addItems(filteredLocations);
   }
 }
 
-void FluorinatedCompounds::addMapCirlces() {
+void FluorinatedCompounds::addMapCirlces()
+{
+
   clearMap();
-  int counter = 0;
-  QVariant colour = "green";
-  QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
 
-  QObject* rootObject = mapView->rootObject();
+  if (timeRangeSelector->currentText() != "" && pollutantSelector->currentText() != "")
+  {
 
-  for (int i = 0; i < dataPoints.size(); ++i) {
-    dataPoint& point = dataPoints[i];
+    QVariant dataURL = model->data(model->index(0, 1), Qt::DisplayRole).toString();
+    QObject *rootObject = mapView->rootObject();
 
-    // add circle for each datapoint which matches the text in pollutant
+    for (int i = 0; i < dataPoints.size(); ++i)
+    {
+      dataPoint &point = dataPoints[i];
+      
+      // add circle for each datapoint which matches the text in pollutant
+      if (point.pollutant == pollutantSelector->currentText() && point.date.contains(months[timeRangeSelector->currentText()]))
+      {
+        QVariant colour = "red";
 
-    if (point.pollutant == pollutantSelector->currentText()) {
-      QMetaObject::invokeMethod(rootObject, "addCircle",
-                                Q_ARG(QVariant, colour),
-                                Q_ARG(QVariant, point.dataURL));
-      counter++;
+        if (point.result.toDouble() < 0.1)
+          colour = "green";
+        else if (point.result.toDouble() < 0.2)
+          colour = "yellow";
+
+        QMetaObject::invokeMethod(rootObject, "addCircle",
+                                  Q_ARG(QVariant, colour),
+                                  Q_ARG(QVariant, point.dataURL),
+                                  Q_ARG(QVariant, false),
+                                  Q_ARG(QVariant, point.location),
+                                  Q_ARG(QVariant, point.pollutant),
+                                  Q_ARG(QVariant, point.date),
+                                  Q_ARG(QVariant, point.result),
+                                  Q_ARG(QVariant, point.units));
+
+      }
     }
   }
-  qDebug() << counter << "Done, resizing map";
+  else
+  {
+    // await time selection before anything else
+    return;
+
+  }
 }
 
 void FluorinatedCompounds::clearMap() {
-  qDebug() << "Clearing Map";
-  QObject* rootObject = mapView->rootObject();
+
+  QObject *rootObject = mapView->rootObject();
   QMetaObject::invokeMethod(rootObject, "clearMap");
+
+}
+
+void FluorinatedCompounds::onLocationChange() {
+  
+  QVariant colour = "transparent";
+  
+  // find a point with the correct location name to pass to QML
+  int i = 0;
+  while (i < dataPoints.size()) 
+  { 
+    dataPoint& point = dataPoints[i];  
+    
+    if (point.location == locationSelector->currentText()) {
+
+        // call the add circle function but branch to just change the view rather than add new circle to the map
+        QObject *rootObject = mapView->rootObject();
+        QMetaObject::invokeMethod(rootObject, "addCircle", 
+          Q_ARG(QVariant, colour),
+          Q_ARG(QVariant, point.dataURL),
+          Q_ARG(QVariant, true),
+          Q_ARG(QVariant, point.location),
+          Q_ARG(QVariant, point.pollutant),
+          Q_ARG(QVariant, point.date),
+          Q_ARG(QVariant, point.result),
+          Q_ARG(QVariant, point.units));
+
+        i = dataPoints.size();
+    }
+    i++;
+  }
+
 }

@@ -54,11 +54,11 @@ Rectangle {
             opacity: 0.5
         }
     }
+    // take in data from C++ and perform a request to the environment API, then either make a circle or set the center
 
-    function addCircle(colour, dataURL) { 
+    function addCircle(colour, dataURL, moveView, locationName, pollutantName, date, resultValue, resultUnits) { 
         var requestURL = "https://environment.data.gov.uk/water-quality/id/sampling-point/" + dataURL
-        //console.log(requestURL)
-        //console.log("Adding circle")
+
         // use the dataURL from the CSV to get the lat + long to use to add to the map rather than easting and norting
 
         var httpRequest = new XMLHttpRequest();  
@@ -68,7 +68,6 @@ Rectangle {
             // request will run async
 
             if (httpRequest.readyState === XMLHttpRequest.DONE) { 
-                //console.log("Request completed")
                 if (httpRequest.status === 200) { 
                     
                     // once request complete and 200
@@ -76,10 +75,15 @@ Rectangle {
                     var jsonResponse = JSON.parse(httpRequest.responseText);
                     var longitude = jsonResponse.items[0].long;
                     var latitude = jsonResponse.items[0].lat;
-                    //console.log(latitude, longitude)
 
                     // create the circle now we have all required data
-                    createCircle(latitude, longitude, colour)
+                    if (moveView) {
+                        moveViewport(latitude, longitude)
+                    }
+                    else {
+                        createCircle(latitude, longitude, colour, locationName, pollutantName, date, resultValue, resultUnits)
+                    }
+                   
                 } 
                 else { 
                     console.log("Error: " + httpRequest.status); 
@@ -88,9 +92,11 @@ Rectangle {
         } 
         httpRequest.open("GET", requestURL); 
         httpRequest.send(); 
-        //console.log("Request sent to:", requestURL)
     }
-    function createCircle(lat, lon, colour) { 
+    function createCircle(lat, lon, colour, locationName, pollutantName, date, resultValue, resultUnits) { 
+        
+        // create a new QML MapCircle object and assign values, then pass to map
+
         var circle = Qt.createQmlObject('
             
             import QtLocation; 
@@ -101,6 +107,7 @@ Rectangle {
                 radius: 2500
                 opacity: 0.5
             
+            property alias toolTipText: toolTip.text
 
             MouseArea { 
                     id: mouseArea 
@@ -113,7 +120,7 @@ Rectangle {
             ToolTip { 
                     id: toolTip 
                     visible: false 
-                    text: "Circle at here with here and that" 
+                    text: "<>"
                     delay: 500 
                 }
             }
@@ -122,6 +129,9 @@ Rectangle {
         circle.center.latitude = lat
         circle.center.longitude = lon
         circle.color = colour
+
+        circle.toolTipText = locationName + " on " + date + " with pollutant " + pollutantName + " at level " + resultValue + resultUnits 
+
         map.addMapItem(circle)
 
         map.fitViewportToMapItems()
@@ -129,5 +139,11 @@ Rectangle {
     
     function clearMap() {
         map.clearMapItems()
+    }
+    // change location based off user selection
+    function moveViewport(lat, lon) {
+        map.center.latitude  = lat
+        map.center.longitude = lon
+        map.zoomLevel = 12
     }
 }

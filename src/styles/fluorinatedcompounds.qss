@@ -5,6 +5,8 @@
 #h1dark {
     color: black;
     font-size: 14px;
+    font-weight: bold;
+    padding-bottom: 10px;
 }
 
 #h2 {
@@ -47,4 +49,33 @@ QQuickWidget {
     border: 1px solid #dee2e6;
     border-radius: 8px;
     padding: 20px
+}
+
+
+/* Safety threshold indicators - same style as trends overview for consistancy*/
+
+QFrame#complianceOKFrame {
+    border-radius: 4px;
+    height: 15px;
+    background-color: #4caf50;
+}
+
+QFrame#complianceWARNINGFrame {
+    border-radius: 4px;
+    padding: 2px 4px;
+    height: 15px;
+    background-color: #ff9800;
+}
+
+QFrame#complianceDANGERFrame {
+    border-radius: 4px;
+    padding: 2px 4px;
+    height: 15px;
+    background-color: #f44336;
+}
+
+#dangerLabel {
+    color: white;
+    font-size: 14px;
+    font-weight: light;
 }
