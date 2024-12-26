@@ -54,3 +54,7 @@ QScrollBar::add-page:horizontal,
 QScrollBar::sub-page:horizontal {
     background: none;
 }
+
+QDialog {
+    background-color: white;
+}

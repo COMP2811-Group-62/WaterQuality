@@ -1,9 +1,9 @@
 #pragma once
 
+#include <QQuickWidget>
+
 #include "basepage.h"
 #include "model.h"
-
-#include <QQuickWidget>
 
 class QHBoxLayout;
 class QTableView;

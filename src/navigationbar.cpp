@@ -17,31 +17,25 @@ void NavigationBar::setupUI() {
   layout = new QVBoxLayout(this);
 
   // Add title
-  titleLabel = new QLabel("AquaWatch", this);
+  titleLabel = new QLabel(tr("AquaWatch"), this);
   titleLabel->setAlignment(Qt::AlignCenter);
-  titleLabel->setStyleSheet("font-size: 32px; font-family: 'SF Pro'; color: #00c2e5; font-weight: bold; padding: 10px;");
+  titleLabel->setStyleSheet("font-size: 32px; color: #00c2e5; font-weight: bold; padding: 10px;");
   layout->addWidget(titleLabel);
 
   // Add navigation buttons
-  navButtons.append(createNavButton("Dashboard", 0, true));  // Default
-  navButtons.append(createNavButton("Data Page", 1, false));
-  navButtons.append(createNavButton("Pollutants Overview", 2, false));
-  navButtons.append(createNavButton("Fluorinated Compounds", 3, false));
-  navButtons.append(createNavButton("POPs Page", 4, false));
-  navButtons.append(createNavButton("Litter Indicators", 5, false));
-  navButtons.append(createNavButton("Compliance Dashboard", 6, false));
+  navButtons.append(createNavButton(tr("Dashboard"), 0, true));  // Default
+  navButtons.append(createNavButton(tr("Data Page"), 1, false));
+  navButtons.append(createNavButton(tr("Pollutants Overview"), 2, false));
+  navButtons.append(createNavButton(tr("Fluorinated Compounds"), 3, false));
+  navButtons.append(createNavButton(tr("POPs Page"), 4, false));
+  navButtons.append(createNavButton(tr("Litter Indicators"), 5, false));
+  navButtons.append(createNavButton(tr("Compliance Dashboard"), 6, false));
 
   for (auto button : navButtons) {
     layout->addWidget(button);
   }
 
   layout->addStretch();
-
-  // Add language selector
-  languageSelector = new QComboBox(this);
-  languageSelector->addItems({"English", "Français", "Español"});
-  connect(languageSelector, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &NavigationBar::languageChanged);
-  layout->addWidget(languageSelector);
 }
 
 QPushButton *NavigationBar::createNavButton(const QString &text, int index, bool isChecked) {

@@ -5,8 +5,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QQmlApplicationEngine>
-#include <QQuickWidget>
 #include <QQuickItem>
+#include <QQuickWidget>
 #include <QTableView>
 #include <QVBoxLayout>
 #include <QXYSeries>
@@ -14,7 +14,7 @@
 #include "styles.h"
 
 FluorinatedCompounds::FluorinatedCompounds(SampleModel* model, QWidget* parent)
-    : BasePage("Fluorinated Compounds Page", parent), model(model) {
+    : BasePage(tr("Fluorinated Compounds Page"), parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/fluorinatedcompounds.qss"}));
   setupUI();
@@ -54,7 +54,7 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
 
   mapControls->setSpacing(20);
 
-  QLabel* titleLabel = new QLabel("The map below shows all Polutants with the 'PF' Prefix and the sampling point location.");
+  QLabel* titleLabel = new QLabel(tr("The map below shows all Polutants with the 'PF' Prefix and the sampling point location."));
   titleLabel->setObjectName("h1");
 
   // define combo boxes
@@ -94,11 +94,11 @@ void FluorinatedCompounds::configureHeader(QVBoxLayout* header) {
   connect(locationSelector, &QComboBox::currentTextChanged,
           this, &FluorinatedCompounds::onLocationChange);
 
-  QLabel* locationLabel = new QLabel("Location:");
+  QLabel* locationLabel = new QLabel(tr("Location:"));
   locationLabel->setObjectName("h2");
-  QLabel* pollutantLabel = new QLabel("Pollutant:");
+  QLabel* pollutantLabel = new QLabel(tr("Pollutant:"));
   pollutantLabel->setObjectName("h2");
-  QLabel* timeRangeLabel = new QLabel("Time Range:");
+  QLabel* timeRangeLabel = new QLabel(tr("Time Range:"));
   timeRangeLabel->setObjectName("h2");
 
   mapControls->addWidget(pollutantLabel);
@@ -124,6 +124,7 @@ void FluorinatedCompounds::configureMap(QVBoxLayout* column) {
   mapView->setResizeMode(QQuickWidget::SizeRootObjectToView);
   mapView->show();
 
+  mapView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   column->addWidget(mapView);
 }
 
@@ -214,6 +215,7 @@ void FluorinatedCompounds::findPollutants() {
 
       QString units = model->data(model->index(i, 8), Qt::DisplayRole).toString();
       QString result = model->data(model->index(i, 7), Qt::DisplayRole).toString();
+
       QString dateTime = model->data(model->index(i, 3), Qt::DisplayRole).toString();
       QString location = model->data(model->index(i, 2), Qt::DisplayRole).toString();
       QString dataURL = model->data(model->index(i, 1), Qt::DisplayRole).toString();
@@ -226,6 +228,7 @@ void FluorinatedCompounds::findPollutants() {
       newPoint.result = result;
       newPoint.units = units;
 
+
       if (!filteredLocations.contains(location)) {
         filteredLocations.append(location);
       }
@@ -234,7 +237,6 @@ void FluorinatedCompounds::findPollutants() {
         
       }
       dataPoints.append(newPoint);
-
     }
   }
 
@@ -242,12 +244,12 @@ void FluorinatedCompounds::findPollutants() {
     pollutantSelector->addItems(filteredPolutants);
     
     locationSelector->addItems(filteredLocations);
-
   }
 }
 
 void FluorinatedCompounds::addMapCirlces()
 {
+
   clearMap();
 
   if (timeRangeSelector->currentText() != "" && pollutantSelector->currentText() != "")
@@ -287,6 +289,7 @@ void FluorinatedCompounds::addMapCirlces()
   {
     // await time selection before anything else
     return;
+
   }
 }
 
@@ -325,4 +328,5 @@ void FluorinatedCompounds::onLocationChange() {
     }
     i++;
   }
+
 }

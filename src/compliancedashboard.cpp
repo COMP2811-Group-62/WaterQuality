@@ -7,14 +7,16 @@
 #include <QLabel>
 #include <QList>
 #include <QPushButton>
+#include <QScrollBar>
 #include <QSet>
+#include <QShowEvent>
 #include <QString>
 #include <QVBoxLayout>
 
 #include "styles.h"
 
 ComplianceDashboard::ComplianceDashboard(SampleModel* model, QWidget* parent)
-    : BasePage("Compliance Dashboard", parent), model(model) {
+    : BasePage(tr("Compliance Dashboard"), parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/compliancedashboard.qss"}));
   setupUI();
@@ -46,20 +48,20 @@ void ComplianceDashboard::refreshView() {
 void ComplianceDashboard::setUpFilters(QHBoxLayout* layout) {
   // Search Bar
   searchBar = new QLineEdit();
-  searchBar->setPlaceholderText("Search pollutants...");
+  searchBar->setPlaceholderText(tr("Search pollutants..."));
   searchBar->setObjectName("searchBar");
 
-  locationLabel = new QLabel("Location:");
+  locationLabel = new QLabel(tr("Location:"));
   locationSelect = new QComboBox();
   locationSelect->setObjectName("locationSelect");
 
-  complianceLabel = new QLabel("Compliance Status:");
+  complianceLabel = new QLabel(tr("Compliance Status:"));
   complianceSelect = new QComboBox();
   complianceSelect->setObjectName("complianceSelect");
 
-  complianceSelect->addItem("All");
-  complianceSelect->addItem("Compliant");
-  complianceSelect->addItem("Non-Compliant");
+  complianceSelect->addItem(tr("All"));
+  complianceSelect->addItem(tr("Compliant"));
+  complianceSelect->addItem(tr("Non-Compliant"));
 
   layout->addWidget(searchBar);
   layout->addWidget(locationLabel);
@@ -115,64 +117,27 @@ void ComplianceDashboard::populateFilters() {
   locationSelect->addItems(locations);
 }
 
-void ComplianceDashboard::createComplianceCard(QVBoxLayout* layout,
-                                               const QString& pollutant,
-                                               const QString& location,
-                                               const QString& value,
-                                               bool compliant) {
-  QFrame* card = new QFrame();
-  card->setObjectName("complianceCard");
-  QVBoxLayout* cardLayout = new QVBoxLayout(card);
-
-  // Pollutant Name and Value
-  QLabel* nameLabel = new QLabel(pollutant);
-  nameLabel->setObjectName("pollutantName");
-
-  QLabel* locationLabel = new QLabel(QString("Location: %1").arg(location));
-  locationLabel->setObjectName("locationLabel");
-
-  QLabel* valueLabel = new QLabel(QString("Current Value: %1 µg/L").arg(value));
-  valueLabel->setObjectName("valueLabel");
-
-  // Compliance Indicator
-  QLabel* complianceLabel = new QLabel(compliant ? "✓ Compliant" : "⚠ Non-Compliant");
-  complianceLabel->setStyleSheet(compliant ? "color: #2ecc71; font-weight: bold;" : "color: #e74c3c; font-weight: bold;");
-  complianceLabel->setObjectName("complianceLabel");
-
-  // Threshold Display
-  double threshold = getThresholdForPollutant(pollutant);
-  QLabel* thresholdLabel = new QLabel(QString("Threshold: %1 µg/L").arg(threshold));
-  thresholdLabel->setObjectName("thresholdLabel");
-
-  // Details Button
-  QPushButton* detailsBtn = new QPushButton("View Details");
-  detailsBtn->setObjectName("detailsButton");
-  connect(detailsBtn, &QPushButton::clicked, this, [=]() {
-    showPollutantDetails(pollutant, location, value);
-  });
-
-  cardLayout->addWidget(nameLabel);
-  cardLayout->addWidget(locationLabel);
-  cardLayout->addWidget(valueLabel);
-  cardLayout->addWidget(complianceLabel);
-  cardLayout->addWidget(thresholdLabel);
-  cardLayout->addWidget(detailsBtn);
-
-  layout->addWidget(card);
+double ComplianceDashboard::getThresholdForPollutant(const QString& pollutant) {
+  return Compliance::instance().getCriticalThreshold(pollutant);
 }
 
-double ComplianceDashboard::getThresholdForPollutant(const QString& pollutant) {
-  return COMPLIANCE_THRESHOLDS.value(pollutant, 0.1);  // Default to 0.1 if not found
+QString ComplianceDashboard::getComplianceStatus(const QString& pollutant, double value) {
+  auto& compliance = Compliance::instance();
+
+  if (value <= compliance.getWarningThreshold(pollutant)) {
+    return tr("Compliant");
+  } else if (value <= compliance.getCriticalThreshold(pollutant)) {
+    return tr("Warning");
+  } else {
+    return tr("Non-Compliant");
+  }
 }
 
 QString ComplianceDashboard::getTrendAnalysis(const QString& pollutant, const QString& location) {
-  // In a real implementation, this would analyze historical data
-  // For now, return a placeholder analysis
-  return QString(
-             "Historical Analysis for %1 at %2:\n\n"
-             "• Past 3 months show stable levels\n"
-             "• No significant spikes detected\n"
-             "• Seasonal variations are within normal range")
+  return tr("Historical Analysis for %1 at %2:\n\n"
+            "• Past 3 months show stable levels\n"
+            "• No significant spikes detected\n"
+            "• Seasonal variations are within normal range")
       .arg(pollutant)
       .arg(location);
 }
@@ -182,24 +147,61 @@ void ComplianceDashboard::populateCardContent(QVBoxLayout* cardLayout,
                                               const QString& location,
                                               const QString& value,
                                               bool compliant) {
-  // Pollutant Name and Value
+  // Create container frame and set styling
+  QFrame* card = qobject_cast<QFrame*>(cardLayout->parentWidget());
+  if (card) {
+    // Set the status property based on compliance level
+    double numValue = value.toDouble();
+    auto& compliance = Compliance::instance();
+
+    if (numValue <= compliance.getWarningThreshold(pollutant)) {
+      card->setProperty("status", "compliant");
+    } else if (numValue <= compliance.getCriticalThreshold(pollutant)) {
+      card->setProperty("status", "warning");
+    } else {
+      card->setProperty("status", "critical");
+    }
+
+    // Force style update
+    card->style()->unpolish(card);
+    card->style()->polish(card);
+  }
+
+  // Rest of existing content population
   QLabel* nameLabel = new QLabel(pollutant);
   nameLabel->setObjectName("pollutantName");
 
   QLabel* locationLabel = new QLabel(QString("Location: %1").arg(location));
   locationLabel->setObjectName("locationLabel");
 
-  QLabel* valueLabel = new QLabel(QString("Current Value: %1 µg/L").arg(value));
+  QLabel* valueLabel = new QLabel(QString("Current Value: %1").arg(value));
   valueLabel->setObjectName("valueLabel");
 
   // Compliance Indicator
-  QLabel* complianceLabel = new QLabel(compliant ? "✓ Compliant" : "⚠ Non-Compliant");
-  complianceLabel->setStyleSheet(compliant ? "color: #2ecc71; font-weight: bold;" : "color: #e74c3c; font-weight: bold;");
+  QString complianceText;
+  QString complianceStyle;
+
+  double numValue = value.toDouble();
+  auto& compliance = Compliance::instance();
+
+  if (numValue <= compliance.getWarningThreshold(pollutant)) {
+    complianceText = "✓ Compliant";
+    complianceStyle = "color: #2ecc71; font-weight: bold;";  // Green
+  } else if (numValue <= compliance.getCriticalThreshold(pollutant)) {
+    complianceText = "✓ Compliant but Approaching Limit";
+    complianceStyle = "color: #f1c40f; font-weight: bold;";  // Yellow
+  } else {
+    complianceText = "⚠ Non-Compliant";
+    complianceStyle = "color: #e74c3c; font-weight: bold;";  // Red
+  }
+
+  QLabel* complianceLabel = new QLabel(complianceText);
+  complianceLabel->setStyleSheet(complianceStyle);
   complianceLabel->setObjectName("complianceLabel");
 
   // Threshold Display
   double threshold = getThresholdForPollutant(pollutant);
-  QLabel* thresholdLabel = new QLabel(QString("Threshold: %1 µg/L").arg(threshold));
+  QLabel* thresholdLabel = new QLabel(QString("Threshold: %1").arg(threshold));
   thresholdLabel->setObjectName("thresholdLabel");
 
   // Details Button
@@ -221,20 +223,20 @@ void ComplianceDashboard::showPollutantDetails(const QString& pollutant,
                                                const QString& location,
                                                const QString& value) {
   QDialog* detailsDialog = new QDialog(this);
-  detailsDialog->setWindowTitle(QString("%1 - Detailed Analysis").arg(pollutant));
+  detailsDialog->setWindowTitle(tr("%1 - Detailed Analysis").arg(pollutant));
   detailsDialog->setMinimumWidth(400);
 
   QVBoxLayout* dialogLayout = new QVBoxLayout(detailsDialog);
 
   // Current Status
-  QLabel* statusLabel = new QLabel("Current Status");
+  QLabel* statusLabel = new QLabel(tr("Current Status"));
   statusLabel->setStyleSheet("font-weight: bold; font-size: 14px;");
   dialogLayout->addWidget(statusLabel);
 
   double threshold = getThresholdForPollutant(pollutant);
   bool isCompliant = value.toDouble() <= threshold;
 
-  QString complianceInfo = isCompliant ? "✓ Currently within safe limits." : "⚠ Exceeds safety threshold. Immediate attention required.";
+  QString complianceInfo = isCompliant ? tr("✓ Currently within safe limits.") : tr("⚠ Exceeds safety threshold. Immediate attention required.");
 
   QLabel* complianceLabel = new QLabel(complianceInfo);
   complianceLabel->setStyleSheet(isCompliant ? "color: #2ecc71;" : "color: #e74c3c;");
@@ -242,7 +244,7 @@ void ComplianceDashboard::showPollutantDetails(const QString& pollutant,
   dialogLayout->addWidget(complianceLabel);
 
   // Trend Analysis
-  QLabel* trendTitle = new QLabel("Trend Analysis");
+  QLabel* trendTitle = new QLabel(tr("Trend Analysis"));
   trendTitle->setStyleSheet("font-weight: bold; font-size: 14px; margin-top: 10px;");
   dialogLayout->addWidget(trendTitle);
 
@@ -251,17 +253,17 @@ void ComplianceDashboard::showPollutantDetails(const QString& pollutant,
   dialogLayout->addWidget(trendLabel);
 
   // Recommendations
-  QLabel* recomTitle = new QLabel("Recommendations");
+  QLabel* recomTitle = new QLabel(tr("Recommendations"));
   recomTitle->setStyleSheet("font-weight: bold; font-size: 14px; margin-top: 10px;");
   dialogLayout->addWidget(recomTitle);
 
-  QString recommendations = isCompliant ? "• Continue regular monitoring\n"
-                                          "• Maintain current control measures\n"
-                                          "• Schedule next review in 30 days"
-                                        : "• Increase monitoring frequency\n"
-                                          "• Review control measures\n"
-                                          "• Prepare incident report\n"
-                                          "• Schedule immediate follow-up testing";
+  QString recommendations = isCompliant ? tr("• Continue regular monitoring\n"
+                                             "• Maintain current control measures\n"
+                                             "• Schedule next review in 30 days")
+                                        : tr("• Increase monitoring frequency\n"
+                                             "• Review control measures\n"
+                                             "• Prepare incident report\n"
+                                             "• Schedule immediate follow-up testing");
 
   QLabel* recomLabel = new QLabel(recommendations);
   dialogLayout->addWidget(recomLabel);
@@ -296,8 +298,8 @@ void ComplianceDashboard::updateCards() {
   // Create new content
   QWidget* scrollContent = new QWidget();
   cardsLayout = new QGridLayout(scrollContent);
-  cardsLayout->setSpacing(12);
-  cardsLayout->setContentsMargins(12, 12, 12, 12);
+  cardsLayout->setSpacing(CARD_MARGIN);
+  cardsLayout->setContentsMargins(CARD_MARGIN, CARD_MARGIN, CARD_MARGIN, CARD_MARGIN);
 
   // Safety check for model
   if (model->rowCount(QModelIndex()) <= 0) {
@@ -366,6 +368,7 @@ void ComplianceDashboard::updateCards() {
   }
 
   scrollArea->setWidget(scrollContent);
+  adjustCardSizes();  // Adjust sizes after creating cards
 }
 
 void ComplianceDashboard::onLocationFiltered(const QString& location) {
@@ -380,5 +383,42 @@ void ComplianceDashboard::onPollutantSearched(const QString& searchText) {
 
 void ComplianceDashboard::onComplianceFiltered(const QString& compliance) {
   currentCompliance = compliance;
+  updateCards();
+}
+
+void ComplianceDashboard::resizeEvent(QResizeEvent* event) {
+  BasePage::resizeEvent(event);
+  adjustCardSizes();
+}
+
+void ComplianceDashboard::adjustCardSizes() {
+  if (!scrollArea || !cardsLayout)
+    return;
+
+  // Get available width accounting for scrollbar and margins
+  int availableWidth = scrollArea->width() -
+                       scrollArea->verticalScrollBar()->width() -
+                       (CARD_MARGIN * 2);
+
+  // Calculate number of columns that can fit
+  int numColumns = std::max(1, availableWidth / (MIN_CARD_WIDTH + CARD_MARGIN));
+
+  // Calculate optimal card width
+  int cardWidth = (availableWidth - (CARD_MARGIN * (numColumns - 1))) / numColumns;
+
+  // Update all cards in the grid
+  for (int i = 0; i < cardsLayout->count(); ++i) {
+    if (QWidget* card = cardsLayout->itemAt(i)->widget()) {
+      card->setFixedWidth(cardWidth);
+    }
+  }
+
+  // Update layout properties
+  cardsLayout->setHorizontalSpacing(CARD_MARGIN);
+  cardsLayout->setVerticalSpacing(CARD_MARGIN);
+}
+
+void ComplianceDashboard::showEvent(QShowEvent* event) {
+  BasePage::showEvent(event);
   updateCards();
 }

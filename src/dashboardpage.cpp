@@ -4,7 +4,9 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
+#include "compliance.h"
 #include "styles.h"
+#include "trendsoverview.h"
 
 DashboardPage::DashboardPage(SampleModel* model, QWidget* parent)
     : BasePage("Dashboard", parent), model(model) {
@@ -48,11 +50,6 @@ void DashboardPage::refreshView() {
 }
 
 void DashboardPage::processData() {
-  if (!model->hasData()) {
-    qWarning() << "No data loaded in model";
-    return;
-  }
-
   // Maps to store data for different pollutant types
   QMap<QString, QVector<double>> commonPollutants;
   QMap<QString, QVector<double>> pops;
@@ -82,11 +79,10 @@ void DashboardPage::processData() {
       pops[pollutant].append(value);
     } else if (pollutant.contains("PF", Qt::CaseInsensitive)) {
       pfas[pollutant].append(value);
-    } else if (pollutant.contains("Litter", Qt::CaseInsensitive) ||
-               pollutant.contains("Debris", Qt::CaseInsensitive)) {
+    } else if (pollutant.contains("Plastic", Qt::CaseInsensitive) ||
+               pollutant.contains("Sewage", Qt::CaseInsensitive)) {
       litter[pollutant].append(value);
-    } else if (pollutant.contains("Chloroform", Qt::CaseInsensitive) ||
-               pollutant.contains("Trichloroethane", Qt::CaseInsensitive)) {
+    } else if (isOverviewPollutant(pollutant)) {
       commonPollutants[pollutant].append(value);
     }
   }
@@ -97,12 +93,14 @@ void DashboardPage::processData() {
   double maxTotal = 0;
   QString maxPollutant;
 
+  auto& compliance = Compliance::instance();
+
   for (auto it = commonPollutants.constBegin(); it != commonPollutants.constEnd(); ++it) {
     double total = 0;
     for (double value : it.value()) {
       total += value;
       commonPollutantMetrics.totalSamples++;
-      if (value > POLLUTANTS_WARNING) {
+      if (value > compliance.getCriticalThreshold(it.key())) {
         commonPollutantMetrics.samplesAboveLimit++;
       }
     }
@@ -122,16 +120,48 @@ void DashboardPage::processData() {
     for (double value : values) {
       popsTotal += value;
       popsMetrics.totalSamples++;
-      if (value > POPS_WARNING) {
+      if (value > compliance.getCriticalThreshold("POPs")) {
         popsMetrics.samplesAboveLimit++;
       }
     }
   }
   popsMetrics.averageLevel = popsTotal / popsMetrics.totalSamples;
-  popsMetrics.trend = calculateTrend(pops.first());
 
-  // Calculate PFAS metrics similarly
-  // [Similar calculations for PFAS]
+  // Calculate PFAS metrics
+  pfasMetrics.totalSamples = 0;
+  pfasMetrics.samplesAboveLimit = 0;
+  double pfasTotal = 0;
+  for (const auto& values : pfas) {
+    for (double value : values) {
+      pfasTotal += value;
+      pfasMetrics.totalSamples++;
+      if (value > PFAS_WARNING) {
+        pfasMetrics.samplesAboveLimit++;
+      }
+    }
+  }
+  if (pfasMetrics.totalSamples > 0) {
+    pfasMetrics.averageLevel = pfasTotal / pfasMetrics.totalSamples;
+    pfasMetrics.trend = calculateTrend(pfas.first());
+  }
+
+  // Calculate litter metrics
+  litterMetrics.totalSamples = 0;
+  litterMetrics.samplesAboveLimit = 0;
+  double litterTotal = 0;
+  for (const auto& values : litter) {
+    for (double value : values) {
+      litterTotal += value;
+      litterMetrics.totalSamples++;
+      if (value > LITTER_WARNING) {
+        litterMetrics.samplesAboveLimit++;
+      }
+    }
+  }
+  if (litterMetrics.totalSamples > 0) {
+    litterMetrics.averageLevel = litterTotal / litterMetrics.totalSamples;
+    litterMetrics.trend = calculateTrend(litter.first());
+  }
 
   // Calculate overall compliance
   int totalMeasurements = 0;
@@ -210,10 +240,9 @@ QFrame* DashboardPage::createPollutantsCard() {
   header->setObjectName("cardHeader");
   QVBoxLayout* headerLayout = new QVBoxLayout(header);
 
-  QLabel* titleLabel = new QLabel("Common Pollutants");
+  QLabel* titleLabel = new QLabel(tr("Pollutants Overview"));
   titleLabel->setObjectName("cardTitle");
-
-  QLabel* subtitleLabel = new QLabel("Overview of water pollutants and their levels");
+  QLabel* subtitleLabel = new QLabel(tr("Summary of pollutant levels and trends"));
   subtitleLabel->setObjectName("cardSubtitle");
 
   headerLayout->addWidget(titleLabel);
@@ -223,12 +252,11 @@ QFrame* DashboardPage::createPollutantsCard() {
   QWidget* content = new QWidget;
   QVBoxLayout* contentLayout = new QVBoxLayout(content);
 
-  // Add key metrics
   QString metricsText = QString(
-                            "• Average Level: %1 µg/L\n"
-                            "• Samples Above Limit: %2 \n"
-                            "• Most Common: %3\n"
-                            "• Trend: %4")
+                            tr("• Average Level: %1 µg/L\n"
+                               "• Samples Above Limit: %2\n"
+                               "• Most Common: %3\n"
+                               "• Trend: %4"))
                             .arg(commonPollutantMetrics.averageLevel)
                             .arg(int(commonPollutantMetrics.samplesAboveLimit * 100.0 /
                                      commonPollutantMetrics.totalSamples))
@@ -248,7 +276,7 @@ QFrame* DashboardPage::createPollutantsCard() {
                    .name()));
 
   // Navigate button
-  QPushButton* navButton = new QPushButton("View Detailed Analysis");
+  QPushButton* navButton = new QPushButton(tr("View Detailed Analysis"));
   navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked,
           [this]() { navigateToPage(2); });  // Index 2 is Pollutants Overview
@@ -276,9 +304,9 @@ QFrame* DashboardPage::createPOPsCard() {
   header->setObjectName("cardHeader");
   QVBoxLayout* headerLayout = new QVBoxLayout(header);
 
-  QLabel* titleLabel = new QLabel("Persistent Organic Pollutants (POPs)");
+  QLabel* titleLabel = new QLabel(tr("Persistent Organic Pollutants (POPs)"));
   titleLabel->setObjectName("cardTitle");
-  QLabel* subtitleLabel = new QLabel("Status of POPs in water supplies");
+  QLabel* subtitleLabel = new QLabel(tr("Status of POPs in water supplies"));
   subtitleLabel->setObjectName("cardSubtitle");
 
   headerLayout->addWidget(titleLabel);
@@ -304,7 +332,8 @@ QFrame* DashboardPage::createPOPsCard() {
       QString("background-color: %1; color: white; padding: 8px; border-radius: 4px;")
           .arg(getStatusColor(popsMetrics.averageLevel, POPS_WARNING, POPS_DANGER).name()));
 
-  QPushButton* navButton = new QPushButton("View POPs Analysis");
+  // Navigate button
+  QPushButton* navButton = new QPushButton(tr("View Detailed Analysis"));
   navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(4); });
 
@@ -331,9 +360,9 @@ QFrame* DashboardPage::createLitterCard() {
   header->setObjectName("cardHeader");
   QVBoxLayout* headerLayout = new QVBoxLayout(header);
 
-  QLabel* titleLabel = new QLabel("Environmental Litter");
+  QLabel* titleLabel = new QLabel(tr("Environmental Litter"));
   titleLabel->setObjectName("cardTitle");
-  QLabel* subtitleLabel = new QLabel("Water litter levels and trends");
+  QLabel* subtitleLabel = new QLabel(tr("Water litter levels and trends"));
   subtitleLabel->setObjectName("cardSubtitle");
 
   headerLayout->addWidget(titleLabel);
@@ -359,7 +388,8 @@ QFrame* DashboardPage::createLitterCard() {
       QString("background-color: %1; color: white; padding: 8px; border-radius: 4px;")
           .arg(getStatusColor(litterMetrics.averageLevel, LITTER_WARNING, LITTER_DANGER).name()));
 
-  QPushButton* navButton = new QPushButton("View Litter Analysis");
+  // Navigate button
+  QPushButton* navButton = new QPushButton(tr("View Litter Analysis"));
   navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(5); });
 
@@ -441,9 +471,9 @@ QFrame* DashboardPage::createComplianceCard() {
   header->setObjectName("cardHeader");
   QVBoxLayout* headerLayout = new QVBoxLayout(header);
 
-  QLabel* titleLabel = new QLabel("Overall Compliance Status");
+  QLabel* titleLabel = new QLabel(tr("Overall Compliance Status"));
   titleLabel->setObjectName("cardTitle");
-  QLabel* subtitleLabel = new QLabel("Summary of safety compliance across all categories");
+  QLabel* subtitleLabel = new QLabel(tr("Summary of safety compliance across all categories"));
   subtitleLabel->setObjectName("cardSubtitle");
 
   headerLayout->addWidget(titleLabel);
@@ -453,29 +483,113 @@ QFrame* DashboardPage::createComplianceCard() {
   QWidget* content = new QWidget;
   QVBoxLayout* contentLayout = new QVBoxLayout(content);
 
+  // Calculate compliance metrics using real thresholds
+  const auto& compliance = Compliance::instance();
+  int totalSamples = 0;
+  int compliantSamples = 0;
+  QSet<QString> locations;
+  QMap<QString, int> violationCounts;
+
+  for (int row = 0; row < model->rowCount(QModelIndex()); row++) {
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
+    QString result = model->data(model->index(row, 7), Qt::DisplayRole).toString();
+    QString location = model->data(model->index(row, 2), Qt::DisplayRole).toString();
+
+    bool ok;
+    double value = result.toDouble(&ok);
+    if (!ok && result.startsWith('<')) {
+      value = result.mid(1).toDouble(&ok) / 2.0;
+    }
+    if (!ok) continue;
+
+    locations.insert(location);
+    totalSamples++;
+
+    if (compliance.isCompliant(pollutant, value)) {
+      compliantSamples++;
+    } else {
+      violationCounts[pollutant]++;
+    }
+  }
+
+  // Calculate metrics
+  double complianceRate = totalSamples > 0 ? (compliantSamples * 100.0 / totalSamples) : 0;
+  int sitesNeedingAction = 0;
+  QString mainConcern = "None";
+  int maxViolations = 0;
+
+  for (auto it = violationCounts.begin(); it != violationCounts.end(); ++it) {
+    if (it.value() > maxViolations) {
+      maxViolations = it.value();
+      mainConcern = it.key();
+    }
+    if (it.value() > 0) sitesNeedingAction++;
+  }
+
   QString metricsText = QString(
-                            "• Overall Compliance: %1\n"
-                            "• Sites Meeting Standards: %2/%3\n"
-                            "• Main Concern: %4\n"
-                            "• Locations Needing Action: %5")
-                            .arg(complianceMetrics.overallCompliance, 0, 'f', 1)
-                            .arg(complianceMetrics.sitesCompliant)
-                            .arg(complianceMetrics.totalSites)
-                            .arg(complianceMetrics.mainConcern)
-                            .arg(complianceMetrics.sitesNeedingAction);
+                            tr("• Overall Compliance: %1%\n"
+                               "• Sites Meeting Standards: %2/%3\n"
+                               "• Main Concern: %4\n"
+                               "• Locations Needing Action: %5"))
+                            .arg(complianceRate, 0, 'f', 1)
+                            .arg(locations.size() - sitesNeedingAction)
+                            .arg(locations.size())
+                            .arg(mainConcern)
+                            .arg(sitesNeedingAction);
 
   QLabel* metricsLabel = new QLabel(metricsText);
 
-  QPushButton* navButton = new QPushButton("View Full Compliance Report");
+  // Status indicator based on overall compliance rate
+  QString statusText;
+  QString statusColor;
+  if (complianceRate >= 70) {
+    statusText = "Good - High Compliance";
+    statusColor = "#28a745";
+  } else if (complianceRate >= 55) {
+    statusText = "Warning - Moderate Compliance";
+    statusColor = "#ffc107";
+  } else {
+    statusText = "Critical - Low Compliance";
+    statusColor = "#dc3545";
+  }
+
+  QLabel* statusLabel = new QLabel(statusText);
+  statusLabel->setStyleSheet(
+      QString("background-color: %1; color: white; padding: 8px; border-radius: 4px;")
+          .arg(statusColor));
+
+  QPushButton* navButton = new QPushButton(tr("View Full Compliance Report"));
   navButton->setObjectName("linksButton");
   connect(navButton, &QPushButton::clicked, [this]() { navigateToPage(6); });
 
   contentLayout->addWidget(metricsLabel);
   contentLayout->addStretch();
+  contentLayout->addWidget(statusLabel);
   contentLayout->addWidget(navButton);
 
   layout->addWidget(header);
   layout->addWidget(content);
 
   return card;
+}
+
+bool DashboardPage::isOverviewPollutant(const QString& pollutant) const {
+  // Heavy Metals
+  static const QSet<QString> heavyMetals = {
+      "Pb Filtered", "Hg Filtered", "Cd Filtered", "Cr- Filtered",
+      "Cu Filtered", "Zn- Filtered", "As-Filtered", "Al- Filtered", "Ni- Filtered"};
+
+  // Nutrients
+  static const QSet<QString> nutrients = {
+      "Nitrogen - N", "Nitrate-N", "Nitrite-N", "Orthophospht",
+      "Phosphorus-P", "NH3 filt N", "N Oxidised"};
+
+  // Volatile Organic Compounds
+  static const QSet<QString> vocs = {
+      "1,1,2-Trichloroethane", "Chloroform", "Trichloroeth", "Carbon Tet",
+      "TetClEthene", "Benzene", "Toluene", "Ethylbenzene", "o-Xylene", "m-p-Xylene"};
+
+  return heavyMetals.contains(pollutant) ||
+         nutrients.contains(pollutant) ||
+         vocs.contains(pollutant);
 }

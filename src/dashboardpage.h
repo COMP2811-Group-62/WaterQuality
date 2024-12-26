@@ -23,6 +23,7 @@ class DashboardPage : public BasePage {
   void pageChangeRequested(int index);
 
  private:
+  QMap<QString, QVector<double>> measurements;
   struct PollutantMetrics {
     double currentLevel;
     double averageLevel;
@@ -54,6 +55,7 @@ class DashboardPage : public BasePage {
   QFrame* createComplianceCard();
 
   void processData();
+  bool isOverviewPollutant(const QString& pollutant) const;
   QString getComplianceStatus(double value, double warningThreshold, double dangerThreshold);
   QColor getStatusColor(double value, double warningThreshold, double dangerThreshold);
   QString calculateTrend(const QVector<double>& values);

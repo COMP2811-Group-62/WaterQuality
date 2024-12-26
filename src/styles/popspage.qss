@@ -1,7 +1,7 @@
 QFrame#controlsFrame {
     background-color: white;
     border: 1px solid #dee2e6;
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 8px;
 }
 
@@ -9,7 +9,7 @@ QPushButton {
     padding: 8px 20px;
     background-color: #037a9b;
     color: white;
-    border-radius: 4px;
+    border-radius: 6px;
     font-weight: bold;
 }
 
@@ -20,7 +20,7 @@ QPushButton:hover {
 /* Data display styling */
 QFrame#dataDisplay {
     border: 1px solid #dee2e6;
-    border-radius: 8px;
+    border-radius: 6px;
     background-color: white;
     min-height: 500px;
     padding: 20px;
@@ -28,7 +28,7 @@ QFrame#dataDisplay {
 
 QFrame#graphArea {
     border: 1px solid #e9ecef;
-    border-radius: 8px;
+    border-radius: 6px;
     background-color: #ffffff;
     margin: 10px;
 }
@@ -36,7 +36,7 @@ QFrame#graphArea {
 QFrame#legendFrame {
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 15px;
     margin-top: 15px;
 }
@@ -45,7 +45,7 @@ QFrame#legendFrame {
 QMessageBox {
     background-color: white;
     border: 1px solid #dee2e6;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 20px;
 }
 
@@ -53,10 +53,10 @@ QMessageBox QPushButton {
     background-color: #037a9b;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 6px 20px;
     font-weight: bold;
-    margin: 8px;
+    margin-top: 6px;
 }
 
 QMessageBox QPushButton:hover {
@@ -64,7 +64,7 @@ QMessageBox QPushButton:hover {
 }
 
 QMessageBox QLabel {
-    font-size: 11pt;
+    font-size: 14px;
 }
 
 /* Success message box */
@@ -107,8 +107,8 @@ QMessageBox#errorBox QPushButton:hover {
 
 /* Info panel styling */
 QFrame#infoPanel {
-    border: 1px solid #037a9b;
-    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
     background-color: white;
     padding: 8px;
 }
@@ -116,7 +116,7 @@ QFrame#infoPanel {
 QFrame#safetyFrame, QFrame#healthFrame, QFrame#thresholdFrame {
     border: 1px solid #dee2e6;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 6px;
     padding: 8px;
 }
 

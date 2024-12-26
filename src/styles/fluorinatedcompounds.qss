@@ -1,7 +1,6 @@
 #h1 {
-    color: white;
+    color: black;
     font-size: 14px;
-    font-weight: bold;
 }
 #h1dark {
     color: black;
@@ -11,9 +10,8 @@
 }
 
 #h2 {
-    color: white;
+    color: black;
     font-size: 13px;
-    font-weight: bold;
 }
 
 #lCol {
@@ -29,30 +27,26 @@
 
 /* Using the same  QFrame and ComboBox Styling from Trends page to ensure consistancy in UI */
 QFrame#headerFrame {
-    background-color: #1a1a1a;
+    border: 1px solid #dee2e6;
+    background-color: white;
     border-radius: 8px;
     padding: 20px
 }
 QFrame#sidebarFrameHeader {
-    background-color: #1a1a1a;
+    border: 1px solid #dee2e6;
+    background-color: white;
     border-radius: 8px;
     padding: 5px
 }
 QFrame#sidebarFrameBody{
-    border: 2px solid #1a1a1a;
+    border: 1px solid #dee2e6;
+    background-color: white;
     border-radius: 8px;
     padding: 5px
 }
 
-QComboBox {
-    min-width: 180px;
-    padding: 8px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-}
-
 QQuickWidget {
-    border: 2px solid #1a1a1a;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
     padding: 20px
 }
