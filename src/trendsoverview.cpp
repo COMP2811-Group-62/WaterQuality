@@ -10,8 +10,8 @@
 
 #include "styles.h"
 
-TrendsOverviewPage::TrendsOverviewPage(QWidget* parent)
-    : BasePage("Pollutants Overview", parent) {
+TrendsOverviewPage::TrendsOverviewPage(SampleModel* model, QWidget* parent)
+    : BasePage(tr("Pollutants Overview"), parent), model(model) {
   setStyleSheet(Styles::combineStyleSheets({":/styles/basepage.qss",
                                             ":/styles/trendsoverview.qss"}));
   setupUI();
@@ -19,8 +19,7 @@ TrendsOverviewPage::TrendsOverviewPage(QWidget* parent)
 }
 
 void TrendsOverviewPage::setupUI() {
-  model.updateFromFile("../dataset/Y-2024-M.csv");
-  buildLocationCache();  // Build the cache after loading the data
+  buildLocationCache();
 
   pageLayout = new QVBoxLayout();
 
@@ -67,11 +66,18 @@ void TrendsOverviewPage::setupUI() {
   contentArea->setLayout(pageLayout);
 }
 
+void TrendsOverviewPage::refreshView() {
+  buildLocationCache();
+  populatePollutants();
+  updateChart();
+  updateStats();
+}
+
 void TrendsOverviewPage::setupStatsSection(QVBoxLayout* leftLayout, QVBoxLayout* rightLayout) {
-  addInfoCard(leftLayout, "Average", "0.0 µg/L");
-  addInfoCard(leftLayout, "Last Reading", "0.0 µg/L");
-  addInfoCard(rightLayout, "Minimum", "0.0 µg/L");
-  addInfoCard(rightLayout, "Maximum", "0.0 µg/L");
+  addInfoCard(leftLayout, tr("Average"), "0.0 µg/L");
+  addInfoCard(leftLayout, tr("Last Reading"), "0.0 µg/L");
+  addInfoCard(rightLayout, tr("Minimum"), "0.0 µg/L");
+  addInfoCard(rightLayout, tr("Maximum"), "0.0 µg/L");
 }
 
 void TrendsOverviewPage::setupControlsSection(QVBoxLayout* parentLayout) {
@@ -91,13 +97,14 @@ void TrendsOverviewPage::setupControlsSection(QVBoxLayout* parentLayout) {
 }
 
 void TrendsOverviewPage::setupSearchControls(QVBoxLayout* layout) {
-  QLabel* pollutantLabel = new QLabel("Search Pollutant:");
+  QLabel* pollutantLabel = new QLabel(tr("Search Pollutant:"));
   pollutantSearch = new SearchLineEdit();
-  pollutantSearch->setPlaceholderText("Type to search pollutants...");
+  pollutantSearch->setPlaceholderText(tr("Type to search pollutants..."));
 
-  QLabel* locationLabel = new QLabel("Select Location:");
+  QLabel* locationLabel = new QLabel(tr("Select Location:"));
   locationSelector = new QComboBox();
   locationSelector->setObjectName("locationDropdown");
+  locationSelector->setStyleSheet("");  // Clear any existing styles
   locationSelector->setEnabled(false);
 
   layout->addWidget(pollutantLabel);
@@ -115,7 +122,7 @@ void TrendsOverviewPage::setupChartSection(QVBoxLayout* parentLayout) {
   QVBoxLayout* chartLayout = new QVBoxLayout(chartFrame);
 
   chart = new QChart();
-  chart->setAnimationOptions(QChart::SeriesAnimations);
+  chart->setAnimationOptions(QChart::AllAnimations);
   chart->setTheme(QChart::ChartThemeLight);
 
   chartView = new QChartView(chart);
@@ -151,9 +158,9 @@ void TrendsOverviewPage::addInfoCard(QVBoxLayout* layout, const QString& title,
 
 void TrendsOverviewPage::setupThresholdIndicators(QHBoxLayout* layout) {
   // No units in the threshold indicators since they are relative values
-  layout->addWidget(createThresholdIndicator("Safe", "≤ 5.0", "safeIndicator"));
-  layout->addWidget(createThresholdIndicator("Warning", "5.1-7.0", "warningIndicator"));
-  layout->addWidget(createThresholdIndicator("Danger", "> 7.0", "dangerIndicator"));
+  layout->addWidget(createThresholdIndicator(tr("Safe"), tr("≤ 5.0"), "safeIndicator"));
+  layout->addWidget(createThresholdIndicator(tr("Warning"), tr("5.1-7.0"), "warningIndicator"));
+  layout->addWidget(createThresholdIndicator(tr("Danger"), tr("> 7.0"), "dangerIndicator"));
   layout->addStretch();
 }
 
@@ -205,7 +212,7 @@ void TrendsOverviewPage::setupChart() {
   chart->addSeries(series);
 
   axisX = new QDateTimeAxis;
-  axisX->setTitleText("Month");
+  axisX->setTitleText(tr("Month"));
   axisX->setTitleFont(QFont("Arial", 14, QFont::Medium));
   axisX->setLabelsFont(QFont("Arial", 12));
   axisX->setFormat("MMM yyyy");
@@ -216,7 +223,7 @@ void TrendsOverviewPage::setupChart() {
   chart->addAxis(axisX, Qt::AlignBottom);
 
   axisY = new QValueAxis;
-  axisY->setTitleText("Concentration");
+  axisY->setTitleText(tr("Concentration"));
   axisY->setTitleFont(QFont("Arial", 14, QFont::Medium));
   axisY->setLabelsFont(QFont("Arial", 12));
   axisY->setLabelFormat("%.2f");
@@ -238,10 +245,9 @@ void TrendsOverviewPage::onPointHovered(const QPointF& point, bool state) {
   QDateTime datetime = QDateTime::fromMSecsSinceEpoch(point.x());
   double value = point.y();
 
-  QString tooltip = QString(
-                        "Date: %1\n"
-                        "Value: %2 %3\n"
-                        "Status: %4")
+  QString tooltip = tr("Date: %1\n"
+                       "Value: %2 %3\n"
+                       "Status: %4")
                         .arg(datetime.toString("dd MMM yyyy"))
                         .arg(value, 0, 'f', 2)
                         .arg(currentUnit)
@@ -251,9 +257,9 @@ void TrendsOverviewPage::onPointHovered(const QPointF& point, bool state) {
 }
 
 QString TrendsOverviewPage::getComplianceStatus(double value) const {
-  if (value <= SAFE_THRESHOLD) return "Safe";
-  if (value <= DANGER_THRESHOLD) return "Warning - Approaching Danger Limit";
-  return "Danger - Exceeds Safety Limit";
+  if (value <= SAFE_THRESHOLD) return tr("Safe");
+  if (value <= DANGER_THRESHOLD) return tr("Warning - Approaching Danger Limit");
+  return tr("Danger - Exceeds Safety Limit");
 }
 
 QColor TrendsOverviewPage::getComplianceColor(double value) const {
@@ -263,7 +269,7 @@ QColor TrendsOverviewPage::getComplianceColor(double value) const {
 }
 
 void TrendsOverviewPage::updateChart() {
-  if (!model.hasData() || currentPollutant.isEmpty() || currentLocation.isEmpty()) {
+  if (!model->hasData() || currentPollutant.isEmpty() || currentLocation.isEmpty()) {
     return;
   }
 
@@ -308,17 +314,17 @@ void TrendsOverviewPage::updateChart() {
 QMap<QDateTime, double> TrendsOverviewPage::collectChartData() const {
   QMap<QDateTime, double> dataPoints;
 
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    if (model.data(model.index(row, 4), Qt::DisplayRole).toString() != currentPollutant ||
-        model.data(model.index(row, 2), Qt::DisplayRole).toString() != currentLocation) {
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    if (model->data(model->index(row, 4), Qt::DisplayRole).toString() != currentPollutant ||
+        model->data(model->index(row, 2), Qt::DisplayRole).toString() != currentLocation) {
       continue;
     }
 
-    QString dateStr = model.data(model.index(row, 3), Qt::DisplayRole).toString();
+    QString dateStr = model->data(model->index(row, 3), Qt::DisplayRole).toString();
     QDateTime datetime = QDateTime::fromString(dateStr, Qt::ISODate);
 
     bool ok;
-    QString resultStr = model.data(model.index(row, 7), Qt::DisplayRole).toString();
+    QString resultStr = model->data(model->index(row, 7), Qt::DisplayRole).toString();
     double value = resultStr.toDouble(&ok);
 
     if (ok && datetime.isValid()) {
@@ -416,8 +422,8 @@ bool TrendsOverviewPage::hasResultData(const QString& pollutant, const QString& 
 
 void TrendsOverviewPage::populatePollutants() {
   QSet<QString> pollutantSet;
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
     if (!pollutant.isEmpty() && isOverviewPollutant(pollutant)) {
       pollutantSet.insert(pollutant);
     }
@@ -438,7 +444,6 @@ void TrendsOverviewPage::populatePollutants() {
   pollutantCompleter = new QCompleter(pollutants, this);
   pollutantCompleter->setCaseSensitivity(Qt::CaseInsensitive);
   pollutantCompleter->setFilterMode(Qt::MatchContains);
-  pollutantCompleter->setMaxVisibleItems(10);
 
   // Setup popup for completer to style it
   QAbstractItemView* popup = pollutantCompleter->popup();
@@ -447,8 +452,6 @@ void TrendsOverviewPage::populatePollutants() {
   popup->setStyleSheet(R"(
         QAbstractItemView#searchPopup {
             border-radius: 4px;
-            selection-background-color: rgba(64, 186, 213, 0.15);
-            selection-color: white;
         }
         QAbstractItemView#searchPopup::item {
             padding: 4px 8px;
@@ -476,9 +479,9 @@ void TrendsOverviewPage::onPollutantSelected(const QString& pollutant) {
 
   // Find the unit for this pollutant
   currentUnit = "";
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    if (model.data(model.index(row, 4), Qt::DisplayRole).toString() == pollutant) {
-      currentUnit = model.data(model.index(row, 8), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    if (model->data(model->index(row, 4), Qt::DisplayRole).toString() == pollutant) {
+      currentUnit = model->data(model->index(row, 8), Qt::DisplayRole).toString();
       break;
     }
   }
@@ -524,12 +527,12 @@ void TrendsOverviewPage::buildLocationCache() {
   validLocationCache.clear();
 
   // Pre-calculate all valid pollutant-location pairs
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    QString pollutant = model.data(model.index(row, 4), Qt::DisplayRole).toString();
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    QString pollutant = model->data(model->index(row, 4), Qt::DisplayRole).toString();
     if (!pollutant.isEmpty() && isOverviewPollutant(pollutant)) {
-      QString location = model.data(model.index(row, 2), Qt::DisplayRole).toString();
+      QString location = model->data(model->index(row, 2), Qt::DisplayRole).toString();
       if (!location.isEmpty()) {
-        QString resultStr = model.data(model.index(row, 7), Qt::DisplayRole).toString();
+        QString resultStr = model->data(model->index(row, 7), Qt::DisplayRole).toString();
         bool ok;
         resultStr.toDouble(&ok);
         if (ok) {
@@ -547,7 +550,7 @@ void TrendsOverviewPage::onLocationChanged(const QString& location) {
 }
 
 void TrendsOverviewPage::updateStats() {
-  if (!model.hasData() || currentPollutant.isEmpty() || currentLocation.isEmpty()) {
+  if (!model->hasData() || currentPollutant.isEmpty() || currentLocation.isEmpty()) {
     return;
   }
 
@@ -559,18 +562,18 @@ void TrendsOverviewPage::updateStats() {
   int count = 0;
 
   // Calculate statistics
-  for (int row = 0; row < model.rowCount(QModelIndex()); ++row) {
-    if (model.data(model.index(row, 4), Qt::DisplayRole).toString() != currentPollutant ||
-        model.data(model.index(row, 2), Qt::DisplayRole).toString() != currentLocation) {
+  for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
+    if (model->data(model->index(row, 4), Qt::DisplayRole).toString() != currentPollutant ||
+        model->data(model->index(row, 2), Qt::DisplayRole).toString() != currentLocation) {
       continue;
     }
 
     bool ok;
-    double value = model.data(model.index(row, 7), Qt::DisplayRole).toString().toDouble(&ok);
+    double value = model->data(model->index(row, 7), Qt::DisplayRole).toString().toDouble(&ok);
     if (!ok) continue;
 
     QDateTime datetime = QDateTime::fromString(
-        model.data(model.index(row, 3), Qt::DisplayRole).toString(), Qt::ISODate);
+        model->data(model->index(row, 3), Qt::DisplayRole).toString(), Qt::ISODate);
 
     sum += value;
     min = std::min(min, value);

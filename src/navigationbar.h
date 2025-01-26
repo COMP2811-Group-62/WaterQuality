@@ -13,6 +13,9 @@ class NavigationBar : public QFrame {
  public:
   explicit NavigationBar(QWidget *parent = nullptr);
 
+ public slots:
+  void setCurrentPage(int index);
+
  signals:
   void pageChanged(int index);
   void languageChanged(int index);
@@ -24,5 +27,4 @@ class NavigationBar : public QFrame {
   QVBoxLayout *layout;
   QLabel *titleLabel;
   QList<QPushButton *> navButtons;
-  QComboBox *languageSelector;
 };

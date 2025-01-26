@@ -1,4 +1,3 @@
-/* Main layout styling */
 QFrame#contentFrame {
     border-radius: 6px;
 }
@@ -26,9 +25,8 @@ QFrame.infoCard {
 }
 
 QLabel.infoTitle {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
-    margin-bottom: 2px;
 }
 
 QLabel.infoValue {
@@ -38,12 +36,6 @@ QLabel.infoValue {
 /* Labels */
 QLabel {
     font-size: 14px;
-    font-weight: bold;
-}
-
-/* Chart frame */
-QFrame#chartFrame {
-    background-color: white;
 }
 
 /* Tooltips */
@@ -82,23 +74,8 @@ QLabel.thresholdLabel {
     font-weight: normal;
 }
 
-QLineEdit { 
+QLineEdit {
+    border: 1px solid #dee2e6;
     padding: 8px 12px;
     border-radius: 6px;
-}
-
-QComboBox#locationDropdown {
-    border-radius: 6px;
-    color: white;
-    padding: 8px 12px;
-}
-
-/* QComboBox#locationDropdown:hover {
-    background-color: rgba(64, 186, 213, 0.1);
-    border: 1px solid rgba(64, 186, 213, 0.3);
-} */
-
-QComboBox#locationDropdown::drop-down {
-    border: none;
-    color: white;
 }

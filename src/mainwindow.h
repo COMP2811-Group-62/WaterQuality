@@ -2,6 +2,8 @@
 
 #include <QMainWindow>
 
+#include "model.h"
+
 class QWidget;
 class QHBoxLayout;
 class QFrame;
@@ -21,11 +23,17 @@ class MainWindow : public QMainWindow {
  private slots:
   void switchPage(int index);
   void updateLanguage(int index);
+  void openFile();
+  void loadDataset(const QString &filename);
 
  private:
   void setupUI();
   void setupNavigation();
   void setupPages();
+  void setupMenu();
+  void distributeDataset(const QString &filename);
+
+  SampleModel sharedModel;  // Shared model instance
 
   QWidget *centralWidget;
   QHBoxLayout *mainLayout;

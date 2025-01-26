@@ -1,14 +1,83 @@
-QFrame#filtersFrame{
+#filtersFrame {
     background-color: white;
-    border-radius: 8px;
-    border-color: #acacac;
-    border: 1px solid;
-    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 12px;
 }
-QFrame#cardsFrame{
-    background-color: white;
+
+#searchBar {
+    min-width: 200px;
+    padding: 6px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+#scrollArea {
+    background-color: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+#scrollArea QWidget {
+    background-color: #ffffff;
+    border-radius: 6px;
+}
+
+#complianceCard {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
-    border-color: #acacac;
-    border: 1px solid;
-    padding: 15px;
+    padding: 16px;
+    margin: 6px;
+    min-height: 200px;
+}
+
+#complianceCard:hover {
+    border-color: #adb5bd;
+}
+
+#pollutantName {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+#locationLabel {
+    color: #6c757d;
+    margin-bottom: 4px;
+}
+
+#valueLabel, #thresholdLabel {
+    margin-bottom: 4px;
+}
+
+#complianceLabel {
+    font-size: 14px;
+    margin: 8px 0;
+}
+
+#detailsButton {
+    color: black;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin-top: 8px;
+}
+
+#detailsButton:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+#complianceCard[status="compliant"] {
+    border: 1px solid #4CAF50;
+}
+
+#complianceCard[status="warning"] {
+    border: 1px solid #FF9800;
+}
+
+#complianceCard[status="critical"] {
+    border: 1px solid #f44336;
 }
